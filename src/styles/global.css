@@ -1,0 +1,85 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+@import "tailwindcss";
+
+@theme {
+    --color-zinc-950: #09090b;
+    --color-zinc-900: #18181b;
+    --color-zinc-800: #27272a;
+    --color-zinc-700: #3f3f46;
+    --color-zinc-600: #52525b;
+    --color-zinc-500: #71717a;
+    --color-zinc-400: #a1a1aa;
+    --color-zinc-300: #d4d4d8;
+    --color-zinc-200: #e4e4e7;
+    --color-zinc-100: #f4f4f5;
+    --color-zinc-50: #fafafa;
+
+    --color-accent-600: #4f46e5;
+    --color-accent-500: #6366f1;
+
+    --font-sans: 'Inter', sans-serif;
+    --font-serif: 'Playfair Display', serif;
+    --font-mono: 'JetBrains Mono', monospace;
+}
+
+@layer base {
+    html {
+        @apply antialiased scroll-smooth;
+        background-color: #ffffff;
+        color: #111111;
+    }
+
+    body {
+        @apply font-sans text-[18px] leading-[1.75];
+    }
+
+    ::selection {
+        background-color: var(--color-accent-600);
+        color: white;
+    }
+
+    .intent {
+        font-style: italic;
+        font-size: 0.9rem;
+        color: #777;
+        margin-top: 0.5rem;
+        margin-bottom: 2rem;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        @apply font-serif font-bold tracking-tight text-black;
+    }
+
+    a {
+        @apply transition-colors duration-200;
+    }
+
+    a:hover {
+        color: var(--color-accent-600);
+    }
+
+    /* Code Block Styling matching tech-lessons.in */
+    pre {
+        @apply rounded-md p-4 my-8 overflow-x-auto shadow-xl shadow-blue-500/5 ring-1 ring-zinc-900/5;
+        background-color: #282a36 !important;
+    }
+
+    pre code {
+        @apply font-mono text-[16px] leading-[24px] bg-transparent p-0 text-white;
+    }
+
+    /* Inline code */
+    :not(pre)>code {
+        @apply font-mono text-[0.9em] font-medium bg-zinc-100 px-1.5 py-0.5 rounded text-zinc-900;
+    }
+
+    /* Blockquote styling */
+    blockquote {
+        @apply not-italic border-l-4 border-zinc-200 pl-6 my-8 text-zinc-700;
+    }
+}

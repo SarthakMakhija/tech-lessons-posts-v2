@@ -1,0 +1,50 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getCollection } from "astro:content";
+
+const posts = await getCollection("blog");
+const uniqueTags = [
+    ...new Set(posts.map((post) => post.data.tags).flat()),
+].sort();
+const colors = [
+    "bg-red-100 text-red-800 hover:bg-red-200",
+    "bg-orange-100 text-orange-800 hover:bg-orange-200",
+    "bg-amber-100 text-amber-800 hover:bg-amber-200",
+    "bg-green-100 text-green-800 hover:bg-green-200",
+    "bg-emerald-100 text-emerald-800 hover:bg-emerald-200",
+    "bg-teal-100 text-teal-800 hover:bg-teal-200",
+    "bg-cyan-100 text-cyan-800 hover:bg-cyan-200",
+    "bg-sky-100 text-sky-800 hover:bg-sky-200",
+    "bg-blue-100 text-blue-800 hover:bg-blue-200",
+    "bg-indigo-100 text-indigo-800 hover:bg-indigo-200",
+    "bg-violet-100 text-violet-800 hover:bg-violet-200",
+    "bg-purple-100 text-purple-800 hover:bg-purple-200",
+    "bg-fuchsia-100 text-fuchsia-800 hover:bg-fuchsia-200",
+    "bg-pink-100 text-pink-800 hover:bg-pink-200",
+    "bg-rose-100 text-rose-800 hover:bg-rose-200",
+];
+---
+
+<Layout title="Tags" description="Browse articles by tag">
+    <div class="max-w-[800px] mx-auto">
+        <section>
+            <h1 class="text-3xl font-mono font-bold mb-8">Tags</h1>
+
+            <div class="flex flex-wrap gap-3">
+                {
+                    uniqueTags.map((tag, index) => {
+                        const colorClass = colors[index % colors.length];
+                        return (
+                            <a
+                                href={`/tags/${tag}`}
+                                class={`px-4 py-2 text-sm font-mono rounded transition-colors ${colorClass}`}
+                            >
+                                #{tag}
+                            </a>
+                        );
+                    })
+                }
+            </div>
+        </section>
+    </div>
+</Layout>
