@@ -5,12 +5,15 @@ import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
 import mdx from '@astrojs/mdx';
 
+import sitemap from '@astrojs/sitemap';
+
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://example.com',
+  site: 'https://tech-lessons.in',
   integrations: [
     react(),
     mdx(),
+    sitemap(),
   ],
 
   vite: {
