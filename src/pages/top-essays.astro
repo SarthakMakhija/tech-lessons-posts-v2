@@ -1,0 +1,52 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { fetchTopEssays } from "../utils/analytics";
+
+const topEssays = await fetchTopEssays();
+---
+
+<Layout title="Top Essays - Sarthak Makhija">
+    <div class="max-w-[800px] mx-auto">
+        <section class="mb-16">
+            <h1 class="font-sans font-bold text-3xl mb-4">Top Essays</h1>
+            <p class="text-lg text-zinc-700 leading-relaxed">
+                A collection of my most widely read essays, curated by
+                readership.
+            </p>
+        </section>
+
+        <section>
+            <div class="flex flex-col">
+                <div class="mb-8">
+                    {
+                        topEssays.map((essay, index) => (
+                            <div class="group flex items-baseline py-4 border-b border-zinc-100 hover:border-zinc-200 transition-colors">
+                                {/* Rank Column */}
+                                <div class="w-12 font-mono text-xl text-zinc-400 shrink-0 font-bold">
+                                    #{index + 1}
+                                </div>
+
+                                {/* Views Column (Optional, maybe hidden on mobile?) */}
+                                <div class="w-24 font-mono text-sm text-zinc-500 shrink-0 hidden sm:block">
+                                    {new Intl.NumberFormat("en-US", {
+                                        notation: "compact",
+                                        compactDisplay: "short",
+                                    }).format(essay.views)}{" "}
+                                    views
+                                </div>
+
+                                {/* Title Column */}
+                                <a
+                                    href={essay.path}
+                                    class="font-mono font-medium text-lg text-zinc-800 hover:text-accent-600 hover:translate-x-1 transition-all"
+                                >
+                                    {essay.title}
+                                </a>
+                            </div>
+                        ))
+                    }
+                </div>
+            </div>
+        </section>
+    </div>
+</Layout>

@@ -24,4 +24,6 @@ pnpm-debug.log*
 .idea/
 
 # VS code settings
-.vscode/
+
+# secrets
+google-credentials.json
