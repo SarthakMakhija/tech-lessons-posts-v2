@@ -10,40 +10,59 @@ type: page
 I design and facilitate hands-on, deep-dive workshops focused on mastering software craftsmanship and storage internals.
 
 <div class="mb-10">
-  <a href="https://gamifying-refactoring.github.io/" class="block group">
-    <h2 class="text-3xl font-sans font-bold mb-3 text-zinc-900 group-hover:text-blue-700 transition-colors">Gamifying Refactoring</h2>
-  </a>
-  <p class="text-lg text-zinc-700 leading-relaxed mb-6">
-    Turn the art of refactoring into a measurable science. This workshop turns code cleanup into a challenge: can you justify a code smell <em>without</em> using vague terms like "readability" or "maintainability"?
-  </p>
-  
-  <div class="bg-blue-50/50 border border-blue-100 rounded-xl p-6">
-    <h4 class="font-bold text-blue-900 mb-2">The Game Rules</h4>
-    <ul class="space-y-2 text-zinc-700">
-      <li class="flex items-start gap-2">
-          <span class="text-blue-600 font-bold">1.</span>
-          <span><strong>Identify</strong> smells using concrete evidence, not gut feelings.</span>
-      </li>
-      <li class="flex items-start gap-2">
-          <span class="text-blue-600 font-bold">2.</span>
-          <span><strong>Justify</strong> your refactoring without using "ilities" (readability, flexibility).</span>
-      </li>
-      <li class="flex items-start gap-2">
-           <span class="text-blue-600 font-bold">3.</span>
-          <span><strong>Go Beyond</strong> abstract reasoning to find measurable problems.</span>
-      </li>
-    </ul>
-    <p class="mt-4 text-sm text-blue-800 italic">
-      "Don’t state ‘Long method is a smell because it is not readable’. Consider this an opportunity to find reasoning that is measurable."
-    </p>
-  </div>
+<a href="https://gamifying-refactoring.github.io/" class="block group">
+<h2 class="text-3xl font-sans font-bold mb-3 text-zinc-900 group-hover:text-blue-700 transition-colors">Gamifying Refactoring</h2>
+</a>
+<p class="text-lg text-zinc-700 leading-relaxed mb-6">
+Turn the art of refactoring into a measurable science. This workshop turns code cleanup into a challenge: can you justify a code smell <em>without</em> using vague terms like "readability" or "maintainability"?
+</p>
+<div class="bg-blue-50/50 border border-blue-100 rounded-xl p-6">
+<div class="flex flex-wrap gap-4 mb-3 text-sm">
+<span class="px-3 py-0.5 bg-white border border-blue-100 rounded-full text-blue-800 font-medium">
+Format: Instructor-led workshop
+</span>
+<span class="px-3 py-0.5 bg-white border border-blue-100 rounded-full text-blue-800 font-medium">
+Availability: On request
+</span>
+</div>
+
+<h4 class="font-bold text-blue-900 mb-2">The Game Rules</h4>
+<ul class="space-y-2 text-zinc-700">
+<li class="flex items-start gap-2">
+<span class="text-blue-600 font-bold">1.</span>
+<span><strong>Identify</strong> smells using concrete evidence, not gut feelings.</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="text-blue-600 font-bold">2.</span>
+<span><strong>Justify</strong> your refactoring without using "ilities" (readability, flexibility).</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="text-blue-600 font-bold">3.</span>
+<span><strong>Go Beyond</strong> abstract reasoning to find measurable problems.</span>
+</li>
+</ul>
+<p class="mt-4 text-sm text-blue-800 italic">
+"Don’t state ‘Long method is a smell because it is not readable’. Consider this an opportunity to find reasoning that is measurable."
+</p>
+</div>
 </div>
 
 <div class="mb-2 mt-12">
-  <a href="https://github.com/SarthakMakhija/go-lsm" class="block group">
-    <h2 class="text-3xl font-sans font-bold mb-3 text-zinc-900 group-hover:text-blue-700 transition-colors">Internals of key-value storage engines: LSM-trees and beyond</h2>
-  </a>
-  <p class="text-lg text-zinc-700 leading-relaxed">The participants gain hands-on experience building an LSM-based storage engine to understand the core components of a Key/Value store.</p>
+<a href="https://github.com/SarthakMakhija/go-lsm" class="block group">
+<h2 class="text-3xl font-sans font-bold mb-3 text-zinc-900 group-hover:text-blue-700 transition-colors">Internals of key-value storage engines: LSM-trees and beyond</h2>
+</a>
+<p class="text-lg text-zinc-700 leading-relaxed mb-6">Participants build an LSM-based storage engine to understand the core components of a key–value store.</p>
+<div class="bg-zinc-50 border border-zinc-200 rounded-xl p-6">
+<div class="flex flex-wrap gap-4 mb-3 text-sm">
+<span class="px-3 py-0.5 bg-white border border-zinc-200 rounded-full text-zinc-700 font-medium">
+Format: Instructor-led workshop
+</span>
+<span class="px-3 py-0.5 bg-white border border-zinc-200 rounded-full text-zinc-700 font-medium">
+Availability: On request
+</span>
+</div>
+
+</div>
 </div>
 
 <div class="not-prose mt-12">
