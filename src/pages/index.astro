@@ -1,6 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
+import { SITE_TITLE } from "../consts";
 import { getCollection } from "astro:content";
 
 const posts = (await getCollection("blog")).sort(
@@ -25,7 +25,7 @@ const years = Object.keys(postsByYear)
 
 <Layout title={SITE_TITLE}>
     <div class="max-w-[800px] mx-auto">
-        <!-- Intro Section (Mental model of Sazak.io) -->
+        <!-- Intro Section -->
         <section class="mb-16">
             <p class="text-lg text-zinc-700 leading-relaxed">
                 I'm <strong>Sarthak Makhija</strong>, a <strong
