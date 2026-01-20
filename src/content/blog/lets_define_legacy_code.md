@@ -128,7 +128,7 @@ With that said, we want to make the system better keeping the focus on the task.
 
 <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;"><iframe src="https://www.youtube.com/embed/0U83rST3ang" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe></div>
 
-Let's move on to the [next article](/blog/lets_deal_with_legacy_code/) that explains how to deal with legacy code.
+Let's move on to the [next article](/en/blog/lets_deal_with_legacy_code/) that explains how to deal with legacy code.
 
 ### References
 - Working Effectively with Legacy code

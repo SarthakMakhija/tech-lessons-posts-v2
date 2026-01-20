@@ -1,5 +1,5 @@
 1. Run on mobile and ipad like device
 2. Read all articles to validate images, and font
-3. Create a Github CD action to validate the build and deployment (on push of tag)
+3. Create a Github CD action to validate the build and deployment (on push of tag) - done
 4. Publish the new website
 5. Current URIs have /en

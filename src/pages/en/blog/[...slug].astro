@@ -1,7 +1,7 @@
 ---
 import { type CollectionEntry, getCollection } from "astro:content";
-import Layout from "../../layouts/Layout.astro";
-import FormattedDate from "../../components/FormattedDate.astro";
+import Layout from "../../../layouts/Layout.astro";
+import FormattedDate from "../../../components/FormattedDate.astro";
 
 export async function getStaticPaths() {
     const posts = await getCollection("blog");
@@ -150,8 +150,7 @@ const { Content, headings } = await post.render();
                 data-theme="light"
                 data-lang="en"
                 crossorigin="anonymous"
-                async
-            ></script>
+                async></script>
         </div>
     </article>
 </Layout>
