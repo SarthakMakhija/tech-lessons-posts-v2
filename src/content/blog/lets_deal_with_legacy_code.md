@@ -2,7 +2,7 @@
 author: "Sarthak Makhija"
 title: "Let’s deal with Legacy code"
 pubDate: 2018-04-12
-tags: ["Legacy code", "Broken Window Theory", "Refactoring"]
+tags: ["Legacy code", "Broken Window Theory", "Refactoring", "Clean Code", "Boy Scout Rule"]
 heroImage: /legacy-code.webp
 caption: "Photo by Markus Spiske on Pexels"
 ---

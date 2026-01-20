@@ -2,7 +2,7 @@
 author: "Sarthak Makhija"
 title: "Let's define Legacy code"
 pubDate: 2018-04-10
-tags: ["Legacy code", "Boy Scout Rule"]
+tags: ["Legacy code", "Boy Scout Rule", "Clean Code", "Refactoring"]
 heroImage: /legacy-code.webp
 caption: "Photo by Markus Spiske on Pexels"
 ---
