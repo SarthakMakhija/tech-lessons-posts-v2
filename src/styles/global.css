@@ -73,6 +73,13 @@
         @apply font-mono text-[16px] leading-[24px] bg-transparent p-0 text-white;
     }
 
+    @media (max-width: 640px) {
+        pre, pre code {
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+    }
+
     /* Inline code */
     :not(pre)>code {
         @apply font-mono text-[0.9em] font-medium bg-zinc-100 px-1.5 py-0.5 rounded text-zinc-900;
