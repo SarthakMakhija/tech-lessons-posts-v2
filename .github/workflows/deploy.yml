@@ -1,0 +1,41 @@
+name: Deploy to GitHub Blog
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy to external repository
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+          USER_EMAIL: 'sarthak.makhija@gmail.com'
+          USER_NAME: 'SarthakMakhija'
+          TARGET_REPO: 'SarthakMakhija/sarthakmakhija.github.io'
+          TARGET_BRANCH: 'main'
+        run: |
+          cd dist
+          git init
+          git config user.name "$USER_NAME"
+          git config user.email "$USER_EMAIL"
+          git add .
+          git commit -m "Deploy: ${{ github.ref_name }}"
+          git push --force "https://$USER_NAME:$API_TOKEN_GITHUB@github.com/$TARGET_REPO.git" HEAD:$TARGET_BRANCH
