@@ -22,12 +22,12 @@ const topEssays = await fetchTopEssays();
                         topEssays.map((essay, index) => (
                             <div class="group flex items-baseline py-4 border-b border-zinc-100 hover:border-zinc-200 transition-colors">
                                 {/* Rank Column */}
-                                <div class="w-12 font-mono text-xl text-zinc-400 shrink-0 font-bold">
+                                <div class="hidden sm:block w-12 font-mono text-xl text-zinc-400 shrink-0 font-bold">
                                     #{index + 1}
                                 </div>
 
                                 {/* Views Column (Optional, maybe hidden on mobile?) */}
-                                <div class="w-24 font-mono text-sm text-zinc-500 shrink-0 hidden sm:block">
+                                <div class="w-16 sm:w-24 font-mono text-sm text-zinc-500 shrink-0">
                                     {new Intl.NumberFormat("en-US", {
                                         notation: "compact",
                                         compactDisplay: "short",
