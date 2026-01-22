@@ -222,7 +222,9 @@ Jessica> Hold on Scott, we need to run tests before we move on.
 
 *And the test ran successfully.*
 
-*While working with Legacy code it is important to take smaller steps and follow the refactoring cycle. Refactor -> Run Tests -> Refactor*
+While working with Legacy code it is important to take smaller steps and follow the :h[refactoring cycle.] 
+
+:h[Refactor -> Run Tests -> Commit -> Repeat.]
 
 Scott> Sure. Jessica, are we in a position to remove the comment "determine the amounts for each line" from previous code?
 
@@ -261,7 +263,7 @@ private double amount(Rental rental) {
     return thisAmount;
 }
 ```
-*Remove comments from legacy code when you have captured their complete essence. Though I did take some liberty to rename variable along with removing the comment, it is always ideal to take smaller steps when you are beginning to understand legacy code. As you grow in confidence, you might want to take bigger steps but one test failure and the reality reveals itself.*
+*:h[Remove comments from legacy code when you have captured their complete essence.] Though I did take some liberty to rename variable along with removing the comment, it is always ideal to take smaller steps when you are beginning to understand legacy code. As you grow in confidence, you might want to take bigger steps but one test failure and the reality reveals itself.*
 
 Scott> Let’s look at the `amount()` method. It depends on the `priceCode` from `movie` but is placed in the `Customer` object. We should move this method to the place where it belongs.
 

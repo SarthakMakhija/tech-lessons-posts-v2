@@ -18,9 +18,9 @@ caption: "Photo by Markus Spiske on Pexels"
 ### Defining Legacy code
 Michael Feathers in his book “Working Effectively with Legacy code” defines legacy code as the code without tests.
 
-code without tests is a bad code. It doesn’t matter how well it is written; how well it is structured; how well it is encapsulated. Without tests there is no way to tell if our code is getting better or worse.
+Code without tests is a bad code. It doesn’t matter how well it is written; how well it is structured; how well it is encapsulated. Without tests there is no way to tell if our code is getting better or worse.
 
-Well, a slightly modified version of this definition is “code without unit tests is called legacy code”. It is always better to have tests as close to the code as possible *unit tests > integration tests > UI tests*. So, it would not be unfair to call a code without unit tests a *legacy code*.
+Well, a slightly modified version of this definition is “code without unit tests is called legacy code”. :h[It is always better to have tests as close to the code as possible *unit tests > integration tests > UI tests*.] So, it would not be unfair to call a :h[code without unit tests a *legacy code*.]
 
 ### Working with Legacy code
 
@@ -47,7 +47,7 @@ It can be safely assumed that *Cover and Modify* is a way to go to deal with Leg
 ### The Boy Scout Rule
 > The idea behind the Boy Scout Rule, as stated by Uncle Bob, is fairly simple: Leave the code cleaner than you found it! Whenever you touch an old code, you should clean it properly. Do not just apply a shortcut solution that will make the code more difficult to understand but instead treat it with care. It’s not enough to write code well, the code has to be kept clean over time.
 
-We get a very strong message when Boy Scout rule is applied to legacy code: *leave a trace of understanding behind you for others to follow*, which means we will refactor the code to make it more understandable. And in order to refactor, we will build  safety net around it.
+We get a very strong message when Boy Scout rule is applied to legacy code: :h[*leave a trace of understanding behind you for others to follow*], which means we will refactor the code to make it more understandable. And in order to refactor, we will build  safety net around it.
 Now that we understand that we can not take shortcuts, the only option that is left with us is to write some tests, refactor code and then proceed with the development.
 
 **Q**uestions>
@@ -59,7 +59,7 @@ In nearly every legacy system, what the system does is more important than what 
 > Characterization Tests, the tests that we need when we want to preserve the behavior are called as characterization tests. A characterization test is a test that characterizes the actual behavior of a piece of code. There’s no “Well, it should do this” or “I think it does that”. These tests document the current behavior of the system.
 
 ### Writing Characterization Test
-A *Characterization Test* by definition documents the current behavior of the system the exact same way it is running on the production environment.
+:h[A *Characterization Test* by definition documents the current behavior of the system the exact same way it is running on the production environment.]
 
 Let’s write a characterization test for a `Customer` class that generates text statement for some movies rented by a customer.
 ```java
@@ -124,7 +124,7 @@ We aren’t trying to find bugs right now. We are trying to put in a mechanism t
 ### How Much To Refactor
 There is so much to refactor in legacy code, and we can not refactor everything. In order to answer this we need to go back to understanding our purpose of refactoring the legacy code.
 We want to refactor legacy code to leave it cleaner than what it was when it came to us and to make it understandable for others.
-With that said, we want to make the system better keeping the focus on the task. We don’t want to go crazy with refactoring trying to improve the whole system in a few days. What we want to do is *refactor the code that comes in our way of implementing any new change*. We will try and understand this better with an example in the next article.
+With that said, we want to make the system better keeping the focus on the task. We don’t want to go crazy with refactoring trying to improve the whole system in a few days. What we want to do is :h[refactor the code that comes in our way of implementing any new change]. We will try and understand this better with an example in the next article.
 
 <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;"><iframe src="https://www.youtube.com/embed/0U83rST3ang" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe></div>
 
