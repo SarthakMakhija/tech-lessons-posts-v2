@@ -84,4 +84,12 @@
     blockquote {
         @apply not-italic border-l-4 border-zinc-200 pl-6 my-8 text-zinc-700;
     }
+
+    /* Author Highlight styling */
+    mark.author-highlight {
+        background: linear-gradient(120deg, #fefce8 0%, #fef9c3 100%);
+        padding: 0.1em 0.3em;
+        border-radius: 0.2em;
+        font-weight: 500;
+    }
 }

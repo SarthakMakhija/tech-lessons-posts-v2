@@ -38,16 +38,15 @@ let’s dive into "refactoring mindset."
 
 ### Refactoring mindset
 
-A refactoring mindset encourages developers to embrace small and incremental changes. Cultivating this mindset involves recognizing code smells, 
+:h[A refactoring mindset encourages developers to embrace small and incremental changes.] Cultivating this mindset involves recognizing code smells, 
 identifying and leveraging similar patterns within the codebase, learning to defer some refactoring tasks when necessary.
 It also emphasizes the importance of maintaining a TODO list to track areas for improvement and building a strong safety net, such as robust
-tests, to ensure changes don’t break code. Furthermore, it's important to avoid "coding in the brain" by bringing thoughts and 
-ideas in the actual code, and to be mindful of personal biases that may influence coding choices.
+tests, to ensure changes don’t break code. Furthermore, it's important to avoid "coding in the brain" by bringing thoughts and ideas in the actual code, and to be mindful of personal biases that may influence coding choices.
 
 #### Build safety net
 
-Begin refactoring by building a safety net. Once the safety net is in place, make incremental changes to the code and use the 
-safety net to gather feedback. Tests, preferably unit tests, serve as the safety net, ensuring that refactoring remains low-risk. 
+:h[Begin refactoring by building a safety net. Once the safety net is in place, make incremental changes to the code and use the safety net to gather feedback.]
+Tests, preferably unit tests, serve as the safety net, ensuring that refactoring remains low-risk. 
 If the component you want to refactor, such as a method, is covered by tests, you can confidently proceed with changes.
 
 But what if no tests exist for the method you want to refactor? Start by adding [characterization tests](https://tech-lessons.in/en/blog/lets_define_legacy_code/#which-tests-to-write).
@@ -114,8 +113,7 @@ Now that we have characterization tests, we can start refactoring.
 
 #### Make small changes, small commits
 
-Starting small is essential when refactoring. When you are starting to refactor, identify the smallest change that you can make. I think it is important to be 
-patient, and not worry too much about the final state. Each incremental change contributes to improving the code step by step.
+Starting small is essential when refactoring. :h[When you are starting to refactor, identify the smallest change that you can make.] I think it is important to :h[be patient, and not worry too much about the final state.] Each incremental change contributes to improving the code step by step.
 
 Take the `TaskList` example: 
 
@@ -370,7 +368,7 @@ Run the tests, ensure nothing breaks, add tests for the `format` method in `Task
 
 #### Identify similar patterns
 
-It is important to look for similar concepts in the code while refactoring. With the introduction of the `Tasks` abstraction
+It is important to :h[look for similar concepts in the code while refactoring.] With the introduction of the `Tasks` abstraction
 we can check if there are other places where this abstraction can be applied. The simplest way would be to look for the same pattern: for-loop over
 a collection of `Task`. This leads to a **loose guideline**: a for-loop over a collection of type `T`, **may** become a static method which depends only
 on the collection. This gives us an opportunity to [encapsulate the collection](https://refactoring.guru/encapsulate-collection).
@@ -548,7 +546,7 @@ that the change would only impact [Projects](https://github.com/SarthakMakhija/t
 
 #### Maintain a TODO list
 
-It is crucial to maintain a TODO list while refactoring. Preparing a good TODO list has a lot of advantages: 
+It is crucial to :h[maintain a TODO list while refactoring.] Preparing a good TODO list has a lot of advantages: 
 
 1. **Improved Focus**: Concentrating on individual tasks allows maintaining a steady pace and minimizing the feeling of being overwhelmed.
 2. **Reduced Anxiety**: A well-defined TODO list minimizes anxiety by providing a clear path.
@@ -560,7 +558,7 @@ At the end of the story, I make it a point to review and ensure no TODO is left 
 
 #### Avoid coding in brain
 
-It’s important to avoid "coding in brain," as it can lead to overthinking and complicating the task at hand. Visualizing code is a 
+It’s important to :h[avoid "coding in brain," as it can lead to overthinking and complicating the task at hand]. Visualizing code is a 
 natural tendency, but letting that visualization drive the implementation can cause unnecessary complexity. 
 For example, while refactoring `TaskList`, I encountered the `switch` statement inside the `execute` method:
 
