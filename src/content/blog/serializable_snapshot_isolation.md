@@ -8,9 +8,8 @@ caption: "Background by Lum3n on Pexels"
 ---
 
 Ensuring data consistency in the face of concurrent transactions is a critical challenge in database management. 
-Traditional serializable isolation, while guaranteeing data integrity, often suffers from performance bottlenecks due to extensive locking. 
-This article explores Serializable Snapshot Isolation (SSI) that promises the best of both worlds: 
-strong data consistency without sacrificing performance. 
+:[Traditional serializable isolation, while guaranteeing data integrity, often suffers from performance bottlenecks due to extensive locking.]
+This article explores :h[Serializable Snapshot Isolation (SSI) that promises the best of both worlds: strong data consistency without sacrificing performance.]
 The article delves into the inner workings of SSI and explore its implementation for a Key/Value storage engine. I will refer to the research
 paper titled [A critique of snapshot isolation](https://dl.acm.org/doi/10.1145/2168836.2168853).
 
@@ -39,8 +38,7 @@ of questions that you will ask while implementing transaction isolation would in
 
 - **Snapshot isolation**: the snapshot from which a transaction reads is not affected by concurrently running transactions. To support snapshot isolation,
 databases and Key/Value storage engines maintain multiple versions of the data. Anytime a transaction begins, it  is given a `beginTimestamp` and 
-if a transaction commits without any conflict, it is given a `commitTimestamp`. A transaction **txn<sub>(i)</sub>** with a begin timestamp of 
-**T<sub>b</sub>(txn<sub>(i)</sub>)** reads the latest version of data (/key) with the commit timestamp **C** **<** **T<sub>b</sub>(txn<sub>(i)</sub>)**.
+if a transaction commits without any conflict, it is given a `commitTimestamp`. A transaction **txn<sub>(i)</sub>** with a begin timestamp of **T<sub>b</sub>(txn<sub>(i)</sub>)** reads the latest version of data (/key) with the commit timestamp **C** **<** **T<sub>b</sub>(txn<sub>(i)</sub>)**.
 Two concurrent transactions can still conflict if there is a **write-write** conflict, meaning, two transactions writing to the same key (in a Key/Value storage engine).
 
 - **Serializable Snapshot isolation**: the snapshot from which a transaction reads is not affected by concurrently running transactions. The core
@@ -182,7 +180,7 @@ reduces the value of `y` by 1 and writes the versioned value of `y` back to the 
   - reads the latest value of `x` such that the `commitTimestamp` of `x` `<` 6. It gets `x = 0`. [`x` became 0 at version 2]  
   - reads the latest value of `y` such that the `commitTimestamp` of `y` `<` 6. It gets `y = 0`. [`y` became 0 at version 3]
 
-The constraint `x + y > 0` is broken. Snapshot isolation does not prevent write skew.
+The constraint `x + y > 0` is broken. :h[Snapshot isolation does not prevent write skew.]
 
 > Storage systems like Percolator, [Dgraph](https://github.com/dgraph-io/dgraph) implement Snapshot isolation.
 
@@ -222,7 +220,7 @@ end for;
 ```
 
 The pseudo-code checks to see that none of the **keys read by the transaction** **txn<sub>(i)</sub>** have been committed after it began.
-The implementation of Serializable Snapshot isolation will require each read-write transaction to keep track of the read keys. 
+The implementation of :[Serializable Snapshot isolation will require each read-write transaction to keep track of the read keys.]
 
 > [BadgerDb](https://github.com/dgraph-io/badger) implements Serializable Snapshot isolation. 
 
@@ -319,7 +317,7 @@ that was implemented with [BadgerDb](https://github.com/dgraph-io/badger/) as re
 Let me start by introducing core concepts in the code.
 
 1. **ReadonlyTransaction**: provides support for `Get` method. A `ReadonlyTransaction` never aborts.
-2. **ReadWriteTransaction**: provides support for `PutOrUpdate`, `Get` and `Commit` methods. A `ReadWriteTransaction` can abort if there is a Read-Write conflict with another transaction.
+2. **ReadWriteTransaction**: provides support for `PutOrUpdate`, `Get` and `Commit` methods. :h[A `ReadWriteTransaction` can abort if there is a Read-Write conflict with another transaction.]
 3. **Oracle**: awards `beginTimestamp` and `commitTimestamp` to transactions. It also checks for conflicts between `ReadWriteTransaction`(s).
 4. **TransactionExecutor**: applies transactions serially, one after the other.
 5. **TransactionTimestampMark**: keeps track of the timestamps that are processed. These could be `beginTimestamp` or `commitTimestamp`.
@@ -458,8 +456,7 @@ keys read by a `ReadWriteTransaction`.
 >
 > 2. Faster comparisons: Comparing fingerprints (8 bytes) is quicker than comparing entire keys (which can vary in size).
 > 
-> However, there's a potential downside. Since fingerprints are shorter than keys, it's possible for two different keys to have the 
-> same fingerprint (collisions). This can lead to false conflicts between transactions.
+> However, there's a potential downside. It's possible for two different keys to have the same fingerprint (collisions). This can lead to false conflicts between transactions.
 
 Anytime a new instance of `ReadWriteTransaction` is created, we get the `beginTimestamp` from `Oracle` amd we also create a new instance of `Batch`.
 
