@@ -110,11 +110,10 @@ There is still a forked argument that I can think of.
 The answer to this lies in the argument itself. If left shifting a slice needs an automated test, any fancy and complex system would need them too.
 
 And yes, your system is not as simple as left shifting some elements but at the same time, the fancy system is not built in a day. It is built piece by piece
-gradually, so why not add tests for every small piece that gets built.
+gradually, so why not :h[add tests for every small piece that gets built.]
 
 *Important Side note:* If we remove the assumption that our slice is non-empty (ie; ```elements``` within the ```slice``` struct is non-empty), ```leftSlice``` method will fail.
-In fact, at this point in time, the only way to conclude that an empty slice will result in a failure is by walking through the code. Once we have the test
-for the same, not only does it give us a safety net but also serves as a **live documentation** which gets updated everytime the behavior of the changes.
+In fact, at this point in time, the only way to conclude that an empty slice will result in a failure is by walking through the code. :h[Once we have the test for the same, not only does it give us a safety net but also serves as a **live documentation** which gets updated everytime the behavior of the changes.]
 
 ### Code today and add tests later
 
@@ -165,7 +164,7 @@ Automated tests provide a lot of benefits. I will list a few -
 
 **Provide confidence**
 
-Automated tests are like a certification for a working code. I know ```leftShift``` is working properly everytime its tests pass.
+:h[Automated tests are like a certification for a working code.] I know ```leftShift``` is working properly everytime its tests pass.
 In fact, automated tests act as a mapping between questions and answers. I can ask various questions to unit tests -
 
 - How would ```leftShift``` behave if I pass a slice with empty elements
@@ -178,7 +177,7 @@ It is a huge confidence booster :) if all these questions are answered by passin
 
 **Act as safety net**
 
-Automated tests are a brilliant safety net, I can go ahead and refactor code without any fear. I know I have tests which would fail loudly if I mess things up, so there is no fear of making mistakes while refactoring.
+:h[Automated tests are a brilliant safety net, I can go ahead and refactor code without any fear.] I know I have tests which would fail loudly if I mess things up, so there is no fear of making mistakes while refactoring.
 
 I think it would be a very courageous move to refactor code without tests. (*Honestly, I don't know if it is a courageous move or a stupid move.*)
 But, if I decide to refactor code without tests, I think I would be blocked by anxiety, there will be a constant banging in the head - what if refactoring breaks the code,
@@ -240,7 +239,7 @@ they can directly look at the tests and find *most* of the answers.
 
 **Provide an opportunity to think from a client's perspective**
 
-Automated tests give an opportunity to think from a client's perspective and provide a lot of opportunities to improve the API.
+Automated tests give an opportunity to think from a client's perspective and :h[provide a lot of opportunities to improve the API.]
 
 Let's imagine a struct ```LinkedList``` and I am required to add a behavior which
 rotates a linked list left by N. (Assume, I am not doing TDD). I start with a behavior called ```rotateList(n int)```, build it and now I go on to adding a test.
@@ -258,8 +257,7 @@ One of the first things that I notice is the name of the method ```rotateList```
 In the expression ```linkedList.rotateList```, do I need to call the behavior as ```rotateList``` or just ```rotate``` is good enough
 because it is invoked on a list. I would go and rename it to ```rotate``` and now my client call looks like ```linkedList.rotate(1)```.
 
-Once I start paying attention to the entire expression ```linkedList.rotate(1)```, I would realize ```rotate(1)``` is not making sense. It does not tell the clients or the readers that the intention is to
-rotate list by 1. What if it were renamed to ```rotateBy()```, it would make my client call look like this ```linkedList.rotateBy(1)```
+Once I start paying attention to the entire expression ```linkedList.rotate(1)```, I would realize ```rotate(1)``` is not making sense. It does not tell the clients or the readers that the intention is to rotate list by 1. What if it were renamed to ```rotateBy()```, it would make my client call look like this ```linkedList.rotateBy(1)```
 
 Now, probably the last thing would be, ```linkedList.rotateBy(1)``` does not tell the clients about the direction of rotation.
 What if it were renamed to ```rotateLeftBy()```, it would make my client call look like this ```linkedList.rotateLeftBy(1)```
@@ -322,12 +320,12 @@ The point is why can't brakes be added later on if time permits, if there is no 
 We really need confidence in the car that we are driving, we also need confidence in the brakes, and if confidence is such an important thing, then
 why not build confidence in the code by adding automated tests for every piece of code that we write?
 
-*If our software is a car, then automated tests are the brakes.* Like we said, we need confidence in the brakes as well which essentially means, it is not just about writing
+:h[If our software is a car, then automated tests are the brakes.] Like we said, we need confidence in the brakes as well which essentially means, it is not just about writing
 tests because of some code coverage policy in the organization, it is about "building a trail of understanding for all the readers", about stating "what is it that a piece of code does", "when does it fail", "what kind of inputs does it take" and so many other things.
 
-<blockquote class="wp-block-quote">
-	It is our responsibility to ensure these "brakes" exist in the code (or the system) and they are reliable. They should not exist just for the sake of existing. 
-</blockquote>
+
+:h[It is our responsibility to ensure these "brakes" exist in the code (or the system) and they are reliable. They should not exist just for the sake of existing.]
+
 
 ### Time is still a factor, isn’t it?
 
