@@ -38,10 +38,9 @@ pass_phrase.should_not_be_empty()
 It is important to understand various string types in Rust before we get started.
 
 - **String**: is a mutable and resizable buffer holding UTF-8 text. The buffer is allocated on heap. It can be treated as a collection of u8, `vec<u8>`.
-- **&str**: is an immutable reference to a run of UTF-8 text owned by someone else. `&str` is a fat pointer, it contains both
-  the address of the actual string and its length.
-- **str**: is an immutable sequence of UTF-8 bytes of dynamic length somewhere in memory. It's size in unknown, which means `str` almost always 
-appears as `&str` in the code.
+- **&str**: is an immutable reference to a run of UTF-8 text owned by someone else. :h[`&str` is a fat pointer, it contains both the address of the actual string and its length.]
+- **str**: is an immutable sequence of UTF-8 bytes of dynamic length somewhere in memory. It's size in unknown, which means :h[`str` almost always 
+appears as `&str` in the code.]
 
 The below code and the visual highlights the types: `String`, and `&str`.
 
@@ -66,7 +65,7 @@ types. In the password validation example, we have methods like `should_contain_
 over `string` (or `&str`) types.
 
 Such methods are called "extension" methods and [Wikipedia](https://en.wikipedia.org/wiki/Extension_method#:~:text=Extension%20methods%20are%20features%20of,an%20equally%20safe%20manner%2C%20however.) defines extension method as
-"a method added to an object after the original object was compiled". **In Rust, extension methods are added using traits.**
+"a method added to an object after the original object was compiled". :h[In Rust, extension methods are added using traits.]
 
 Let's start by defining a trait.
 
@@ -211,7 +210,7 @@ impl<T> MembershipAssertion for T
 We are implementing `MembershipAssertion` for any `T` where T implements [AsRef<str>](https://doc.rust-lang.org/std/convert/trait.AsRef.html) and [Debug](https://doc.rust-lang.org/std/fmt/trait.Debug.html) trait.
 
 Jim Blandy, Jason Orendorff and Leonora F.S Tindall in the book [Programming Rust](https://www.oreilly.com/library/view/programming-rust-2nd/9781492052586/) says: when a type implements `AsRef<U>`, it means we can borrow a `reference of U` from the type.
-This means, if a type implements `AsRef<str>` we can borrow a `reference of str` from that type.
+This means, :h[if a type implements `AsRef<str>` we can borrow a `reference of str` from that type.]
 
 In Rust, both `String` and `&str` type implements `AsRef<str>` which means all the methods of `MembershipAssertion` are now available on `String`
 and `&str`. Please find the reference [here](https://doc.rust-lang.org/std/convert/trait.AsRef.html#:~:text=Since%20both%20String%20and%20%26str,accept%20both%20as%20input%20argument). 
@@ -379,7 +378,7 @@ This duplication is caused because of the change in the condition for examining 
 
 #### The lack of ability to compose assertions
 
-Assertions are defining the contract, ensuring that each data type (/data structure) adheres to its intended behavior. They don't provide us
+:h[Assertions are defining the contract, ensuring that each data type (/data structure) adheres to its intended behavior.] They don't provide us
 with an ability to [compose them](#matcher-composition--using-trait-objects) using operators like **and**, **or**.
 
 We can deal with both these issues by introducing an abstraction that:
@@ -389,7 +388,7 @@ We can deal with both these issues by introducing an abstraction that:
 
 The question is what would be the name of such an abstraction? In the world of assertions, such an object is called matcher. I asked [bard](https://bard.google.com/chat) to define *Matcher*? It gave me the following definition:  
 
-> Matchers provide the granular tools for carrying out the assertions. They examine the data and verify that the data conforms to specific criteria.
+:h[Matchers provide the granular tools for carrying out the assertions. They examine the data and verify that the data conforms to specific criteria.]
 
 Let's introduce matchers in the code. We can introduce a set of diverse matchers, each implementing the `Matcher` trait to work with specific data types.
 The important part is that we will only be implementing matchers to deal with positive assertions.
@@ -631,7 +630,7 @@ fn main() {
 
 The code above creates a variable `reference` that refers to an `i32`. We use the lifetime annotations `'a` and `'b` to denote the lifetimes of
 `reference` and `value`. Rust does not allow dangling references that means the variable `reference` can not outlive `value`. This can also be stated
-as: "the lifetime of the variable `reference` must be less than or equal to the lifetime of the variable `value`".
+as: "the lifetime of the variable `reference` must be less than or equal to the lifetime of the variable `value`". :h[The lifetime of a reference must be less than or equal to the lifetime of the value it refers to.]
 
 The above code fails with the the following error:
 
@@ -795,8 +794,7 @@ pub struct Matchers<T, M: Matcher<T>> {
 
 Our first attempt is to create a `Matchers` abstraction that holds a vector of `M`, where `M` is a `Matcher` that operates on a `T`.
 
-We need to understand how generics are processed in Rust to understand an issue with this design. In Rust, generics undergo [monomorphization](https://rustc-dev-guide.rust-lang.org/backend/monomorph.html) which means the compiler 
-produces a different copy of the generic code for each concrete type needed. This means if the generic type `Option<T>` is used with `f64` and `i32`, 
+We need to understand how generics are processed in Rust to understand an issue with this design. In Rust, generics undergo [monomorphization](https://rustc-dev-guide.rust-lang.org/backend/monomorph.html) which means the compiler produces a different copy of the generic code for each concrete type needed. This means if the generic type `Option<T>` is used with `f64` and `i32`, 
 the compiler will produce two copies of `Option`, which would be similar to `Option_f64` and `Option_i32`.
 
 Given our definition of `Matchers`, Rust will emit different copies of `Matchers` for each concrete type of `Matcher`. This also means that Rust
