@@ -24,7 +24,7 @@ Let's now understand the building blocks of an LFU cache, starting with a way to
 
 All LFU caches need to maintain the access frequency for each key.
 Storing the access frequency in a `HashMap`-like data structure would mean that the space used to store the frequency is directly proportional to the number of keys in the cache.
-This is an opportunity to use a probabilistic data structure like [count-min sketch](https://tech-lessons.in/blog/count_min_sketch/) and make a trade-off between the accuracy of the access frequency and the space used to store the frequency.  
+:h[This is an opportunity to use a probabilistic data structure like [count-min sketch](https://tech-lessons.in/blog/count_min_sketch/) and make a trade-off between the accuracy of the access frequency and the space used to store the frequency.]
 
 > Count-min sketch (CM sketch) is a probabilistic data structure that estimates the frequency of events in a data stream.
 > It relies on hash functions to map events to frequencies, but unlike a hash table, it uses only **sublinear space** at the expense of over-counting some events due to hash collisions. The count–min sketch was invented in 2003 by Graham Cormode and S. Muthu Muthukrishnan.
@@ -81,8 +81,8 @@ Let's understand the logic of incrementing the access frequency of a key with th
 
 Keeping the counters (imagine them as the number of columns) the same as the number of keys in the cache would mean a higher error rate in the access frequency estimate (because of hash conflicts).
 
-To keep the estimates from wavering (/overestimating) too much because of hash conflicts, we need to have `counters = K times the number of keys`. Any choice of K is an attempt at reducing the hash conflict
-of keys in each row. 
+:h[To keep the estimates from wavering (/overestimating) too much because of hash conflicts, we need to have `counters = K times the number of keys`. Any choice of K is an attempt at reducing the hash conflict
+of keys in each row.]
 
 **CacheD** proposes `K = 10` and does [performance benchmarks](https://github.com/SarthakMakhija/cached/blob/main/benches/benchmarks/frequency_counter.rs) with `K = 2` and `K = 10`.
 
@@ -154,7 +154,7 @@ pub struct RwLockReadGuard<'a, R: RawRwLock, T: ?Sized> {
 - The lifetime of `RwLockReadGuard` of `DashMap` is tied to the lifetime of `lock_api::RwLockReadGuard`. 
 - The lifetime of `RwLockReadGuard` is tied to the lifetime of `RwLock`
 
-This means if we decide to return a reference to the value for a key, we are actually returning `DashMap's Ref` and also *holding a lock* against the *shard* that the key belongs to.
+This means :h[if we decide to return a reference to the value for a key, we are actually returning `DashMap's Ref` and also *holding a lock* against the *shard* that the key belongs to.]
 
 The [Store](https://github.com/SarthakMakhija/cached/blob/main/src/cache/store/mod.rs) abstraction in **CacheD** provides `get_ref` method that returns an instance of [KeyValueRef](https://github.com/SarthakMakhija/cached/blob/main/src/cache/store/key_value_ref.rs) which wraps `DashMap's Ref`.
 
@@ -233,9 +233,7 @@ Our cache is a memory-bound cache, and this poses an exciting challenge.
 *Should we admit the incoming key/value pair after the cache has reached its weight? If yes, which keys should be evicted to create the space because we can not let 
 the total cache weight increase beyond some threshold?*
 
-This is where the paper [TinyLFU](https://dgraph.io/blog/refs/TinyLFU%20-%20A%20Highly%20Efficient%20Cache%20Admission%20Policy.pdf) comes into the picture.
-The main idea is to only let in a new key/value pair if its access estimate exceeds that of the item being evicted. This means that the incoming
-key/value pair should be more valuable to the cache than some existing key/value pairs, improving the hit ratio.
+This is where the paper [TinyLFU](https://dgraph.io/blog/refs/TinyLFU%20-%20A%20Highly%20Efficient%20Cache%20Admission%20Policy.pdf) comes into the picture. :h[The main idea is to only let in a new key/value pair if its access estimate exceeds that of the item being evicted. This means that the incoming key/value pair should be more valuable to the cache than some existing key/value pairs, thereby improving the hit ratio.]
 
 Let's look at the approach:
 
@@ -362,7 +360,7 @@ The approach looks excellent. However, we need to understand the concept of `fal
 #### False sharing
 
 The memory in the *L1*, *L2*, *L3* and *L4* processor cache is organized in units called "cache lines".
-The cache line is the smallest data transfer unit between the main memory and the processor cache. If the cache line size is 64 bytes, then a contiguous block
+:h[The cache line is the smallest data transfer unit between the main memory and the processor cache.] If the cache line size is 64 bytes, then a contiguous block
 of 64 bytes will be transferred from RAM to the processor cache for processing. The size of cache lines varies based on the type of the processor.
 For example, on *x86-64*, *aarch64*, and *powerpc64*, [cache line is 128 bytes](https://docs.rs/crossbeam/0.8.2/crossbeam/utils/struct.CachePadded.html).
 
@@ -375,19 +373,16 @@ Let's imagine that *thread1* running on core-1 will update the atomic value at *
 We know that these atomic values lie on the same cache line, and "updating an atomic value invalidates the whole cache line it belongs to". Invalidating a cache line
 will result in fetching that chunk of memory from RAM again.
 
-Consider that *thread1* running on core-1 updates the atomic value at *index 0*, invalidating the entire cache line that this value belongs to. Now, *thread2*
-running on core-2 needs to update the value at *index 1*, but the entire cache line is invalidated. So, the cache line (64 bytes) needs to be fetched from RAM.
+Consider that *thread1* running on core-1 updates the atomic value at *index 0*, invalidating the entire cache line that this value belongs to. Now, *thread2* running on core-2 needs to update the value at *index 1*, but the entire cache line is invalidated. So, the cache line (64 bytes) needs to be fetched from RAM.
 Reading/Writing from/to RAM is in the order of [80-100 ns](https://kt.academy/article/pmem-intro) compared to the same from *L1*, *L2*, *L3* and *L4* cache, which is in the order of 1-10 ns.
 
-*thread2* running on core-2 updates the atomic value at *index 1* after the cache line is fetched. This update invalidates the entire cache line again and forces another
-fetch of the cache line from RAM. This fetch/re-fetch/re-re-fetch of the cache line is courtesy of "false sharing".
+*thread2* running on core-2 updates the atomic value at *index 1* after the cache line is fetched. This update invalidates the entire cache line again and forces another fetch of the cache line from RAM. This fetch/re-fetch/re-re-fetch of the cache line is courtesy of "false sharing".
 
 > We are using "atomics" to ensure that each thread updates its value atomically, and because these values are on the
 same cache line, both the threads running on different cores end up **sharing** the same cache line for **writing**. This increases latency
 because of the repeated fetch of the cache line(s) from RAM. This is called "false sharing". Imagine the extent of the problem with 128 cores.
 
-The way to deal with "false sharing" is to pad the values so that each `AtomicU64` lies on its cache line. One option is to pad the values manually, and the other
-is to use a library that can help with padding. **CacheD** uses [CachePadded](https://docs.rs/crossbeam/0.8.2/crossbeam/utils/struct.CachePadded.html) to pad the values.
+:h[The way to deal with "false sharing" is to pad the values so that each `AtomicU64` lies on its cache line.] One option is to pad the values manually, and the other is to use a library that can help with padding. **CacheD** uses [CachePadded](https://docs.rs/crossbeam/0.8.2/crossbeam/utils/struct.CachePadded.html) to pad the values.
 
 With the introduction of `CachePadded`, this is how the code looks like:
 
