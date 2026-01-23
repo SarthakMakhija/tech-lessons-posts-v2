@@ -7,7 +7,7 @@ heroImage: /wisckey.webp
 caption: "Background by Alex Conchillos on Pexels"
 ---
 
-> [LSM-tree](https://en.wikipedia.org/wiki/Log-structured_merge-tree#:~:text=In%20computer%20science%2C%20the%20log,%2C%20maintain%20key%2Dvalue%20pairs.) (Log structured merge tree) is a data structure typically used for write-heavy workloads. LSM-tree optimizes the write path by performing sequential writes to disk. WiscKey is a persistent LSM-tree-based key-value store that separates keys from values to minimize read and write amplification. The design of WiscKey is highly SSD optimized, leveraging both the device's sequential and random performance characteristics.
+> [LSM-tree](https://en.wikipedia.org/wiki/Log-structured_merge-tree#:~:text=In%20computer%20science%2C%20the%20log,%2C%20maintain%20key%2Dvalue%20pairs.) (Log structured merge tree) is a data structure typically used for write-heavy workloads. LSM-tree optimizes the write path by performing sequential writes to disk. :h[WiscKey is a persistent LSM-tree-based key-value store that separates keys from values to minimize read and write amplification.] The design of WiscKey is highly SSD optimized, leveraging both the device's sequential and random performance characteristics.
 
 This article summarises the [WiscKey](https://www.usenix.org/system/files/conference/fast16/fast16-papers-lu.pdf) paper published in 2016.
 
@@ -39,13 +39,13 @@ LSM-tree consists of components of exponentially increasing sizes, C0 to Ck. C0 
 
 Let's take a look at the overall flow of `put(key: []byte, value: []byte)` and `get(key: []byte)` operations in the LSM-tree.
 
-Every `put(key, value)` in the LSM-tree adds the key-value pair in the C0 component, and after C0 is full, the entire data is flushed to disk. LSM-trees treat `delete(key)` as another `put`, which will put the key with a deleted marker.
+Every `put(key, value)` in the LSM-tree adds the key-value pair in the C0 component, and after C0 is full, the entire data is flushed to disk. :h[LSM-trees treat `delete(key)` as another `put`, which will put the key with a deleted marker.]
 
 After C0 is full, a new instance of C0 is created and the entire in-memory data is flushed to disk. All in-memory data consisting of key-value pairs is encoded in a byte array and written to disk. If the C1 component already exists on disk, the buffered content is merged with the contents of C1.
 
 Because all the new writes are kept in-memory, they can get lost in case of a failure. The durability guarantee is ensured by using a [WAL](https://martinfowler.com/articles/patterns-of-distributed-systems/wal.html). Every `put(key, value)` *appends* the key-value pair to a WAL file and then writes the key-value pair to the C0 component. Appending to a WAL file is also a sequential write to disk.   
 
-Every `get(key)` in the LSM-tree goes through the RAM based component to disk components from C1 to Ck in the order. The `get(key)` operation first queries the C0 component, if the value for the key is not found, the search proceeds
+:h[Every `get(key)` in the LSM-tree goes through the RAM based component to disk components from C1 to Ck in the order.] The `get(key)` operation first queries the C0 component, if the value for the key is not found, the search proceeds
 to the disk resident component C1. This process continues until the value is found or all the disk resident components have been scanned. LSM-trees may need multiple reads for a point lookup. Hence, LSM-trees are most useful when inserts are more common than lookups. 
 
 **Quick summary**
@@ -251,7 +251,7 @@ If the index block were not there, the same get operation would have happened ag
 
 There are fundamental differences between SSDs and HDDs which should be considered when designing a storage engine. Let's look at some of the most important considerations:
 1. SSDs can wear out through repeated writes, the high write amplification in LSM-trees can significantly reduce the device lifetime. 
-2. SSDs offer a large degree of internal parallelism
+2. :h[SSDs offer a large degree of internal parallelism]
 
 Point 1 means we should try to **reduce the write amplification** when designing a storage engine for SSD-conscious storage. We have already seen that the [compaction](#analysis-of-read-write-amplification-in-leveldb) process is the source of high write-application in LSM-tree based storage engines.
 
@@ -271,10 +271,10 @@ With these considerations, let's understand WiscKey proposal.
 ### WiscKey proposal
 
 WiscKey proposes four key ideas:
-1. Separate values from keys, keeping only the keys in the LSM-tree, putting values in a separate value-log.
-2. Leverage the parallel random read characteristic of SSDs during range queries.
-3. Introduce garbage collection to remove values corresponding to deleted keys from value-log.
-4. Remove LSM-tree log (WAL log) without sacrificing consistency (under [Optimizations](#optimizations-offered-by-wisckey)).
+1. :h[Separate values from keys], keeping only the keys in the LSM-tree, putting values in a separate value-log.
+2. :h[Leverage the parallel random read characteristic of SSDs] during range queries.
+3. :h[Introduce garbage collection] to remove values corresponding to deleted keys from value-log.
+4. :h[Remove LSM-tree log (WAL log)] without sacrificing consistency (under [Optimizations](#optimizations-offered-by-wisckey)).
 
 Let's discuss each of these ideas one by one.
 
@@ -282,7 +282,7 @@ Let's discuss each of these ideas one by one.
 
 Compaction is the reason for the significant performance cost in LSM-trees. Multiple SSTable files are read in-memory during compaction, sorted, and written back. This is also the reason
 for the high write amplification in LevelDB. If we look at the compaction process carefully, we will realize that this process only needs to sort the keys, while values can be managed separately.
-Since keys are usually smaller than values, compacting only keys could significantly reduce the amount of data needed during the sorting.
+:h[Since keys are usually smaller than values, compacting only keys could significantly reduce the amount of data needed during the sorting.]
 
 *In WiscKey, only the location of the value is stored in the LSM-tree along with the key, while the actual values are stored in a separate value-log file.*
 
@@ -354,7 +354,7 @@ WiscKey offers two optimizations:
 
 For each `put(key, value)` operation, WiscKey needs to append the key-value pair in the value-log. Every `put` operation will require a `write` system call.
 
-To reduce the write-overhead, WiscKey buffers the incoming key-value pairs in memory. The buffer is flushed to value-log only when the buffer size exceeds a threshold or when the user requests a synchronous insertion.
+To reduce the write-overhead, :h[WiscKey buffers the incoming key-value pairs in memory. The buffer is flushed to value-log only when the buffer size exceeds a threshold or when the user requests a synchronous insertion.]
 This requires a change in the `get` operation.
 
 Assume that a `get` operation finds the value-offset in the active memtable. The system needs to look up the value-offset in the value-log to get the value. With the introduction of the value-log buffer, 
@@ -414,7 +414,7 @@ func (db *DB) writeRequests(requests []*request) error {
 }
 ```
 
-BadgerDB implements [snapshot transaction isolation](https://dl.acm.org/doi/abs/10.1145/2168836.2168853). Let's assume the `commit()` method on the transaction is invoked. The commit operation results in calling the `writeRequests`
+BadgerDB implements [serializable snapshot transaction isolation](https://tech-lessons.in/en/blog/serializable_snapshot_isolation/). Let's assume the `commit()` method on the transaction is invoked. The commit operation results in calling the `writeRequests`
 method on `db` through a single goroutine in a fashion that is very much similar to a [singular update queue](https://martinfowler.com/articles/patterns-of-distributed-systems/singular-update-queue.html).
 
 As a part of this method, the key-value pairs are written to the value-log and then each request is written to the LSM-tree. 
