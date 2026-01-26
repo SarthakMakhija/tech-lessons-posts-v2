@@ -25,56 +25,52 @@ const years = Object.keys(notesByYear)
 
 <Layout title={`Paper Notes | ${SITE_TITLE}`}>
     <div class="max-w-[800px] mx-auto">
-        <section>
-            <h2
-                class="font-mono text-sm uppercase tracking-wider text-zinc-900 mb-8 font-bold"
-            >
-                Paper Notes
-            </h2>
+        <section class="mb-16">
+            <h1 class="font-sans font-bold text-3xl mb-4">Paper Notes</h1>
 
-            <div class="mb-12 text-zinc-700 leading-relaxed max-w-2xl">
+            <div class="text-lg text-zinc-700 leading-relaxed max-w-2xl">
                 <p class="mb-4">
                     Paper notes are concise, opinionated summaries of systems
-                    papers. They highlight key ideas, hidden assumptions, and
-                    where designs succeed or break in practice.
+                    papers. They focus on core ideas, design trade-offs, and
+                    practical implications rather than exhaustive explanations.
                 </p>
             </div>
-
-            <div class="flex flex-col">
-                {
-                    years.map((year) => (
-                        <div class="mb-8">
-                            {notesByYear[year].map((note, index) => (
-                                <div class="group flex items-baseline py-2 border-b border-zinc-100 hover:border-zinc-200 transition-colors">
-                                    {/* Year column: Show only for first item of the year */}
-                                    <div class="w-16 font-mono text-sm text-zinc-900 shrink-0 font-bold">
-                                        {index === 0 ? year : ""}
-                                    </div>
-
-                                    {/* Date Column */}
-                                    <div class="w-16 font-mono text-sm text-zinc-900 shrink-0 hidden sm:block font-bold">
-                                        {note.data.pubDate.toLocaleDateString(
-                                            "en-GB",
-                                            {
-                                                day: "2-digit",
-                                                month: "2-digit",
-                                            },
-                                        )}
-                                    </div>
-
-                                    {/* Title Column */}
-                                    <a
-                                        href={`/en/paper-notes/${note.slug}/`}
-                                        class="font-mono font-medium text-zinc-700 hover:text-black hover:translate-x-1 transition-all"
-                                    >
-                                        {note.data.title}
-                                    </a>
-                                </div>
-                            ))}
-                        </div>
-                    ))
-                }
-            </div>
         </section>
+
+        <div class="flex flex-col">
+            {
+                years.map((year) => (
+                    <div class="mb-8">
+                        {notesByYear[year].map((note, index) => (
+                            <div class="group flex items-baseline py-2 border-b border-zinc-100 hover:border-zinc-200 transition-colors">
+                                {/* Year column: Show only for first item of the year */}
+                                <div class="w-16 font-mono text-sm text-zinc-900 shrink-0 font-bold">
+                                    {index === 0 ? year : ""}
+                                </div>
+
+                                {/* Date Column */}
+                                <div class="w-16 font-mono text-sm text-zinc-900 shrink-0 hidden sm:block font-bold">
+                                    {note.data.pubDate.toLocaleDateString(
+                                        "en-GB",
+                                        {
+                                            day: "2-digit",
+                                            month: "2-digit",
+                                        },
+                                    )}
+                                </div>
+
+                                {/* Title Column */}
+                                <a
+                                    href={`/en/paper-notes/${note.slug}/`}
+                                    class="font-mono font-medium text-zinc-700 hover:text-black hover:translate-x-1 transition-all"
+                                >
+                                    {note.data.title}
+                                </a>
+                            </div>
+                        ))}
+                    </div>
+                ))
+            }
+        </div>
     </div>
 </Layout>
