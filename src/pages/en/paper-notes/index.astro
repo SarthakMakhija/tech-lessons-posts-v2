@@ -1,6 +1,6 @@
 ---
-import Layout from "../../layouts/Layout.astro";
-import { SITE_TITLE } from "../../consts";
+import Layout from "../../../layouts/Layout.astro";
+import { SITE_TITLE } from "../../../consts";
 import { getCollection } from "astro:content";
 
 const notes = (await getCollection("paper-notes")).sort(
@@ -56,7 +56,7 @@ const years = Object.keys(notesByYear)
 
                                     {/* Title Column */}
                                     <a
-                                        href={`/paper-notes/${note.slug}/`}
+                                        href={`/en/paper-notes/${note.slug}/`}
                                         class="font-mono font-medium text-zinc-700 hover:text-black hover:translate-x-1 transition-all"
                                     >
                                         {note.data.title}
