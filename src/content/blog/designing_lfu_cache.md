@@ -7,7 +7,7 @@ heroImage: /lfu-cache-title.webp
 caption: "Background by Drift Shutterbug on Pexels"
 ---
 
-I had been working on building an in-memory LFU cache (least frequently used cache) and now that it is done, I thought of writing about the building blocks of an LFU cache. This article shares the building blocks of an LFU cache along with the ideas from two research papers: [TinyLFU](https://arxiv.org/pdf/1512.00727) and [BP-Wrapper](https://dgraph.io/blog/refs/bp_wrapper.pdf) 
+I had been working on building an in-memory LFU cache (least frequently used cache) and now that it is done, I thought of writing about the building blocks of an LFU cache. This article shares the building blocks of an LFU cache along with the ideas from two research papers: [TinyLFU](https://arxiv.org/pdf/1512.00727) and [BP-Wrapper](https://ieeexplore.ieee.org/document/4812418) 
 
 [CacheD](https://github.com/SarthakMakhija/cached) is the name of my cache, and it is inspired by [Ristretto](https://github.com/dgraph-io/ristretto).
 I know **CacheD** is a very creative name. Thank you. 
@@ -534,6 +534,6 @@ The source code of **CacheD** is available [here](https://github.com/SarthakMakh
 
 ### References
 
-- [Ristretto](https://dgraph.io/blog/post/introducing-ristretto-high-perf-go-cache/)
+- [Ristretto](https://github.com/dgraph-io/ristretto)
 - [Zipf\'s law wikipedia](https://en.wikipedia.org/wiki/Zipf's_law)
 - [Zipf\'s law techtarget](https://www.techtarget.com/whatis/definition/Zipfs-Law)
