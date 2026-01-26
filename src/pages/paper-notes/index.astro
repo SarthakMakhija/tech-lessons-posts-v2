@@ -1,0 +1,72 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { SITE_TITLE } from "../../consts";
+import { getCollection } from "astro:content";
+
+const notes = (await getCollection("paper-notes")).sort(
+    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+
+// Group notes by year
+const notesByYear = notes.reduce(
+    (acc, note) => {
+        const year = note.data.pubDate.getFullYear();
+        if (!acc[year]) acc[year] = [];
+        acc[year].push(note);
+        return acc;
+    },
+    {} as Record<number, typeof notes>,
+);
+
+const years = Object.keys(notesByYear)
+    .sort((a, b) => Number(b) - Number(a))
+    .map(Number);
+---
+
+<Layout title={`Paper Notes | ${SITE_TITLE}`}>
+    <div class="max-w-[800px] mx-auto">
+        <section>
+            <h2
+                class="font-mono text-sm uppercase tracking-wider text-zinc-900 mb-8 font-bold"
+            >
+                Paper Notes
+            </h2>
+
+            <div class="flex flex-col">
+                {
+                    years.map((year) => (
+                        <div class="mb-8">
+                            {notesByYear[year].map((note, index) => (
+                                <div class="group flex items-baseline py-2 border-b border-zinc-100 hover:border-zinc-200 transition-colors">
+                                    {/* Year column: Show only for first item of the year */}
+                                    <div class="w-16 font-mono text-sm text-zinc-900 shrink-0 font-bold">
+                                        {index === 0 ? year : ""}
+                                    </div>
+
+                                    {/* Date Column */}
+                                    <div class="w-16 font-mono text-sm text-zinc-900 shrink-0 hidden sm:block font-bold">
+                                        {note.data.pubDate.toLocaleDateString(
+                                            "en-GB",
+                                            {
+                                                day: "2-digit",
+                                                month: "2-digit",
+                                            },
+                                        )}
+                                    </div>
+
+                                    {/* Title Column */}
+                                    <a
+                                        href={`/paper-notes/${note.slug}/`}
+                                        class="font-mono font-medium text-zinc-700 hover:text-black hover:translate-x-1 transition-all"
+                                    >
+                                        {note.data.title}
+                                    </a>
+                                </div>
+                            ))}
+                        </div>
+                    ))
+                }
+            </div>
+        </section>
+    </div>
+</Layout>
