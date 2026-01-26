@@ -9,11 +9,14 @@ tags: ["Bitcask", "Log-Structured Hash Table"]
 
 Bitcask is an append-only log of key/value entries with an in-memory hash index (keydir) pointing to the latest value in the file. It is used a key/value storage engine in a distributed database named "Riak".
 
-<img src="/bitcask_summary_paper.png" style="max-width: 60%; height: auto; margin: 0 auto; display: block;" alt="Bitcask Paper Summary"/>
+<figure>
+    <img src="/bitcask_summary_paper.png" style="max-width: 60%; height: auto; margin: 0 auto; display: block;" alt="Bitcask Paper Summary"/>
+    <figcaption>Image generated using ChatGPT</figcaption>
+</figure>
 
 ### Core idea
 
-The developers wanted to create a storage engine that could meet several demanding criteria simultaneously:
+The Riak developers wanted to create a storage engine that could meet several demanding criteria simultaneously:
 
  1. __Performance__: Low latency for every read or write and high throughput for random write streams.
 
@@ -31,7 +34,7 @@ Bitcask operates as a directory of files where only one process (the "server") h
 
 2. __Append-Only Writes__: Data is always appended (:h[sequential writes]) to the active file, which eliminates the need for disk seeking during writes.
 
-3. __On disk layout__: Each entry in the log has the following structure: `CRC | timestamp | key_size | value_size | key | value`
+3. __On disk layout__: Each entry in the log has the following structure: `CRC | timestamp | key_size | value_size | key | value`.
 
 4. __The Keydir__: This is an in-memory hash table that maps every key to a fixed-size structure containing the file ID, value size, and its position on disk.
 
@@ -45,7 +48,7 @@ Bitcask operates as a directory of files where only one process (the "server") h
 Because Bitcask is append-only, older versions of keys remain on disk. To reclaim space, a merge process iterates over immutable files and produces new files containing only the latest "live" version of each key. The merge process also updates the keydir.
 
 2. __Hint Files__
-During a merge, Bitcask creates "hint files" alongside the data files. These contain the position and size of values rather than the values themselves.
+During merge, Bitcask creates "hint files" alongside the generated data files. These contain the position and size of values rather than the values themselves.
 
 > Purpose: When a Bitcask is opened, say after a crash, it scans hint files to rebuild the keydir, and because the hint files are smaller than the data files, it can rebuild the keydir much faster than scanning the full data files.
 
@@ -58,7 +61,7 @@ Bitcask paper presents the following numbers:
 
 1. In early tests on a laptop with slow disks, throughput of 5000-6000 writes per second was observed. The paper does not mention about the key/value sizes. Let's assume some values for them.
 
-> Consider CRC + timestamp + Key_Size + Value_Size to be 20 bytes (4 bytes + 8 bytes + 4 bytes + 4 bytes), key size as 32 bytes and value size between 512 B – 1 KB. This means we are writing ~1 KB per write. So, 5000 writes per second means we are writing 5 MB per second. Thus the disk throughput required is a little more than 5 MB/s. 
+> Consider CRC + timestamp + Key_Size + Value_Size to be 20 bytes (4 bytes + 8 bytes + 4 bytes + 4 bytes), key size as 32 bytes and value size between 512 B – 1 KB. This means we are writing ~1 KB per write. So, 5000 writes per second means we are writing 5 MB per second. Thus the disk throughput should be > 5 MB/s. 
 
 2. Sub-millisecond typical median latency for read operations. 
 
@@ -66,7 +69,7 @@ Bitcask paper presents the following numbers:
 
 ### When Bitcask is a bad idea
 
-1. __High cardinality keys + limited RAM__: Bitcask keeps all keys in memory, so if the number of keys is very large, it can consume a lot of memory.
+1. __High cardinality keys + limited RAM__: Bitcask keeps all keys in memory, so if the number of keys is very large, it will consume a lot of memory.
 
 2. __Range queries are required__: Bitcask does not support range queries.
 
@@ -74,7 +77,9 @@ Bitcask paper presents the following numbers:
 
 4. __Dataset dominated by scans, not lookups__: Bitcask is optimized for random lookups, not scans.
 
-5. __Keys much larger than values__: Bitcask is optimized for small keys. If keys are much larger than values, it can consume a lot of RAM.
+5. __Keys much larger than values__: Bitcask is optimized for small keys. If keys are much larger than values, it will consume a lot of RAM.
+
+6. __High number of data files + low file descriptor limits__: Bitcask benefits from keeping many immutable data files open for fast reads. On systems with low `ulimit -n`, this becomes an operational bottleneck.
 
 The detailed blog post on this topic can be found [here](/en/blog/bitcask).
 
