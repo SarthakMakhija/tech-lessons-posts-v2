@@ -7,7 +7,7 @@ heroImage: /lfu-cache-title.webp
 caption: "Background by Drift Shutterbug on Pexels"
 ---
 
-I had been working on building an in-memory LFU cache (least frequently used cache) and now that it is done, I thought of writing about the building blocks of an LFU cache. This article shares the building blocks of an LFU cache along with the ideas from two research papers: [TinyLFU](https://dgraph.io/blog/refs/TinyLFU%20-%20A%20Highly%20Efficient%20Cache%20Admission%20Policy.pdf) and [BP-Wrapper](https://dgraph.io/blog/refs/bp_wrapper.pdf) 
+I had been working on building an in-memory LFU cache (least frequently used cache) and now that it is done, I thought of writing about the building blocks of an LFU cache. This article shares the building blocks of an LFU cache along with the ideas from two research papers: [TinyLFU](https://arxiv.org/pdf/1512.00727) and [BP-Wrapper](https://dgraph.io/blog/refs/bp_wrapper.pdf) 
 
 [CacheD](https://github.com/SarthakMakhija/cached) is the name of my cache, and it is inspired by [Ristretto](https://github.com/dgraph-io/ristretto).
 I know **CacheD** is a very creative name. Thank you. 
@@ -233,7 +233,7 @@ Our cache is a memory-bound cache, and this poses an exciting challenge.
 *Should we admit the incoming key/value pair after the cache has reached its weight? If yes, which keys should be evicted to create the space because we can not let 
 the total cache weight increase beyond some threshold?*
 
-This is where the paper [TinyLFU](https://dgraph.io/blog/refs/TinyLFU%20-%20A%20Highly%20Efficient%20Cache%20Admission%20Policy.pdf) comes into the picture. :h[The main idea is to only let in a new key/value pair if its access estimate exceeds that of the item being evicted. This means that the incoming key/value pair should be more valuable to the cache than some existing key/value pairs, thereby improving the hit ratio.]
+This is where the paper [TinyLFU](https://arxiv.org/pdf/1512.00727) comes into the picture. :h[The main idea is to only let in a new key/value pair if its access estimate exceeds that of the item being evicted. This means that the incoming key/value pair should be more valuable to the cache than some existing key/value pairs, thereby improving the hit ratio.]
 
 Let's look at the approach:
 
@@ -256,7 +256,7 @@ There is still one more case to consider. What if there is a key with high acces
 This point is around the recency of key access. The [TinyLFU](https://github.com/SarthakMakhija/cached/blob/main/src/cache/lfu/tiny_lfu.rs) abstraction ensures the recency of key access by the `reset` method.
 We have used `count-min sketch` to maintain each key's access frequency; every time a key is accessed, the frequency counter is incremented.
 After N key increments, the counters get halved. So, a key that has not been seen for a while would also have its counter reset to half of the original value; 
-thereby providing a chance to the new incoming keys to get in. *[TinyLFU paper section: Freshness Mechanism](https://dgraph.io/blog/refs/TinyLFU%20-%20A%20Highly%20Efficient%20Cache%20Admission%20Policy.pdf)
+thereby providing a chance to the new incoming keys to get in. *[TinyLFU paper section: Freshness Mechanism](https://arxiv.org/pdf/1512.00727)
 
 > The abstraction [TinyLFU](https://github.com/SarthakMakhija/cached/blob/main/src/cache/lfu/tiny_lfu.rs) has a [FrequencyCounter](https://github.com/SarthakMakhija/cached/blob/main/src/cache/lfu/frequency_counter.rs) and a [DoorKeeper](https://github.com/SarthakMakhija/cached/blob/main/src/cache/lfu/doorkeeper.rs).
 > DoorKeeper is implemented using a [Bloom filter](https://tech-lessons.in/blog/bloom_filter/). Before increasing the access frequency of a key in `FrequencyCounter`,
@@ -529,7 +529,7 @@ The source code of **CacheD** is available [here](https://github.com/SarthakMakh
 
 ### Relevant research papers
 
-- [TinyLFU](https://dgraph.io/blog/refs/TinyLFU%20-%20A%20Highly%20Efficient%20Cache%20Admission%20Policy.pdf)
+- [TinyLFU](https://arxiv.org/pdf/1512.00727)
 - [BP-Wrapper](https://dgraph.io/blog/refs/bp_wrapper.pdf)
 
 ### References
