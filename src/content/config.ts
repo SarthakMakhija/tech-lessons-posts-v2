@@ -5,6 +5,7 @@ const blog = defineCollection({
     // Type-check frontmatter using a schema
     schema: z.object({
         title: z.string(),
+        description: z.string().optional(),
         // Transform string to Date object
         pubDate: z.coerce.date(),
         updatedDate: z.coerce.date().optional(),
@@ -29,6 +30,7 @@ const paperNotes = defineCollection({
     type: 'content',
     schema: z.object({
         title: z.string(),
+        description: z.string().optional(),
         pubDate: z.coerce.date(),
         tags: z.array(z.string()).optional(),
         author: z.string().optional(),

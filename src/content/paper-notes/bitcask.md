@@ -2,6 +2,7 @@
 author: "Sarthak Makhija"
 title: "Bitcask - A Log-Structured Hash Table for Fast Key/Value Data"
 pubDate: 2026-01-26
+description: "A summary of the Bitcask paper: A Log-Structured Hash Table for Fast Key/Value Data."
 tags: ["Bitcask", "Log-Structured Hash Table"]
 ---
 

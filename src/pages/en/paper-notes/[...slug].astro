@@ -16,7 +16,10 @@ const note = Astro.props;
 const { Content, headings } = await note.render();
 ---
 
-<Layout title={note.data.title}>
+<Layout
+    title={note.data.title}
+    description={note.data.description || note.data.title}
+>
     <article class="max-w-[1000px] mx-auto min-w-0">
         <!-- Article Header -->
         <header class="mb-12">
