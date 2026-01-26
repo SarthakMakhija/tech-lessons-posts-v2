@@ -273,7 +273,7 @@ Let's understand this with an example. Imagine there is a `get` request for an e
 `FrequencyCounter` is a shared data structure, so an option to increment the access counter is to take a lock on the entire data structure and then increment the 
 count. If multiple threads try to increase the access count for the same or different keys, all these threads would be contending for a single write lock on `FrequencyCounter`.
 
-This is where the paper [BP-Wrapper](https://dgraph.io/blog/refs/bp_wrapper.pdf) comes in. This paper suggests two ways of dealing with contention *prefetching* and *batching*.
+This is where the paper [BP-Wrapper](https://ieeexplore.ieee.org/document/4812418) comes in. This paper suggests two ways of dealing with contention *prefetching* and *batching*.
 
 **CacheD** uses *batching* with `get` and `put` operations. 
 
@@ -530,7 +530,7 @@ The source code of **CacheD** is available [here](https://github.com/SarthakMakh
 ### Relevant research papers
 
 - [TinyLFU](https://arxiv.org/pdf/1512.00727)
-- [BP-Wrapper](https://dgraph.io/blog/refs/bp_wrapper.pdf)
+- [BP-Wrapper](https://ieeexplore.ieee.org/document/4812418)
 
 ### References
 
