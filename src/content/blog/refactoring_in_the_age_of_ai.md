@@ -1,7 +1,7 @@
 ---
 author: "Sarthak Makhija"
 title: "Refactoring in the age of AI"
-pubDate: 2026-01-29
+pubDate: 2026-01-31
 tags: ["Refactoring", "AI", "Clean Code"]
 heroImage: "/refactoring-in-the-age-of-ai.webp"
 caption: "Image by Gemini"
@@ -9,11 +9,11 @@ caption: "Image by Gemini"
 
 ### Introduction
 
-In the era of Generative AI, we often obsess over velocity, how fast can Copilot write this function? How quickly can ChatGPT build this app? But speed is just the baseline; the true “magic” of AI lies in its ability to elevate software quality to levels that were previously painstaking to achieve. AI isn't a replacement for engineering craftsmanship; it is an amplifier. To use this effectively, you still need to be the driver, the navigator, and above all, the architect who recognizes code smells. You need to identify *Primitive Obsession* before you can ask an agent to fix it; you need to spot a __Long Method__ before you can guide an LLM to extract it.
+In the era of Generative AI, we often obsess over velocity, how fast can Copilot write this function? How quickly can Antigravity build this app? But speed is just the baseline; the true “magic” of AI lies in its ability to elevate software quality to levels that were previously painstaking to achieve. AI isn't a replacement for engineering craftsmanship; it is an amplifier. To use this effectively, you still need to be the driver, the navigator, and above all, the architect who recognizes code smells. You need to identify __Primitive Obsession__ before you can ask an agent to fix it; you need to spot a __Long Method__ before you can guide an LLM to extract it.
 
 In this article, we’ll revisit a classic refactoring example, not to merely clean it up, but to demonstrate how deep knowledge of refactoring principles combined with AI agents can deliver next-level software quality. We will start where every safe refactoring journey begins: with [characterization tests](/en/blog/lets_define_legacy_code/#which-tests-to-write).
 
-### The Classic Customer Rental Example
+### The Example
 
 Let's look at a familiar piece of code (adapted from Martin Fowler's Refactoring book). It calculates rental charges for a video store.
 
@@ -106,7 +106,7 @@ class Rental {
 }
 ```
 
-### Characterization Test
+### Characterization Tests
 
 Before we even touch a single line of production code, we must ensure we have a safety net. This safety net comes in the form of **Characterization Tests**.
 
@@ -227,7 +227,7 @@ public void statementForChildrensMovieRentedForThreeOrMoreDays() {
 This is much better. However, I want to add one more characterization test covering multiple rentals for a customer. This gives me confidence that the system correctly handles multiple entries, allowing me to refactor without worry. It is a judgment call to ensure I have a wide enough safety net.
 
 **Prompt to AI:**
-Add another characterization test with rentals for childres and regular movie types ..
+Add another characterization test with rentals for childres and regular movie types.
 
 **Generated Test:**
 
@@ -251,9 +251,11 @@ public void statementForRegularAndChildrensMovies() {
 
 Given all the tests are passing, we will make a _git commit_, push the changes and move on to refactoring the code.
 
-### Refactoring - First Steps
+### Extract Method (Amount)
 
-We are now in a position to start refactoring.
+We are ready to begin. The `statement()` method is our first target. While it may not look excessively long in lines of code, it suffers from the **Long Method** smell because it is highly decomposable, and until we break it apart, other smells will remain hidden in the noise.
+
+Since this is our first refactoring move, I want to be explicit. I'll provide the AI with precise, step-by-step instructions to minimize ambiguity. As we build momentum and trust, I’ll experiment with leaner prompts.
 
 **Prompt to AI:**
 Let's refactor the `statement()` method. It is a long method, and I would like to extract the rental calculation for each ` movieType` in a separate method. The method will be called `amount` and it will just accept `Rental` (/`each`). This method will return a `double` which will be assigned to `thisAmount`.
@@ -332,13 +334,13 @@ private double amount(Rental rental) {
 }
 ```
 
-We can run all the tests and create a _git commit_.
+We can run all the tests and record our progress with a _git commit_.
 
-### Move method
+### Move Method
 
 A close examination of the `amount()` method reveals that it relies solely on the `Rental` object. This suggests the method is a better fit for the `Rental` class. Before we move it, we can add the `static` keyword to confirm that the method does not use any properties of the `Customer` class.
 
-Run all the tests after adding `static` keyword, they pass. It confirms we have **Feature Envy** and we can move the method to the `Rental` class (remove the `static` qualifier before moving).
+Run all the tests after adding `static` keyword, they pass. It confirms we have **Feature Envy** and we can move the `amount()` method to the `Rental` class (remove the `static` qualifier before moving).
 
 **Prompt to AI:**
 Move the `amount()` method to the `Rental` class. 
@@ -383,7 +385,7 @@ class Rental {
 }
 ```
         
-Good job! I'll start by renaming `getAmount` to `amount`. Since all our tests are passing, I'll perform one more refactoring step before committing. The `amount` method currently depends on both the `priceCode` from the `Movie` class and `daysRented` from the `Rental` class. Since the amount calculation logic is primarily driven by the `priceCode`, it makes sense to move this method to the `Movie` class and pass `daysRented` as an argument. This move also encapsulates the `priceCode` switch case within the `Movie` class, preventing it from leaking into other classes and making it easier to add new price codes in the future.
+Good job! I'll start by renaming `getAmount` to `amount`. Since all our tests are passing, I'll perform one more refactoring step before committing. The `amount` method currently depends on both the `priceCode` from the `Movie` class and `daysRented` from the `Rental` class. Since the amount calculation logic is primarily driven by the `priceCode`, it makes sense to move this method to the `Movie` class and pass `daysRented` as an argument. This move also encapsulates the `priceCode` switch case within the `Movie` class, preventing it from leaking _switch_ logic into other classes.
 
 **Prompt to AI:**
 Move the `amount()` method to the `Movie` class passing `daysRented` as argument. 
@@ -457,9 +459,9 @@ public class MovieTest {
 }
 ```
 
-Excellent. We could apply the same process for `Rental`. However, `Rental`'s `amount()` method is now just a wrapper that delegates to `Movie`, making the need for separate tests debatable. We have made decent progress; `Rental` and `Movie` are no longer just data classes—they now encapsulate behavior alongside their data. All are tests are passing, let's create a _git commit_.
+Excellent. We could apply the same process for `Rental`. However, `Rental`'s `amount()` method is now just a wrapper that delegates to `Movie`, making the need for separate tests debatable. We have made decent progress; `Rental` and `Movie` are no longer just data classes, they now encapsulate behavior alongside their data. All are tests are passing, let's record this refactoring as a _git commit_.
 
-### What next?
+### Replace Temp with Query
 
 This is how our code looks like:
 
@@ -508,14 +510,14 @@ class Rental {
 }
 ```
 
-What’s the next move? The `switch` statement in `Movie.amount()` may look like a candidate for polymorphism, but I want to ensure we've truly achieved our primary goal: decomposing the `statement()` method.
+What’s the next move? The `switch` statement in `Movie.amount()` may look like a candidate for polymorphism, but I want to ensure we've truly achieved our primary goal: decomposing the `statement()` method before moving on to other refactoring.
 
 I would argue the method is still 'long' - not in terms of line count, but in terms of responsibility. I can clearly distinguish three separate phases within it: generating the header, processing the body, and assembling the footer.
 
 Before we move forward with the refactoring of `statement` methods, let's have a conversation with AI and see if it has any suggestions for us.
 
 **Prompt to AI:**
-Provide me potential candidates for next refactoring.
+Provide me potential candidates for next refactoring. Do not change anything.
 
 **Generated Response:**
 1. Move Classes to Separate Files
@@ -524,9 +526,9 @@ Provide me potential candidates for next refactoring.
     - Context: The `statement` method calculates `totalAmount` while generating the string.
     - Value: Extracting the calculation into a method (e.g., `getTotalCharge`) separates the business logic from the presentation logic, making it easier to support other formats like HTML statements.
 
-Suggestion 3 is appealing, but I make it a rule not to refactor based on speculation. Adhering to the __YAGNI ('You Aren't Gonna Need It')__ principle, I avoid introducing complexity for requirements that don't yet exist and may never materialize.
+Suggestion 3 is appealing, even impressive, the AI suggested supporting HTML statements without any prompting from me. However, this is exactly where we must exercise discipline. Adhering to the **YAGNI** ('You Aren't Gonna Need It') principle, we must not refactor based on speculation. No matter how clever the AI's prediction is, if the requirement doesn't exist today, we shouldn't build the complexity to support it. 
 
-However, AI is right in pointing out that we can refactor the `statement` method to separate the business logic from the presentation logic. Let's try asking the AI to provide us with a refactored version of the `statement` method.
+However, AI is right in pointing out that we can refactor the `statement` method to separate the business logic from the presentation logic by applying the __Replace Temp with Query__ refactoring. Let's try asking the AI to provide us with a refactored version of the `statement` method.
 
 **Prompt to AI:**
 Implement Replace Temp with Query (in Customer.statement)
@@ -566,6 +568,7 @@ If you have a keen eye for code smells, you might notice that `totalCharge` depe
 Additionally, there's another subtle smell here: **Primitive Obsession** regarding `List<Rental>`. While a `List` isn't a primitive type in Java, using a generic collection to represent a domain concept (a collection of customer rentals) is the same mistake. It's just a raw container. By upgrading this to a first-class `Rentals` object, we create a proper home for behavior like `totalCharge` that belongs to the collection, not the client (`Customer`) using it.
 
 ```java
+//this method depends only on rentals collection.
 private double totalCharge(List<Rental> rentals) {
     double result = 0;
     for (Rental rental : rentals) {
@@ -652,7 +655,7 @@ public class RentalsTest {
 
 The tests looks good, and all the tests are running. Let's create a _git commit_.
 
-### Revisiting statement()
+### Extract Method (Header, Body, Footer)
 
 This is how our `statement()` method looks like:
 
@@ -681,8 +684,8 @@ Refactor statement method to consist of header, body and footer.
 
 ```java
 public String statement() {
-        return header() + body() + footer();
-    }
+    return header() + body() + footer();
+}
 
 private String header() {
     return "Rental Record for " + getName() + "\n";
@@ -703,7 +706,7 @@ private String footer() {
 }
 ```
 
-This look good, AI also removed the comment __// add footer lines result__, which is good because the method name `footer()` already tells us that it's adding a footer line. We have made very good progress in refactoring the `statement()` method. Let's create a _git commit_.
+This look good, AI also removed the comment __// add footer lines result__, which is good because the method name `footer()` already tells us that it's adding a footer line. We have made very good progress in refactoring the `statement()` method. Let's create a _git commit_ since all our tests are passing.
 
 I can three potential refactoring opportunites:
 
@@ -713,7 +716,7 @@ I can three potential refactoring opportunites:
 
 I think I will take point 1 first. It is a simple rename operation, and it makes the intent of `statement()` clearer.
 
-### Text Statement
+### Extract Class (TextStatement)
 
 Let's ask AI to rename statement to `textStatement` and its child methods `header`, `body` and `footer` to `textHeader`, `textBody` and `textFooter` respectively.
 
@@ -749,7 +752,7 @@ public class Customer {
 }
 ```
 
-Excellent, all tests pass. Let's maximize this win with a commit. This refactoring does more than just rename; it reveals a structural pattern. We now have a cluster of methods sharing the `text` prefix, all operating on the same data. This cohesive group suggests a hidden abstraction—perhaps a **TextStatement** object—waiting to be extracted.
+Excellent, all tests pass. Let's maximize this win with a commit. This refactoring does more than just rename; it reveals a structural pattern. We now have a cluster of methods sharing the `text` prefix, all operating on the same data. This cohesive group suggests a hidden abstraction, perhaps a **TextStatement** object, waiting to be extracted.
 
 Let's ask AI to introduce `TextStatement`.
 
@@ -798,7 +801,7 @@ class TextStatement {
 }
 ```
 
-This is nice. I would like to rename `value` method of `TextStatement` to `get`, rename `textHeader`, `textBody` and `textFooter` to `header`, `body` and `footer` respectively and add unit tests for this class.
+This is nice. I would like to rename `value` method of `TextStatement` to `get`, `textHeader`, `textBody` and `textFooter` to `header`, `body` and `footer` respectively and add unit tests for this class.
 
 **Prompt to AI:**
 Rename value to get, textHeader to header, textBody to body and textFooter to footer and add unit tests for TextStatement.
@@ -827,10 +830,10 @@ Rename value to get, textHeader to header, textBody to body and textFooter to fo
 
 We should definitely rename the test. Notice that `Customer.textStatement()` has become a simple delegate to `TextStatement`. This signals that the responsibility has fully shifted. It’s now appropriate to move our original characterization tests from the `Customer` class to `TextStatement`, ensuring our tests live alongside the logic they verify.
 
-Let's ask AI to move the tests from `Customer` to `TextStatement`. And maybe we will keep one test in `Customer` which generates statement for multiple rentals.
+Let's ask AI to move the tests from `Customer` to `TextStatement`. And maybe we will keep one test in `Customer` which generates a text statement for multiple rentals.
 
 **Prompt to AI:**
-Move the tests from `Customer` to `TextStatement`. And maybe we will keep one test in `Customer` which generates statement for multiple rentals. Also ensure all the test names do not begin with test and reflect the domain Text statement.
+Move the tests from `Customer` to `TextStatement`. And maybe we will keep one test in `Customer` which generates a text statement for multiple rentals. Also ensure all the test names do not begin with test and reflect the domain Text statement.
 
 **Generated Code:**
 
@@ -920,7 +923,7 @@ public class TextStatementTest {
 
 Great, all tests pass. Let's create a _git commit_.
 
-### Final Move
+### Moving Tests and Cleanup
 
 This is how our code looks like:
 
@@ -1051,9 +1054,9 @@ class TextStatement {
 
 I can still three potential refactoring opportunites:
 
-1. Remove unnecessary getters. We have encapsulated the code enough to ensure that the internal implementation details are not exposed, which provides us the opportunity to remove the getters.
-2. Introduce polymorphism in `Movie` to handle different price codes.
-3. Refactor `body` method. It depends on properties and behaviors of `Movie` and `Rental` classes.
+1. __Remove unnecessary getters__. We have encapsulated the code enough to ensure that the internal implementation details are not exposed, which provides us the opportunity to remove some of the getters.
+2. __Introduce polymorphism__ in `Movie` to handle different price codes.
+3. __Refactor__ `body` method. It depends on properties and behaviors of `Movie` and `Rental` classes.
 
 Let's pick the first one and ask AI to remove unnecessary getters. These should be `getName` from `Customer`, `getPriceCode` from `Movie` and `getDaysRented` from `Rental`.
 
@@ -1074,7 +1077,7 @@ Let me share my thoughts before we have a conversation with AI for these.
 
 1. **Encapsulation**: Point 1 is easily solvable. We can follow the Law of Demeter by having `Rental` expose a `movieTitle()` method, allowing us to hide the entire `Movie` object.
 2. **Responsibility**: While `Rentals` manages the collection, it shouldn't necessarily know how to *print* itself. Generating the statement format remains the responsibility of `TextStatement`.
-3. **Missing Concept**: 'Figure' feels like more than just a comment. It likely represents a concrete domain type, perhaps a tuple combining the *Movie Title* and *Amount* that we haven't yet introduced. 
+3. **Missing Concept**: 'Figure' feels like more than just a comment. It likely represents a concrete domain type, perhaps a tuple combining the *Movie title* and *Amount* that we haven't yet introduced. 
 
 Let's have a quick conversation with AI about these points and get its thoughts.
 
@@ -1121,7 +1124,7 @@ class TextStatement {
 
 Excellent. The AI correctly identified that `getMovie()` was no longer needed and removed it. Let's lock in this improvement with a commit.
 
-Regarding the `body` generation, I'll stick to my decision: `TextStatement` handles the formatting, not `Rentals`. However, I can't shake the feeling that `Figure` is a missing abstraction. I trust that the original developer's choice of vocabulary wasn't accidental. My plan is to have `Rentals` provide an iterator of `Figure` objects, which `TextStatement` can then consume to generate the output. I image `Figure` would be just a `data` class.
+Regarding the `body` generation, I'll stick to my decision: `TextStatement` handles the formatting, not `Rentals`. However, I can't shake the feeling that `Figure` is a missing abstraction. I trust that the original developer's choice of vocabulary wasn't accidental. My plan is to have `Rentals` provide an iterator of `Figure` objects, which `TextStatement` can then consume to generate the output. I imagine `Figure` would be just a `data` class.
 
 Before I go ahead with this, I would like to see what AI does when I ask it to introduce `Figure` and refactor the `body` method.
 
@@ -1169,9 +1172,11 @@ class TextStatement {
         
 I generally avoid data classes, and this implementation gives me pause. `Rental` now exposes `Figure`, which simply re-exposes `title` and `amount` via getters. It feels like we're trading one encapsulation leak for another.
 
-That said, giving `Figure` the responsibility to *print* itself seems wrong, too - especially if `HtmlStatement` is in the pipeline. For now, I'll accept `Figure` as a data carrier to satisfy the current need. On a different day, I might have chosen to revert the method and keep the comment as a breadcrumb, but today, I'll stick with the explicit type.
+That said, giving `Figure` the responsibility to *print* itself seems wrong, too especially if `HtmlStatement` is in the pipeline. For now, I'll accept `Figure` as a data carrier to satisfy the current need. On a different day, I might have chosen to revert the method and keep the comment as a breadcrumb, but today, I'll stick with the explicit type.
 
 Let's commit this change.
+
+With this, our refactoring of `textStatement()` is complete. We’ve transformed a monolithic method into a clean, testable design. While I won’t implement `htmlStatement()` in this article, notice how standardizing on `TextStatement` paves the way for it.
 
 The final code is available [here]().
 
@@ -1189,6 +1194,6 @@ In the age of AI, the rules of craftsmanship still apply. Here is my manifesto f
 
 ### Mention
 
-I would like to thank [Chirag Doshi]() for reviewing the article and sparking the idea for this essay during a discussion on teaching refactoring with AI.
+I would like to thank [Chirag Doshi](https://www.linkedin.com/in/chiragdoshi/) for reviewing the article and sparking the idea for this essay during a discussion on teaching refactoring with AI.
 
 I used [Antigravity](https://antigravity.google/) with Gemini 3 Pro High.
