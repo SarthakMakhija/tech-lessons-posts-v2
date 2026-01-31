@@ -1184,10 +1184,11 @@ In the age of AI, the rules of craftsmanship still apply. Here is my manifesto f
 *   **Stay Focused**: Build iteratively on your progress. Resist the urge to chase every shiny refactoring opportunity the AI suggests; avoid digressions and finish your current objective first.
 *   **Trust but Verify**: AI is a powerful assistant, not a replacement for your judgment. Review every change.
 *   **Own the Code**: At the end of the day, you are responsible for the production system, not an AI system.
+*   **Speed is Given, Quality is Earned**: AI brings velocity for free. Your job is to channel that energy into raising the bar for software quality.
 *   **Small Steps**: Keep your feedback loops tight. Make small, verifying commits to maintain a safety net.
 
 ### Mention
 
-I would like 
+I would like to thank [Chirag Doshi]() for reviewing the article and sparking the idea for this essay during a discussion on teaching refactoring with AI.
 
 I used [Antigravity](https://antigravity.google/) with Gemini 3 Pro High.
