@@ -92,4 +92,23 @@
         border-radius: 0.2em;
         font-weight: 500;
     }
+
+    /* Shiki Highlight Transformers */
+    .highlighted.error {
+        background-color: rgba(255, 0, 0, 0.1);
+        border-left: 3px solid #f87171;
+    }
+
+    .highlighted.warning {
+        background-color: rgba(255, 165, 0, 0.1);
+        border-left: 3px solid #fbbf24;
+    }
+
+    .highlighted-word {
+        text-decoration: underline;
+        text-decoration-color: #facc15;
+        text-decoration-style: wavy;
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+    }
 }

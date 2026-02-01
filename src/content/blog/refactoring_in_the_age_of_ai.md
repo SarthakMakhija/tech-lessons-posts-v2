@@ -353,7 +353,7 @@ public class Customer {
         double totalAmount = 0;
         String result = "Rental Record for " + getName() + "\n";
         for (Rental rental : rentals) {
-            double rentalAmount = rental.getAmount();
+            double rentalAmount = rental.getAmount(); // [!code word:double rentalAmount = rental.getAmount();]
 
             // show figures for this Rental
             result += "\t" + rental.getMovie().getTitle() + "\t" +
@@ -395,7 +395,7 @@ Move the `amount()` method to the `Movie` class passing `daysRented` as argument
 ```java
 class Rental {
     public double amount() {
-        return movie.amount(daysRented);
+        return movie.amount(daysRented); // [!code word:return movie.amount(daysRented);]
     }
 }
 
@@ -546,7 +546,7 @@ public String statement() {
                 String.valueOf(rentalAmount) + "\n";
     }
     // add footer lines result
-    result += "Amount owed is " + String.valueOf(getTotalCharge()) + "\n";
+    result += "Amount owed is " + String.valueOf(getTotalCharge()) + "\n"; // [!code word:getTotalCharge()]
     return result;
 }
 
@@ -592,7 +592,7 @@ Introduce `Rentals` class. Extend it from ArrayList<Rental>, and move `totalChar
 ```java
 public class Customer {
     private String name;
-    private Rentals rentals = new Rentals();
+    private Rentals rentals = new Rentals(); // [!code word:private Rentals rentals = new Rentals();]
 
     public String statement() {
         String result = "Rental Record for " + getName() + "\n";
@@ -604,7 +604,7 @@ public class Customer {
                     rentalAmount + "\n";
         }
         // add footer lines result
-        result += "Amount owed is " + rentals.totalCharge() + "\n";
+        result += "Amount owed is " + rentals.totalCharge() + "\n"; // [!code word:rentals.totalCharge()]
         return result;
     }
 }
@@ -764,7 +764,7 @@ Introduce TextStatment class which depends on customer name and rentals.
 ```java
 public class Customer {
     public String textStatement() {
-        return new TextStatement(this.name, this.rentals).value();
+        return new TextStatement(this.name, this.rentals).value(); // [!code word:return new TextStatement(this.name, this.rentals).value();]
     }
 }
 
@@ -1104,7 +1104,7 @@ Encapsulate `Movie` inside `Rental` and expose `movieTitle()` method from `Renta
 ```java
 
 class Rental {
-    public String movieTitle() {
+    public String movieTitle() { // [!code word:public String movieTitle() {]
         return movie.getTitle();
     }
 }
@@ -1114,7 +1114,7 @@ class TextStatement {
         String result = "";
         for (Rental rental : rentals) {
             // show figures for this Rental
-            result += "\t" + rental.movieTitle() + "\t" +
+            result += "\t" + rental.movieTitle() + "\t" + // [!code word:rental.movieTitle()]
                     rental.amount() + "\n";
         }
         return result;
@@ -1162,7 +1162,7 @@ class TextStatement {
     private String body() {
         String result = "";
         for (Rental rental : rentals) {
-            Figure figure = rental.figure();
+            Figure figure = rental.figure(); // [!code word:Figure figure = rental.figure();]
             result += "\t" + figure.getTitle() + "\t" +
                     figure.getAmount() + "\n";
         }

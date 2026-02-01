@@ -8,6 +8,12 @@ import sitemap from '@astrojs/sitemap';
 
 import remarkDirective from 'remark-directive';
 import { remarkHighlight } from './src/plugins/remark-highlight.mjs';
+import {
+  transformerNotationDiff,
+  transformerNotationHighlight,
+  transformerNotationWordHighlight,
+  transformerNotationErrorLevel
+} from '@shikijs/transformers';
 
 // https://astro.build/config
 export default defineConfig({
@@ -22,6 +28,14 @@ export default defineConfig({
 
   markdown: {
     remarkPlugins: [remarkDirective, remarkHighlight],
+    shikiConfig: {
+      transformers: [
+        transformerNotationDiff(),
+        transformerNotationHighlight(),
+        transformerNotationWordHighlight(),
+        transformerNotationErrorLevel(),
+      ],
+    },
   },
 
   vite: {
