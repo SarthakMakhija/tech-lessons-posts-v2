@@ -82,7 +82,7 @@
 
     /* Blockquote styling */
     blockquote {
-        @apply not-italic border-l-4 border-zinc-200 pl-6 my-8 text-zinc-700;
+        @apply relative not-italic border-l-4 border-zinc-200 pl-6 my-8 text-zinc-700;
     }
 
     /* Author Highlight styling */
