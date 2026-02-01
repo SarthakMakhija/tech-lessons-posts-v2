@@ -1182,7 +1182,7 @@ Let's record this as a commit given all our tests are running.
 
 With this, our refactoring of `textStatement()` is complete. We’ve transformed a monolithic method into a clean, testable design. While I won’t implement `htmlStatement()` in this article, notice how standardizing on `TextStatement` paves the way for it.
 
-The final code is available [here]().
+The final code is available [here](https://github.com/SarthakMakhija/refactoring-in-the-age-of-ai).
 
 ### Summary
 
