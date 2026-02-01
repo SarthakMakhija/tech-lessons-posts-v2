@@ -1,7 +1,7 @@
 ---
 author: "Sarthak Makhija"
 title: "Refactoring in the age of AI"
-pubDate: 2026-01-31
+pubDate: 2026-02-01
 tags: ["Refactoring", "AI", "Clean Code"]
 heroImage: "/refactoring-in-the-age-of-ai.webp"
 caption: "Image by Gemini"
