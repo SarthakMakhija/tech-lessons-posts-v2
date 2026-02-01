@@ -267,7 +267,7 @@ public String statement() {
     double totalAmount = 0;
     String result = "Rental Record for " + getName() + "\n";
     for (Rental each : rentals) {
-        double thisAmount = amount(each);
+        double thisAmount = amount(each); // [!code word:double thisAmount = amount(each);]
 
         // show figures for this Rental
         result += "\t" + each.getMovie().getTitle() + "\t" +
