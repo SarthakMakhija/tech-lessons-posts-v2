@@ -1061,7 +1061,7 @@ I can still three potential refactoring opportunites:
 Let's pick the first one and ask AI to remove unnecessary getters. These should be `getName` from `Customer`, `getPriceCode` from `Movie` and `getDaysRented` from `Rental`.
 
 **Prompt to AI:**
-Remove unnecessary getters from the following code.
+Remove unnecessary getters.
 
 It removed the getters which we were expecting. Let's commit this change.
 
@@ -1175,6 +1175,10 @@ I generally avoid data classes, and this implementation gives me pause. `Rental`
 That said, giving `Figure` the responsibility to *print* itself seems wrong, too especially if `HtmlStatement` is in the pipeline. For now, I'll accept `Figure` as a data carrier to satisfy the current need. On a different day, I might have chosen to revert the method and keep the comment as a breadcrumb, but today, I'll stick with the explicit type.
 
 Let's commit this change.
+
+I overlooked that the AI introduced `totalCharge`, creating a vocabulary clash with our existing `amount()` method after we moved it to `Rentals`. We now have two different terms for the same concept. I should have caught this before committing. I will standardize on `amount` and remove the `*charge` vocabulary. I won't bother the AI for this minor cleanup. 
+
+Let's record this as a commit given all our tests are running.
 
 With this, our refactoring of `textStatement()` is complete. We’ve transformed a monolithic method into a clean, testable design. While I won’t implement `htmlStatement()` in this article, notice how standardizing on `TextStatement` paves the way for it.
 
