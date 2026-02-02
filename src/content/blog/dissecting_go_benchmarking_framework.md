@@ -181,7 +181,7 @@ In `BenchmarkDependency` (`sink = sink + i`), we do this in a tight loop:
 
 __The Penalty__: Searching and retrieving data from this internal buffer is slower than reading unrelated data. It takes about __4–5 cycles__ on Apple Silicon (M-series).
 
-#### What went wrong?
+#### What went wrong when trying to write a SIMPLE benchmark?
 
 Across these three benchmarks, nothing changed in Go’s benchmarking framework. What changed was everything _around_ it.
 
