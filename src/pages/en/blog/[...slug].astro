@@ -63,17 +63,26 @@ const { Content, headings } = await post.render();
                         Table of contents
                     </h2>
                     <ul class="space-y-4 list-none m-0 p-0 text-zinc-600">
-                        {headings.map((heading) => (
-                            <li class="flex gap-3 items-start text-[17px] leading-[28px]">
-                                <span class="mt-2.5 w-1.5 h-1.5 bg-zinc-300 rounded-full shrink-0" />
-                                <a
-                                    href={`#${heading.slug}`}
-                                    class="hover:text-black hover:underline underline-offset-4 decoration-zinc-300 transition-all"
+                        {headings.map((heading) => {
+                            let indentClass = "";
+                            if (heading.depth === 3) indentClass = "ml-4";
+                            if (heading.depth === 4) indentClass = "ml-8";
+                            if (heading.depth > 4) indentClass = "ml-10";
+
+                            return (
+                                <li
+                                    class={`flex gap-3 items-start text-[17px] leading-[28px] ${indentClass}`}
                                 >
-                                    {heading.text}
-                                </a>
-                            </li>
-                        ))}
+                                    <span class="mt-2.5 w-1.5 h-1.5 bg-zinc-300 rounded-full shrink-0" />
+                                    <a
+                                        href={`#${heading.slug}`}
+                                        class="hover:text-black hover:underline underline-offset-4 decoration-zinc-300 transition-all"
+                                    >
+                                        {heading.text}
+                                    </a>
+                                </li>
+                            );
+                        })}
                     </ul>
                 </div>
             )

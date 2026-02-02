@@ -20,7 +20,7 @@ In this post, we’ll dissect the Go benchmarking framework, explore its lifecyc
 
 #### A benchmark that looks correct, but isn’t
 
-Let's look at a simple example that tries to measure the cost of an addition operation. We have a simple `add` function and a benchmark function that calls it `b.N` times.
+Let's look at a simple example that tries to measure the cost of an addition operation involving two integers. We have a simple `add` function and a benchmark function that calls it `b.N` times.
 
 ```go
 package main
@@ -106,19 +106,23 @@ BenchmarkAddFix-14    	1000000000	         0.2497 ns/op
 ```
 
 Now, the assembly looks different (and correct for what we want):
-- `MOVD $40, R2`: The compiler has still optimized the addition `20 + 20` into a constant `40` (constant folding), but it *cannot* discard it.
+- `MOVD $40, R2`: The compiler has still optimized the addition `20 + 20` into a constant `40` (constant folding), but it _cannot_ discard it.
 - `MOVD R2, test.sink(SB)`: It moves that value `40` into the memory address of our global `sink` variable.
 - `ADD $1, R1, R1`: Increments the loop counter.
 
-The loop now actually does work: it performs the store to memory in every iteration. While the addition itself was folded (because `add(20, 20)` is constant), the *operation* of assigning to `sink` is preserved, which gives us a more realistic benchmark if our goal was to measure memory store throughput or function call overhead (if arguments weren't constants).
+The loop now actually does work: it performs the store to memory in every iteration. While the addition itself was folded (because `add(20, 20)` is constant), the _operation_ of assigning to `sink` is preserved, which gives us a more realistic benchmark if our goal was to measure memory store throughput or function call overhead (if arguments weren't constants).
 
-> One might argue that the difference in the benchmark results is negligible (0.2497 ns/op vs 0.2444 ns/op). On a modern CPU like the Apple M4 Max (checking between 4.0 GHz and 4.5 GHz, one hertz is one CPU cycle), a single cycle takes approximately 0.25 nanoseconds. Because these CPUs are superscalar, they can execute the loop overhead (increment + branch) and the "useful" work (store) in parallel within the same cycle. Effectively, both benchmarks measure the minimum latency of the loop structure itself (~1 cycle).
+> One might argue that the difference in the benchmark results is negligible (__0.2497 ns/op__ vs __0.2444 ns/op__). On a modern CPU like the Apple M4 Max (clocking between 4.0 GHz and 4.5 GHz, one hertz is one CPU cycle), a __single cycle__ takes __approximately 0.25 nanoseconds__. Because these CPUs are superscalar, they can execute (__multiple instructions__) the loop overhead (increment + branch) and the "useful" work (store) __in parallel within the same cycle__. Effectively, both benchmarks measure the minimum latency of the loop structure itself (~1 cycle).
 
 > This benchmark primarily measures a store instruction, not addition.
 
 #### Conclusion? Not quite.
 
-Simply preventing the compiler from deleting our code (using a `sink`) wasn't enough. We walked right into another trap: **Instruction Level Parallelism**. The sink assignment was independent enough that the CPU executed it largely in parallel with the loop bookkeeping. To truly measure an operation's latency, we must prevent this parallelism.
+At this point, we are no longer trying to measure the cost of integer addition. That question was already answered by the compiler: it folded the addition away.
+
+What we _are_ trying to understand now is something more subtle: why do two benchmarks that clearly execute __different instructions__ still report almost the same time per operation?
+
+Simply preventing the compiler from deleting our code (using a `sink`) wasn't enough. We walked right into another trap: __Instruction Level Parallelism__. The sink assignment was independent enough that the CPU executed it largely in parallel with the loop bookkeeping(increment + branch). To truly measure an operation's latency, we must prevent this parallelism.
 
 To see a real difference, we need to introduce a __dependency__ that prevents parallel execution of intructions.
 
@@ -159,14 +163,14 @@ When the assembly says `MOVD R2, sink(SB)`, it does not mean "Write to the RAM s
 __The Journey of a Write (Store)__
 
 1.  __CPU Core (Internal Queue - Store Buffer)__: The CPU puts the value (`sink=40`) into a small, super-fast queue inside the core called the __Store Buffer__.
-    *   __Time taken__: Instant (<1 cycle).
-    *   __Purpose__: The CPU can keep running without waiting for memory.
+    * __Time taken__: Instant (<1 cycle).
+    * __Purpose__: The CPU can keep running without waiting for memory.
 
 2.  __L1 Cache (The "Real" Memory View)__: Eventually (maybe 10-20 cycles later), the Store Buffer drains into the L1 Data Cache. This is the first place where other cores might see the change.
 
 3.  __RAM (Main Memory)__: Much, much later (hundreds of cycles), if the L1 cache gets full, the value is evicted to L2, L3, and finally to RAM.
 
-__Why `BenchmarkDependency` is Slow (The "Forwarding" Penalty)__
+__Why `BenchmarkDependency` is Slow (The "Forwarding" Penalty)?__
 
 In `BenchmarkDependency` (`sink = sink + i`), we do this in a tight loop:
 
@@ -179,7 +183,7 @@ __The Penalty__: Searching and retrieving data from this internal buffer is slow
 
 #### What went wrong?
 
-Across these three benchmarks, nothing changed in Go’s benchmarking framework. What changed was everything *around* it.
+Across these three benchmarks, nothing changed in Go’s benchmarking framework. What changed was everything _around_ it.
 
 | Benchmark             | What we thought we measured | What we actually measured |
 |-----------------------|-----------------------------|---------------------------|
@@ -189,23 +193,20 @@ Across these three benchmarks, nothing changed in Go’s benchmarking framework.
 
 The framework faithfully executed each benchmark. The compiler and the CPU faithfully optimized the work we gave them.
 
-The problem was not Go’s benchmarking framework, **the problem was our mental model of what a benchmark measures.**
+The problem was not Go’s benchmarking framework, __the problem was our mental model of what a benchmark measures.__
 
-A benchmark is not:
+> A benchmark is __NOT__ same as: Run this function `N` times and divide by `N`.
 
-> “Run this function `N` times and divide by `N`”
-
-A benchmark is an **experiment** involving:
+A benchmark is an __experiment__ involving:
 - the benchmark runner
 - the compiler
 - the CPU microarchitecture
-- and how we structure *observable effects*
+- and how we structure _observable effects_
 
 Even before looking at Go’s benchmarking code, an important pattern emerges:
 
-> The framework controls **how often** code runs,  
-> but the compiler and the CPU control **what actually runs**.
+> The __framework__ controls __how often__ code runs, but the __compiler__ and the __CPU__ control __what actually runs__.
 
-To understand what Go’s benchmarking framework does, and just as importantly, what it deliberately does **not** do, we need to look at how benchmarks are executed internally.
+To understand what Go’s benchmarking framework does, and just as importantly, what it deliberately does __not__ do, we need to look at how benchmarks are executed internally.
 
 That’s where we go next.
