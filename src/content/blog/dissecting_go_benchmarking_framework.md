@@ -210,3 +210,33 @@ Even before looking at Go’s benchmarking code, an important pattern emerges:
 To understand what Go’s benchmarking framework does, and just as importantly, what it deliberately does __not__ do, we need to look at how benchmarks are executed internally.
 
 That’s where we go next.
+
+
+### Predicting Iterations
+
+This function is the heart of the "discovery phase." It decides how many times to run the benchmark next.
+
+```go
+func predictN(goalns int64, prevIters int64, prevns int64, last int64) int {
+	if prevns == 0 {
+		// Round up to dodge divide by zero. See https://go.dev/issue/70709.
+		prevns = 1
+	}
+
+	n := goalns * prevIters / prevns
+	n += n / 5
+	n = min(n, 100*last)
+	n = max(n, last+1)
+	n = min(n, 1e9)
+	return int(n)
+}
+```
+
+1.  **Linear Extrapolation**: `n := goalns * prevIters / prevns`. It starts with a simple math. Number of iterations should be equal to `benchmark duration * time per iteration`. If 1 iteration took 1ms, and our goal is 1000ms (`goalns`), we need 1000 iterations.
+2.  **The 20% Pad**: `n += n / 5`. Go deliberately overshoots the target by 20%. Why? To avoid "undershooting." If we only run exactly as many as we predicted, and the CPU throttles slightly or we get lucky with cache hits, we might finish *just under* the target time, forcing yet another ramp-up round. Overshooting slightly ensures we cross the finish line in fewer steps.
+3.  **Growth Cap**: `n = min(n, 100*last)`. It prevents the iteration count from exploding too fast (e.g., if the previous run was suspiciously fast due to noise/setup).
+4.  **Monotonicity**: `n = max(n, last+1)`. We must always run at least one more iteration than before.
+5.  **Safety Cap**: `n = min(n, 1e9)`. It caps the max iterations to 1 billion. This avoids potential integer overflows on 32-bit systems (where `int` might be 32-bit) and ensures that we don't accidentally schedule a run that takes days.
+
+This prediction loop continues until `b.Duration >= benchtime`.
+
