@@ -116,7 +116,7 @@ The loop now actually does work: it performs the store to memory in every iterat
 
 > One might argue that the difference in the benchmark results is negligible (__0.2497 ns/op__ vs __0.2444 ns/op__). On a modern CPU like the Apple M4 Max (clocking between 4.0 GHz and 4.5 GHz, one hertz is one CPU cycle), a __single cycle__ takes __approximately 0.25 nanoseconds__. Because these CPUs are superscalar, they can execute (__multiple instructions__) the loop overhead (increment + branch) and the "useful" work (store) __in parallel within the same cycle__. Effectively, both benchmarks measure the minimum latency of the loop structure itself (~1 cycle).
 
-#### Conclusion? Not quite.
+#### Conclusion? Not quite
 
 At this point, we are no longer trying to measure the cost of integer addition. That question was already answered by the compiler: it folded the addition away because the arguments to `add` were constants.
 
@@ -211,6 +211,43 @@ To understand what Go’s benchmarking framework does, and just as importantly, 
 
 That’s where we go next.
 
+### Who Actually Controls a Go Benchmark?
+
+When we write a benchmark like `BenchmarkAdd`, it is easy to imagine that Go simply runs the function in a tight loop and reports the time. That mental model is convenient and wrong.
+
+In reality, the benchmark function is only one small part of a larger execution process controlled entirely by Go’s benchmarking framework. The key idea to keep in mind is this:
+
+- The benchmark provides *work*.  
+- The framework controls *execution*.
+
+Let’s walk through what actually happens when you run `go test -bench` to see who is really in charge.
+
+#### Discovery: Scanning for Candidates
+
+The `go test -bench` tool begins by scanning compiled packages for functions that follow the convention: `func BenchmarkX(b *testing.B)`. At this stage, the benchmark is just a function pointer, registered and waiting.
+
+#### Context Initialization: More Than a Counter
+
+Before running, the framework creates a pointer to `testing.B`. This object isn't just a simple loop counter; it’s the control center. It holds `b.N` (benchmark iterations), tracks timing, records memory allocations, and stores metadata. Crucially, `b.N` starts undefined, and the framework decides how many times to run the benchmark.
+
+#### Iteration Selection: The Framework's Choice
+
+The benchmark function does **not** decide how many times to run. The framework repeatedly invokes the function with increasing values of `b.N`: 1, 100, 1000, etc., measuring how long it takes. It adjusts `b.N` dynamically until it finds a "stable window" of statistically significant execution time.
+
+#### The Timing Trap: External Boundaries
+
+The benchmark function runs *inside* the timing boundaries, but it does not *create* them. The framework starts the timer, calls the benchmark function, and stops the timer.
+Calls like `b.ResetTimer()` are simply requests to the framework to adjust its internal clock; you are never measuring time yourself.
+
+#### Summary: The Control Boundary
+
+By now, a clear boundary should be visible:
+
+- The **Framework** controls **when**, **how often**, and **how long** code runs.
+- The **Compiler and CPU** control **what instructions actually execute**.
+- The **Author** (you) controls **which effects are observable**.
+
+Understanding this separation explains why our earlier benchmarks could run perfectly yet measure nothing but loop overhead.
 
 ### Predicting Iterations
 
