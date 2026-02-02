@@ -106,21 +106,21 @@ BenchmarkAddFix-14    	1000000000	         0.2497 ns/op
 ```
 
 Now, the assembly looks different (and correct for what we want):
-- `MOVD $40, R2`: The compiler has still optimized the addition `20 + 20` into a constant `40` (constant folding), but it _cannot_ discard it.
+- `MOVD $40, R2`: The compiler has still optimized the addition `20 + 20` into a constant `40` (__constant folding__), but it _cannot_ discard it.
 - `MOVD R2, test.sink(SB)`: It moves that value `40` into the memory address of our global `sink` variable.
 - `ADD $1, R1, R1`: Increments the loop counter.
 
-The loop now actually does work: it performs the store to memory in every iteration. While the addition itself was folded (because `add(20, 20)` is constant), the _operation_ of assigning to `sink` is preserved, which gives us a more realistic benchmark if our goal was to measure memory store throughput or function call overhead (if arguments weren't constants).
+The loop now actually does work: it performs the store to memory in every iteration. While the addition itself was folded (because `add(20, 20)` is constant), the _operation_ of assigning to `sink` is preserved.
+
+> This benchmark ends up measuring the performance of a store instruction, not addition.
 
 > One might argue that the difference in the benchmark results is negligible (__0.2497 ns/op__ vs __0.2444 ns/op__). On a modern CPU like the Apple M4 Max (clocking between 4.0 GHz and 4.5 GHz, one hertz is one CPU cycle), a __single cycle__ takes __approximately 0.25 nanoseconds__. Because these CPUs are superscalar, they can execute (__multiple instructions__) the loop overhead (increment + branch) and the "useful" work (store) __in parallel within the same cycle__. Effectively, both benchmarks measure the minimum latency of the loop structure itself (~1 cycle).
 
-> This benchmark primarily measures a store instruction, not addition.
-
 #### Conclusion? Not quite.
 
-At this point, we are no longer trying to measure the cost of integer addition. That question was already answered by the compiler: it folded the addition away.
+At this point, we are no longer trying to measure the cost of integer addition. That question was already answered by the compiler: it folded the addition away because the arguments to `add` were constants.
 
-What we _are_ trying to understand now is something more subtle: why do two benchmarks that clearly execute __different instructions__ still report almost the same time per operation?
+What we are trying to understand now is something more subtle: why do two benchmarks that clearly execute __different instructions__ still report almost the same time per operation?
 
 Simply preventing the compiler from deleting our code (using a `sink`) wasn't enough. We walked right into another trap: __Instruction Level Parallelism__. The sink assignment was independent enough that the CPU executed it largely in parallel with the loop bookkeeping(increment + branch). To truly measure an operation's latency, we must prevent this parallelism.
 
