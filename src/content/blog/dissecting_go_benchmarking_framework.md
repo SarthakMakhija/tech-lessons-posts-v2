@@ -300,9 +300,11 @@ func runBenchmarks(
 
 The `runBenchmarks` function acts as the entry point for the entire benchmarking suite. It filters the registered benchmarks against the user-provided `-bench` flag (regex), creating a list of matching benchmarks. It then constructs a root `testing.B` object named `main`.
 
-This `main` benchmark is special, it doesn't measure performance itself but serves as the parent container that orchestrates the execution of all user-defined benchmarks. Finally, it kicks off the execution by calling `main.runN(1)`, effectively starting the root benchmark which then invokes your specific benchmarks via `b.Run`.
+1. **Filtering**: It filters registered benchmarks against the user-provided `-bench` flag.
+2. **Main Benchmark**: It constructs a root `testing.B` object named `main`. This is special, it doesn't measure performance itself but effectively serves as the parent container.
+3. **Execution**: It kicks off execution by calling `main.runN(1)`. This starts the root benchmark, which in turn invokes specific benchmarks via `b.Run`.
 
-__Note__: the `benchFunc` inside `main` is the function that is called to run all the filtered benchmarks.
+__Note__: The `benchFunc` inside `main` is the closure responsible for iterating over and running all filtered benchmarks. `InternalBenchmark` contains benchmark name and its function.
 
 ### Predicting Iterations
 
