@@ -228,7 +228,7 @@ The `go test -bench` tool begins by scanning compiled packages for functions tha
 
 #### Context Initialization: More Than a Counter
 
-Before running, the framework creates a pointer to `testing.B`. This object isn't just a simple loop counter; it’s the control center. It holds `b.N` (benchmark iterations), tracks timing, records memory allocations, and stores metadata. Crucially, `b.N` starts undefined, and the framework decides how many times to run the benchmark.
+Before running, the framework creates a pointer to `testing.B`. This object isn't just a simple loop counter; it’s the control center. It holds `b.N` (benchmark iterations), tracks timing, records memory allocations, and stores metadata. Crucially, `b.N` starts undefined, and the framework decides how many times to run the benchmark by [predicting iterations](#predicting-iterations).
 
 #### Iteration Selection: The Framework's Choice
 
@@ -248,6 +248,10 @@ By now, a clear boundary should be visible:
 - The **Author** (you) controls **which effects are observable**.
 
 Understanding this separation explains why our earlier benchmarks could run perfectly yet measure nothing but loop overhead.
+
+### Go's Execution Loop
+
+<Pending>
 
 ### Predicting Iterations
 
@@ -277,3 +281,18 @@ func predictN(goalns int64, prevIters int64, prevns int64, last int64) int {
 
 This prediction loop continues until `b.Duration >= benchtime`.
 
+### High Precision Timing
+
+<Pending>
+
+### Result Collection
+
+<Pending>
+
+### Building Blocks of a Benchmarking Framework
+
+<Pending>
+
+### Summary
+
+<Pending>
