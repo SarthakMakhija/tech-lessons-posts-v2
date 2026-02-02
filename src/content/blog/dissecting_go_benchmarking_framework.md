@@ -249,9 +249,60 @@ By now, a clear boundary should be visible:
 
 Understanding this separation explains why our earlier benchmarks could run perfectly yet measure nothing but loop overhead.
 
-### Go's Execution Loop
+### Go's Execution of Benchmarks
 
-<Pending>
+The execution of a benchmark function involves the following concepts:
+
+1. [Discovery](#discovery)
+
+#### Discovery
+
+The `go test -bench` tool begins by scanning compiled packages for functions that follow the convention: `func BenchmarkX(b *testing.B)`. Below function `RunBenchmarks` is called when `go test -bench` is run.
+
+```go
+func RunBenchmarks(
+    matchString func(pat, str string) (bool, error), 
+    benchmarks []InternalBenchmark,
+) {
+	runBenchmarks("", matchString, benchmarks)
+}
+
+func runBenchmarks(
+    importPath string, 
+    matchString func(pat, str string) (bool, error), 
+    benchmarks []InternalBenchmark,
+) bool {
+	// If no flag was specified, don't run benchmarks.
+	if len(*matchBenchmarks) == 0 {
+		return true
+	}
+	var bs []InternalBenchmark
+	for _, Benchmark := range benchmarks {
+		if _, matched, _ := bstate.match.fullName(nil, Benchmark.Name); matched {
+			bs = append(bs, Benchmark)
+		}
+	}
+	main := &B{
+		common: common{ ... },
+		importPath: importPath,
+		benchFunc: func(b *B) {
+			for _, Benchmark := range bs {
+				b.Run(Benchmark.Name, Benchmark.F)
+			}
+		},
+		benchTime: benchTime,
+		bstate:    bstate,
+	}
+	main.runN(1)
+	return !main.failed
+}
+```
+
+The `runBenchmarks` function acts as the entry point for the entire benchmarking suite. It filters the registered benchmarks against the user-provided `-bench` flag (regex), creating a list of matching benchmarks. It then constructs a root `testing.B` object named `main`.
+
+This `main` benchmark is special, it doesn't measure performance itself but serves as the parent container that orchestrates the execution of all user-defined benchmarks. Finally, it kicks off the execution by calling `main.runN(1)`, effectively starting the root benchmark which then invokes your specific benchmarks via `b.Run`.
+
+__Note__: the `benchFunc` inside `main` is the function that is called to run all the filtered benchmarks.
 
 ### Predicting Iterations
 
