@@ -705,34 +705,25 @@ Those responsibilities belong to the benchmark author. Understanding these bound
 
 ### Summary
 
-Go’s benchmarking framework is often treated as a convenience feature, a loop counter with a timer attached. In reality, it is a carefully designed execution engine that orchestrates controlled performance experiments.
+Go’s benchmarking framework is often treated as a convenience feature, a tight loop with a timer attached. In reality, it is a carefully designed execution engine that orchestrates controlled performance experiments.
 
-Throughout this article, we saw that:
+By reading through the internals, we saw that:
 - benchmarks can look correct and still measure nothing
 - compiler optimizations and CPU behavior matter as much as framework mechanics
 - the framework controls *execution*, not *meaning*
 
-It is tempting to think of a benchmark as nothing more than a tight loop:
+Understanding these internals changes how you write and interpret benchmarks.
 
-<u>Run this code `N` times and divide by `N`.</u>
+#### What you can do after understanding the internals
 
-That intuition fails because a benchmark is not just code, it is an interaction between the benchmark runner, the compiler, and the CPU.
+**Reason about `b.N` instead of fighting it**  
+`b.N` is not an input; it is a value discovered by the framework. Expect it to vary, and design benchmarks whose work can be meaningfully amortized over many iterations.
 
-A tight loop only describes *what* the benchmark does.
-It says nothing about:
-- how `N` is chosen,
-- when timing starts and stops,
-- which work is included or excluded,
-- or which optimizations are allowed.
+**Confirm that benchmark code is actually executed**  
+Dead-code elimination, constant folding, and instruction-level parallelism can silently erase the work you think you are measuring. If you cannot explain why the compiler must execute your code, the benchmark result is meaningless.
 
-Those decisions are made outside the loop, by the framework and the runtime environment. Understanding this separation is the difference between writing a benchmark that runs and writing one that measures something meaningful.
+**Use `DoNotOptimize` (or its Go equivalents) correctly**  
+`DoNotOptimize` preserves *observability*, not intent. It prevents the compiler from discarding values, but it does not defeat instruction-level parallelism or isolate CPU costs. In Go, this responsibility is expressed through language-level side effects rather than compiler escape hatches.
 
-It is an experiment shaped by:
-- the benchmark runner
-- the compiler
-- the CPU microarchitecture
-- and the observability choices made by the author
-
-Go’s benchmarking framework does its job precisely and predictably. When benchmarks go wrong, it is usually because we misunderstand what is being measured — not because the framework failed.
-
-Understanding these internals does not just help you write better Go benchmarks.  It gives you a reusable mental model for reasoning about performance measurement in any system.
+**Diagnose surprising results instead of guessing**  
+When a benchmark reports implausible numbers, you can reason about iteration discovery, compiler behavior, and microarchitectural effects instead of relying on trial and error.
