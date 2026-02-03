@@ -11,9 +11,9 @@ caption: "Image by Gemini"
 
 Benchmarking is a critical aspect of software engineering, especially when performance is a key requirement. Go provides a robust benchmarking framework built directly into its standard library's `testing` package. It helps developers measure the performance of their code, identify bottlenecks, and verify optimizations. However, writing accurate benchmarks requires a good understanding of how the framework works internally and how the Go compiler optimizes code. 
 
-In this post, we’ll dissect the Go benchmarking framework, explore its lifecycle, and look into common pitfalls. We will cover:
+In this post, we’ll dissect the Go benchmarking framework, explore its lifecycle, and understand the building blocks of a micro-benchmarking framework. We will cover:
 
-- Basics of writing benchmarks (and how to avoid common mistakes)
+- A case study of a deceptive benchmark
 - Go's benchmark source code and lifecycle
 - High-precision timers
 - Controlling compiler optimizations (similar to `DoNotOptimize` in C++)
@@ -111,7 +111,7 @@ Now, the assembly looks different (and correct for what we want):
 - `MOVD R2, test.sink(SB)`: It moves that value `40` into the memory address of our global `sink` variable.
 - `ADD $1, R1, R1`: Increments the loop counter.
 
-The loop now actually does work: it performs the store to memory in every iteration. While the addition itself was folded (because `add(20, 20)` is constant), the _operation_ of assigning to `sink` is preserved.
+The loop now actually does some work: it performs the store to memory in every iteration. While the addition itself was folded (because `add(20, 20)` is constant), the _operation_ of assigning to `sink` is preserved.
 
 > This benchmark ends up measuring the performance of a store instruction, not addition.
 
@@ -218,7 +218,7 @@ When we write a benchmark like `BenchmarkAdd`, it is easy to imagine that Go sim
 
 In reality, the benchmark function is only one small part of a larger execution process controlled entirely by Go’s benchmarking framework. The key idea to keep in mind is this:
 
-- The benchmark provides *work*.  
+- The benchmark function provides *work*.  
 - The framework controls *execution*.
 
 Let’s walk through what actually happens when you run `go test -bench` to see who is really in charge.
@@ -229,7 +229,7 @@ The `go test -bench` tool begins by scanning compiled packages for functions tha
 
 #### Context Initialization: More Than a Counter
 
-Before running, the framework creates a pointer to `testing.B`. This object isn't just a simple loop counter; it’s the control center. It holds `b.N` (benchmark iterations), tracks timing, records memory allocations, and stores metadata. Crucially, `b.N` starts undefined, and the framework decides how many times to run the benchmark by [predicting iterations](#predicting-iterations).
+Before running, the framework creates a pointer to `testing.B`. This object isn't just a simple loop counter; it’s the control center. It holds `b.N` (benchmark iterations), tracks timing, records memory allocations, and stores metadata. Crucially, `b.N` starts undefined, and the framework decides how many times to run the benchmark by [predicting iterations](#6-predicting-iterations).
 
 #### Iteration Selection: The Framework's Choice
 
@@ -286,8 +286,8 @@ func runBenchmarks(
 	}
 	var bs []InternalBenchmark
 	for _, Benchmark := range benchmarks {
-		if _, matched, _ := bstate.match.fullName(nil, Benchmark.Name); matched {
-			bs = append(bs, Benchmark)
+		if _, matched, _ := bstate.match.fullName(nil, Benchmark.Name); matched { // [!code word:bstate.match.fullName(nil, Benchmark.Name)]
+			bs = append(bs, Benchmark) // [!code word:bs = append(bs, Benchmark)]
 		}
 	}
 	main := &B{
@@ -353,7 +353,7 @@ Before starting the clock, it prepares the runtime environment to ensure consist
 - __`runtime.GC()`__: It forces a full garbage collection. This ensures that memory allocated by previous benchmarks doesn't affect the current one, providing a "clean slate."
 - __`b.resetRaces()`__: If you are running with `-race`, this resets the race detector's state, preventing false positives or pollution from prior runs.
 - __`b.N`__: The number of iterations the benchmark function should run.
-- __`b.previousN` and `b.previousDuration`__: Stores the iteration count and duration of this run. These values are crucial for the *next* step: [Predicting Iterations](#predicting-iterations). The framework uses them to calculate the rate of the benchmark and estimate the next `N`.
+- __`b.previousN` and `b.previousDuration`__: Stores the iteration count and duration of this run, which will be crucial for the *next* step: [Predicting Iterations](#6-predicting-iterations). The framework uses them to calculate the rate of the benchmark and estimate the next `N`.
 
 For the **Root Benchmark** (Main), `n` is always 1. Its `benchFunc` iterates over all the user benchmarks (like `BenchmarkAdd`) and calls `b.Run` on them.
 
@@ -365,7 +365,7 @@ The `Run` method orchestrates the creation and execution of sub-benchmarks. When
 
 Key responsibilities:
 1.  **Release Lock**: It releases `benchmarkLock` because sub-benchmarks will run as independent entities and may need to acquire it themselves.
-2.  **Creation**: Creates a new `testing.B` context (`sub`) for the user benchmark.
+2.  **Creation of testing.B**: Creates a new `testing.B` context (`sub`) for the user benchmark.
 3.  **Execution**: Calls `sub.run1()` for doing the first iteration and `sub.run()` for doing the rest of the iterations.
 
 ```go
@@ -391,8 +391,8 @@ func (b *B) Run(name string, f func(b *B)) bool {
 		bstate:     b.bstate,
 	}
 
-	if sub.run1() {
-		sub.run()
+	if sub.run1() { // [!code word:sub.run1()]
+		sub.run() // [!code word:sub.run()]
 	}
 	b.add(sub.result)
 	return !sub.failed
@@ -437,12 +437,13 @@ func (b *B) run1() bool {
 
 After `run1` passes, the framework proceeds to the main execution loop.
 
-1.  **`b.bstate != nil`**: Checks if we are running in the standard mode via `go test -bench` (indicated by the comment `// Running go test --test.bench`). In this mode, `bstate` holds the benchmark state and configuration. The `processBench` function handles properties like `-cpu` and `-count` loops, ultimately calling `doBench` for each combination.
+1.  **`b.bstate != nil`**: Checks if we are running in the standard mode via `go test -bench`. In this mode, `bstate` holds the benchmark state and configuration. The `processBench` function handles properties like `-cpu` and `-count` loops, ultimately calling `doBench` for each combination.
 2.  **`b.launch()`**: Like `run1`, `launch` also runs in a separate goroutine managed by `doBench`.
 3.  **`b.loop.n == 0`**: Ensures we haven't already run the loop logic (idempotency check).
-4.  **`b.benchTime.n > 0`**: Handles the case where the user specified a fixed iteration count (e.g., `-benchtime=100x`). If so, it runs exactly that many times.
-    *   Otherwise, it enters the dynamic ramp-up loop where it uses `predictN` to [predict next iteration](#predicting-iterations) count until `b.duration` meets the target bench time (`d`).
-5.  **Execution**: Finally, `b.runN(n)` is invoked to execute the benchmark for the calculated number of iterations. Here, `b.N` is set to the calculated iterations, which is used by the user benchmark function.
+4.  **`b.benchTime.n > 0`**: Handles the case where the user specified a fixed iteration count (e.g., `-benchtime=100x`). 
+    - If so, it runs exactly that many times.
+    - Otherwise, it enters the dynamic ramp-up loop where it uses `predictN` to [predict next iteration](#6-predicting-iterations) count until `b.duration` meets the target bench time (`d`).
+5.  **`b.runN(n)`**: Finally, `b.runN(n)` is invoked to execute the benchmark for the calculated number of iterations. Here, `b.N` is set to the calculated iterations, which is used by the user benchmark function.
 
 ```go
 func (b *B) run() {
@@ -488,7 +489,7 @@ func (b *B) launch() {
 
 #### 6. Predicting Iterations
 
-This function is the heart of the "discovery phase." It decides how many times to run the benchmark next.
+This function is the heart of the "execution phase." It decides how many times to run the benchmark next.
 
 ```go
 func predictN(goalns int64, prevIters int64, prevns int64, last int64) int {
@@ -592,12 +593,11 @@ func highPrecisionTimeNow() highPrecisionTime {
 
 ### Building Blocks of a Benchmarking Framework
 
-By stepping through Go’s benchmarking implementation, a clear pattern emerges.  
-Go’s framework is not a collection of ad-hoc features, it is an explicit encoding of a benchmarking model. At a high level, any serious benchmarking framework needs the following building blocks.
+By stepping through Go’s benchmarking implementation, a clear pattern emerges. Go’s framework is not a collection of ad-hoc features, it is an explicit encoding of a benchmarking model. At a high level, any serious benchmarking framework needs the following building blocks.
 
 #### 1. Definition
 
-A benchmark begins as a user-defined unit of work. In Go, this is the `BenchmarkX(b *testing.B)` function.  Crucially, this function **does not control execution** — it only defines what work should be performed.
+A benchmark begins as a user-defined unit of work. In Go, this is the `BenchmarkX(b *testing.B)` function.  Crucially, this function **does not control execution**, it only defines what work should be performed.
 
 #### 2. Setup and teardown boundaries
 
@@ -615,7 +615,7 @@ Go does not include an explicit warm-up phase.
 
 Instead, it repeatedly executes the benchmark while discovering an appropriate iteration count. During this process, the benchmark naturally benefits from incidental warm-up effects such as cache population, branch predictor training, and CPU frequency stabilization.
 
-These effects are not guaranteed or modeled explicitly — they are a byproduct of repeated execution, not a contract of the framework.
+These effects are not guaranteed or modeled explicitly, they are a byproduct of repeated execution, not a contract of the framework.
 
 #### 4. Iteration prediction
 
@@ -653,6 +653,24 @@ Some benchmarking frameworks, most notably [Google Benchmark](https://github.com
 
 In C++, this is typically implemented using an empty inline assembly block with carefully chosen constraints:
 
+Here is a tiny _pseudo_ code snippet to explain how `DoNotOptimize` will be used:
+
+```go
+func BenchmarkAdd(b *testing.B) {
+    for i := 0; i < b.N; i++ {
+        x := 0
+        for j := 0; j < 100; j++ {
+            x += j
+        }
+        DoNotOptimize(x) // Forces 'x' to be computed
+    }
+}
+```
+
+Note: `DoNotOptimize` is not a real function in Go, it is a placeholder for any observable side effect that the compiler must preserve.
+
+`DoNotOptimize` in C++, this is typically implemented using an empty inline assembly block with carefully chosen constraints:
+
 ```cpp
 asm volatile(
     ""              // no actual instructions
@@ -662,11 +680,11 @@ asm volatile(
 );
 ```
 
-At first glance, this code appears to do nothing, and at the machine instruction level, it usually does. The power of this construct lies entirely in how the compiler is forced to reason about it.
+At first glance, this code appears to do nothing. The power of this construct lies entirely in how the compiler is forced to reason about it.
 
 The `volatile` qualifier ensures that the assembly block cannot be removed or reordered, even though it emits no instructions. Without `volatile`, the compiler could safely delete the entire block as dead code.
 
-The `"r"(value)` input constraint tells the compiler that the assembly block uses value. This makes the value observable: it must be computed, materialized in a register, and available at this precise point in the program. As a result, dead-code elimination, constant propagation, and loop-invariant hoisting are all blocked for the computation that produces value.
+The `"r"(value)` input constraint tells the compiler that the assembly block uses value. This makes the value observable: it must be computed, materialized in a register, and available at this precise point in the program. As a result, the compiler is forced to calculate the value, preventing it from optimizing the code away or moving it outside the loops.
 
 The `"memory"` clobber introduces a _compiler-level memory barrier_. It informs the compiler that the assembly block may read or write arbitrary memory, preventing it from reordering loads and stores across this point. This is not a CPU fence, it does not emit hardware memory-ordering instructions, but it is a strong optimization barrier at compile time.
 
@@ -698,7 +716,7 @@ It is tempting to think of a benchmark as nothing more than a tight loop:
 
 <u>Run this code `N` times and divide by `N`.</u>
 
-That intuition fails because a benchmark is not just code — it is an interaction between the benchmark runner, the compiler, and the CPU.
+That intuition fails because a benchmark is not just code, it is an interaction between the benchmark runner, the compiler, and the CPU.
 
 A tight loop only describes *what* the benchmark does.
 It says nothing about:
