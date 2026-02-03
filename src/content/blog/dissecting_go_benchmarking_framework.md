@@ -254,6 +254,8 @@ Understanding this separation explains why our earlier benchmarks could run perf
 The execution of a benchmark function involves the following concepts:
 
 1. [Discovery](#discovery)
+2. [Running Root Benchmark](#running-root-benchmark)
+
 
 #### Discovery
 
@@ -305,6 +307,47 @@ The `runBenchmarks` function acts as the entry point for the entire benchmarking
 3. **Execution**: It kicks off execution by calling `main.runN(1)`. This starts the root benchmark, which in turn invokes specific benchmarks via `b.Run`.
 
 __Note__: The `benchFunc` inside `main` is the closure responsible for iterating over and running all filtered benchmarks. `InternalBenchmark` contains benchmark name and its function.
+
+#### Running Root Benchmark
+
+As mentioned earlier, the execution starts with `main.runN(1)`. This `runN` method is the core engine of the framework, responsible for setting up the environment and executing the benchmark function.
+
+```go
+func (b *B) runN(n int) {
+	benchmarkLock.Lock()
+	defer benchmarkLock.Unlock()
+	// Try to get a comparable environment for each run
+	// by clearing garbage from previous runs.
+	runtime.GC()
+	b.resetRaces()
+	b.N = n
+	b.loop.n = 0
+	b.loop.i = 0
+	b.loop.done = false
+
+	b.parallelism = 1
+	b.ResetTimer()
+	b.StartTimer()
+	b.benchFunc(b)
+	b.StopTimer()
+	b.previousN = n
+	b.previousDuration = b.duration
+
+	if b.loop.n > 0 && !b.loop.done && !b.failed {
+		b.Error("benchmark function returned without B.Loop() == false (break or return in loop?)")
+	}
+}
+```
+
+The `runN` method is where the framework actually measures execution time. It is the engine that drives every benchmark run.
+
+Before starting the clock, it prepares the runtime environment to ensure consistent results:
+- **`runtime.GC()`**: It forces a full garbage collection. This ensures that memory allocated by previous benchmarks doesn't affect the current one, providing a "clean slate."
+- **`b.resetRaces()`**: If you are running with `-race`, this resets the race detector's state, preventing false positives or pollution from prior runs.
+
+For the **Root Benchmark** (Main), `n` is always 1. Its `benchFunc` iterates over all the user benchmarks (like `BenchmarkAdd`) and calls `b.Run` on them.
+
+It is important to note that `runN` is not specific to the `main` benchmark. It is the same method that will eventually run your benchmark code, which we will explore next.
 
 ### Predicting Iterations
 
