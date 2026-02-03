@@ -3,7 +3,7 @@ author: "Sarthak Makhija"
 title: "Dissecting Go’s Benchmarking Framework"
 pubDate: 2026-02-04
 tags: ["Go", "Benchmark"]
-heroImage: "/dissecting-go-benchmarking-framework.png"
+heroImage: "/dissecting-go-benchmarking-framework.webp"
 caption: "Image by Gemini"
 ---
 
