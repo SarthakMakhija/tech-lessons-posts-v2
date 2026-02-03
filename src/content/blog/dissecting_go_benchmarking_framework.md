@@ -289,7 +289,7 @@ func runBenchmarks(
 		importPath: importPath,
 		benchFunc: func(b *B) {
 			for _, Benchmark := range bs {
-				b.Run(Benchmark.Name, Benchmark.F)
+				b.Run(Benchmark.Name, Benchmark.F) // [!code highlight]
 			}
 		},
 		benchTime: benchTime,
@@ -311,6 +311,8 @@ __Note__: The `benchFunc` inside `main` is the closure responsible for iterating
 #### Running Root Benchmark
 
 As mentioned earlier, the execution starts with `main.runN(1)`. This `runN` method is the core engine of the framework, responsible for setting up the environment and executing the benchmark function.
+
+It starts by acquiring a global lock `benchmarkLock`. This ensures that only one benchmark runs at a time, preventing interference from other benchmarks.
 
 ```go
 func (b *B) runN(n int) {
@@ -342,14 +344,143 @@ func (b *B) runN(n int) {
 The `runN` method is where the framework actually measures execution time. It is the engine that drives every benchmark run.
 
 Before starting the clock, it prepares the runtime environment to ensure consistent results:
-- **`runtime.GC()`**: It forces a full garbage collection. This ensures that memory allocated by previous benchmarks doesn't affect the current one, providing a "clean slate."
-- **`b.resetRaces()`**: If you are running with `-race`, this resets the race detector's state, preventing false positives or pollution from prior runs.
+- __`runtime.GC()`__: It forces a full garbage collection. This ensures that memory allocated by previous benchmarks doesn't affect the current one, providing a "clean slate."
+- __`b.resetRaces()`__: If you are running with `-race`, this resets the race detector's state, preventing false positives or pollution from prior runs.
+- __`b.N`__: The number of iterations the benchmark function should run.
+- __`b.previousN` and `b.previousDuration`__: Stores the iteration count and duration of this run. These values are crucial for the *next* step: [Predicting Iterations](#predicting-iterations). The framework uses them to calculate the rate of the benchmark and estimate the next `N`.
 
 For the **Root Benchmark** (Main), `n` is always 1. Its `benchFunc` iterates over all the user benchmarks (like `BenchmarkAdd`) and calls `b.Run` on them.
 
 It is important to note that `runN` is not specific to the `main` benchmark. It is the same method that will eventually run your benchmark code, which we will explore next.
 
-### Predicting Iterations
+#### Running User Benchmark
+
+The `Run` method orchestrates the creation and execution of sub-benchmarks. When `main` iterates over all user benchmarks (e.g., `BenchmarkAdd`), it calls this method.
+
+Key responsibilities:
+1.  **Release Lock**: It releases `benchmarkLock` because sub-benchmarks will run as independent entities and may need to acquire it themselves.
+2.  **Creation**: Creates a new `testing.B` context (`sub`) for the user benchmark.
+3.  **Execution**: Calls `sub.run1()` for doing the first iteration and `sub.run()` for doing the rest of the iterations.
+
+```go
+func (b *B) Run(name string, f func(b *B)) bool {
+	b.hasSub.Store(true)
+	benchmarkLock.Unlock()
+	defer benchmarkLock.Lock()
+
+	benchName, ok, partial := b.name, true, false
+	if b.bstate != nil {
+		benchName, ok, partial = b.bstate.match.fullName(&b.common, name)
+	}
+	if !ok {
+		return true
+	}
+	var pc [maxStackLen]uintptr
+	n := runtime.Callers(2, pc[:])
+	sub := &B{
+		common: common{ ... },
+		importPath: b.importPath,
+		benchFunc:  f,
+		benchTime:  b.benchTime,
+		bstate:     b.bstate,
+	}
+
+	if sub.run1() {
+		sub.run()
+	}
+	b.add(sub.result)
+	return !sub.failed
+}
+```
+
+##### Initial Verification: `run1`
+
+Before the framework attempts to run any benchmark millions of times, it runs it exactly once via `run1()`.
+
+It serves two critical purposes:
+1.  **Correctness Check**: It ensures the benchmark function doesn't panic or fail immediately.
+2.  **Discovery**: It provides the first data point. If `run1` takes 1 second, there is no need to ramp up to `N=1,000,000`. `n=1` is already enough.
+
+It launches a separate goroutine to execute [`runN(1)`](#running-root-benchmark). This isolation allows the framework to handle panics or `FailNow` calls gracefully via the `signal` channel.
+
+```go
+func (b *B) run1() bool {
+	go func() {
+		defer func() {
+			b.signal <- true
+		}()
+
+		b.runN(1)
+	}()
+	<-b.signal
+	if b.failed {
+		fmt.Fprintf(b.w, "%s--- FAIL: %s\n%s", b.chatty.prefix(), b.name, b.output)
+		return false
+	}
+	b.mu.RLock()
+	finished := b.finished
+	b.mu.RUnlock()
+	if b.hasSub.Load() || finished {
+		return false
+	}
+	return true
+}
+```
+
+##### Benchmark loop: `run`
+
+After `run1` passes, the framework proceeds to the main execution loop.
+
+1.  **`b.bstate != nil`**: Checks if we are running in the standard mode via `go test -bench` (indicated by the comment `// Running go test --test.bench`). In this mode, `bstate` holds the benchmark state and configuration. The `processBench` function handles properties like `-cpu` and `-count` loops, ultimately calling `doBench` for each combination.
+2.  **`b.launch()`**: Like `run1`, `launch` also runs in a separate goroutine managed by `doBench`.
+3.  **`b.loop.n == 0`**: Ensures we haven't already run the loop logic (idempotency check).
+4.  **`b.benchTime.n > 0`**: Handles the case where the user specified a fixed iteration count (e.g., `-benchtime=100x`). If so, it runs exactly that many times.
+    *   Otherwise, it enters the dynamic ramp-up loop where it uses `predictN` to [predict next iteration](#predicting-iterations) count until `b.duration` meets the target bench time (`d`).
+5.  **Execution**: Finally, `b.runN(n)` is invoked to execute the benchmark for the calculated number of iterations.
+
+```go
+func (b *B) run() {
+	if b.bstate != nil {
+		// Running go test --test.bench
+		b.bstate.processBench(b) // Must call doBench.
+	} else {
+		// Running func Benchmark.
+		b.doBench()
+	}
+}
+
+func (b *B) doBench() BenchmarkResult {
+	go b.launch()
+	<-b.signal
+	return b.result
+}
+
+func (b *B) launch() {
+	defer func() {
+		b.signal <- true
+	}()
+	if b.loop.n == 0 {
+		if b.benchTime.n > 0 {
+			if b.benchTime.n > 1 {
+				b.runN(b.benchTime.n)
+			}
+		} else {
+			d := b.benchTime.d
+			for n := int64(1); !b.failed && b.duration < d && n < 1e9; {
+				last := n
+				// Predict required iterations.
+				goalns := d.Nanoseconds()
+				prevIters := int64(b.N)
+				n = int64(predictN(goalns, prevIters, b.duration.Nanoseconds(), last))
+				b.runN(int(n))
+			}
+		}
+	}
+	b.result = BenchmarkResult{b.N, b.duration, b.bytes, b.netAllocs, b.netBytes, b.extra}
+}
+```
+
+##### Predicting Iterations
 
 This function is the heart of the "discovery phase." It decides how many times to run the benchmark next.
 
@@ -377,13 +508,49 @@ func predictN(goalns int64, prevIters int64, prevns int64, last int64) int {
 
 This prediction loop continues until `b.Duration >= benchtime`.
 
-### High Precision Timing
+##### Result collection
 
-<Pending>
 
-### Result Collection
 
-<Pending>
+##### High Precision Timing
+
+Benchmarking code that runs in nanoseconds requires a clock with nanosecond precision.
+
+*   **Linux/Mac**: Since Go 1.9, `time.Now()` includes a monotonic clock with nanosecond precision (via `runtime.nanotime()` to get that monotonic clock reading with nanosecond precision.). So, calling `time.Now()` is effectively high precision on these platforms.
+*   **Windows**: The standard system timer on Windows historically had low resolution (~1-15ms). To guarantee accuracy across all platforms, Go's benchmarking framework explicitly abstracts this, using `QueryPerformanceCounter` (QPC) on Windows to bypass the system clock limitations.
+
+```go
+func (b *B) runN(n int) {
+	b.StartTimer()
+	b.benchFunc(b)
+	b.StopTimer()
+}
+
+func (b *B) StartTimer() {
+	if !b.timerOn {
+		b.start = highPrecisionTimeNow()
+	}
+}
+
+func (b *B) StopTimer() {
+	if b.timerOn {
+		b.duration += highPrecisionTimeSince(b.start)
+	}
+}
+
+//go:build !windows
+func highPrecisionTimeSince(b highPrecisionTime) time.Duration {
+	return time.Since(b.now)
+}
+
+//go:build windows
+func highPrecisionTimeNow() highPrecisionTime {
+	var t highPrecisionTime
+	// This should always succeed for Windows XP and above.
+	t.now = windows.QueryPerformanceCounter()
+	return t
+}
+```
 
 ### Building Blocks of a Benchmarking Framework
 
