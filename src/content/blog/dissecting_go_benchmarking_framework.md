@@ -716,14 +716,14 @@ Understanding these internals changes how you write and interpret benchmarks.
 
 #### What you can do after understanding the internals
 
-**Reason about `b.N` instead of fighting it**  
+- **Reason about `b.N` instead of fighting it**  
 `b.N` is not an input; it is a value discovered by the framework. Expect it to vary, and design benchmarks whose work can be meaningfully amortized over many iterations.
 
-**Confirm that benchmark code is actually executed**  
+- **Confirm that benchmark code is actually executed**  
 Dead-code elimination, constant folding, and instruction-level parallelism can silently erase the work you think you are measuring. If you cannot explain why the compiler must execute your code, the benchmark result is meaningless.
 
-**Use `DoNotOptimize` (or its Go equivalents) correctly**  
+- **Use `DoNotOptimize` (or its Go equivalents) correctly**  
 `DoNotOptimize` preserves *observability*, not intent. It prevents the compiler from discarding values, but it does not defeat instruction-level parallelism or isolate CPU costs. In Go, this responsibility is expressed through language-level side effects rather than compiler escape hatches.
 
-**Diagnose surprising results instead of guessing**  
+- **Diagnose surprising results instead of guessing**  
 When a benchmark reports implausible numbers, you can reason about iteration discovery, compiler behavior, and microarchitectural effects instead of relying on trial and error.
