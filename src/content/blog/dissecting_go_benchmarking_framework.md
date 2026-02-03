@@ -554,8 +554,91 @@ func highPrecisionTimeNow() highPrecisionTime {
 
 ### Building Blocks of a Benchmarking Framework
 
-<Pending>
+By stepping through Go’s benchmarking implementation, a clear pattern emerges.  
+Go’s framework is not a collection of ad-hoc features, it is an explicit encoding of a benchmarking model. At a high level, any serious benchmarking framework needs the following building blocks.
+
+#### 1. Definition
+
+A benchmark begins as a user-defined unit of work. In Go, this is the `BenchmarkX(b *testing.B)` function.  Crucially, this function **does not control execution** — it only defines what work should be performed.
+
+#### 2. Setup and teardown boundaries
+
+A framework must distinguish between:
+- work that should be measured
+- work that should not
+
+Go does this by placing timing boundaries *outside* the benchmark function and exposing explicit controls (`ResetTimer`, `StopTimer`, `StartTimer`) to the author.
+
+This allows setup and cleanup to exist without contaminating measurements.
+
+#### 3. Iteration discovery (incidental warmup)
+
+Go does not include an explicit warm-up phase.
+
+Instead, it repeatedly executes the benchmark while discovering an appropriate iteration count. During this process, the benchmark naturally benefits from incidental warm-up effects such as cache population, branch predictor training, and CPU frequency stabilization.
+
+These effects are not guaranteed or modeled explicitly — they are a byproduct of repeated execution, not a contract of the framework.
+
+#### 4. Iteration prediction
+
+A benchmark framework must answer a hard question:
+
+> “How much work is enough to measure?”
+
+Go answers this dynamically by:
+- observing early runs
+- extrapolating iteration counts
+- overshooting slightly to avoid undersampling
+
+This avoids both noisy micro-measurements and unnecessarily long runs.
+
+#### 5. High-precision timing
+
+At nanosecond scales, clock choice matters.
+
+Go abstracts platform-specific timing differences behind a consistent high-precision clock, ensuring that measurements are comparable across operating systems.
+
+#### 6. Result aggregation and reporting
+
+Raw measurements are not useful on their own.
+
+The framework is responsible for:
+- aggregating results
+- normalizing per operation
+- presenting consistent metrics
+
+This keeps benchmark code simple and focused.
+
+#### 7. Explicit non-goals
+
+Equally important are the things a benchmarking framework does **not** do.
+
+Go’s framework does not:
+- prevent compiler optimizations
+- understand CPU microarchitecture
+- infer programmer intent
+
+Those responsibilities belong to the benchmark author. Understanding these boundaries is what separates a reliable benchmark from a misleading one.
 
 ### Summary
 
-<Pending>
+Go’s benchmarking framework is often treated as a convenience feature, a loop counter with a timer attached. In reality, it is a carefully designed execution engine that orchestrates controlled performance experiments.
+
+Throughout this article, we saw that:
+- benchmarks can look correct and still measure nothing
+- compiler optimizations and CPU behavior matter as much as framework mechanics
+- the framework controls *execution*, not *meaning*
+
+A Go benchmark is not:
+
+> “Run this function `N` times and divide by `N`.”
+
+It is an experiment shaped by:
+- the benchmark runner
+- the compiler
+- the CPU microarchitecture
+- and the observability choices made by the author
+
+Go’s benchmarking framework does its job precisely and predictably. When benchmarks go wrong, it is usually because we misunderstand what is being measured — not because the framework failed.
+
+Understanding these internals does not just help you write better Go benchmarks.  It gives you a reusable mental model for reasoning about performance measurement in any system.
