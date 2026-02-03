@@ -1,7 +1,7 @@
 ---
 author: "Sarthak Makhija"
 title: "Dissecting Go’s Benchmarking Framework"
-pubDate: 2026-02-02
+pubDate: 2026-02-04
 tags: ["Go", "Benchmark"]
 heroImage: "/dissecting-go-benchmarking-framework.png"
 caption: "Image by Gemini"
@@ -254,9 +254,14 @@ Understanding this separation explains why our earlier benchmarks could run perf
 
 The execution of a benchmark function involves the following concepts:
 
-1. [Discovery](#discovery)
-2. [Running Root Benchmark](#running-root-benchmark)
-
+1. [Discovery](#1-discovery)
+2. [Running Root Benchmark](#2-running-root-benchmark)
+3. [Running User Benchmark](#3-running-user-benchmark)
+4. [Initial Verification: run1](#4-initial-verification-run1)
+5. [Benchmark Loop: run](#5-benchmark-loop-run)
+6. [Predicting Iterations](#6-predicting-iterations)
+7. [Result Collection](#7-result-collection)
+8. [High Precision Timing](#8-high-precision-timing)
 
 #### 1. Discovery
 
@@ -428,7 +433,7 @@ func (b *B) run1() bool {
 }
 ```
 
-#### 5. Benchmark loop: `run`
+#### 5. Benchmark Loop: `run`
 
 After `run1` passes, the framework proceeds to the main execution loop.
 
@@ -437,7 +442,7 @@ After `run1` passes, the framework proceeds to the main execution loop.
 3.  **`b.loop.n == 0`**: Ensures we haven't already run the loop logic (idempotency check).
 4.  **`b.benchTime.n > 0`**: Handles the case where the user specified a fixed iteration count (e.g., `-benchtime=100x`). If so, it runs exactly that many times.
     *   Otherwise, it enters the dynamic ramp-up loop where it uses `predictN` to [predict next iteration](#predicting-iterations) count until `b.duration` meets the target bench time (`d`).
-5.  **Execution**: Finally, `b.runN(n)` is invoked to execute the benchmark for the calculated number of iterations.
+5.  **Execution**: Finally, `b.runN(n)` is invoked to execute the benchmark for the calculated number of iterations. Here, `b.N` is set to the calculated iterations, which is used by the user benchmark function.
 
 ```go
 func (b *B) run() {
@@ -509,9 +514,41 @@ func predictN(goalns int64, prevIters int64, prevns int64, last int64) int {
 
 This prediction loop continues until `b.Duration >= benchtime`.
 
-#### 7. Result collection
+#### 7. Result Collection
 
-`Pending`
+Once the stable iteration count is found and the benchmark completes, the framework captures the final statistics. The `BenchmarkResult` struct holds the "scorecard" for the run: the total iterations (`N`) and the total elapsed time (`T`) + other fields. These values are later used to compute the `ns/op` metric.
+
+```go
+func (b *B) launch() {
+	defer func() {
+		b.signal <- true
+	}()
+	if b.loop.n == 0 {
+		if b.benchTime.n > 0 {
+			if b.benchTime.n > 1 {
+				b.runN(b.benchTime.n)
+			}
+		} else {
+			d := b.benchTime.d
+			for n := int64(1); !b.failed && b.duration < d && n < 1e9; {
+				last := n
+				// Predict required iterations.
+				goalns := d.Nanoseconds()
+				prevIters := int64(b.N)
+				n = int64(predictN(goalns, prevIters, b.duration.Nanoseconds(), last))
+				b.runN(int(n))
+			}
+		}
+	}
+	b.result = BenchmarkResult{b.N, b.duration, b.bytes, b.netAllocs, b.netBytes, b.extra}
+}
+
+type BenchmarkResult struct {
+	N         int           // The number of iterations.
+	T         time.Duration // The total time taken.
+                            //...
+}
+```
 
 #### 8. High Precision Timing
 
@@ -610,18 +647,7 @@ The framework is responsible for:
 
 This keeps benchmark code simple and focused.
 
-#### 7. Explicit non-goals
-
-Equally important are the things a benchmarking framework does **not** do.
-
-Go’s framework does not:
-- prevent compiler optimizations
-- understand CPU microarchitecture
-- infer programmer intent
-
-Those responsibilities belong to the benchmark author. Understanding these boundaries is what separates a reliable benchmark from a misleading one.
-
-#### 8. DoNotOptimize
+#### 7. DoNotOptimize
 
 Some benchmarking frameworks, most notably [Google Benchmark](https://github.com/google/benchmark), provide an explicit utility called `DoNotOptimize`. Its purpose is not to disable compiler optimizations globally, but to prevent the compiler from discarding or reordering a specific computation that the benchmark author intends to measure.
 
@@ -642,11 +668,22 @@ The `volatile` qualifier ensures that the assembly block cannot be removed or re
 
 The `"r"(value)` input constraint tells the compiler that the assembly block uses value. This makes the value observable: it must be computed, materialized in a register, and available at this precise point in the program. As a result, dead-code elimination, constant propagation, and loop-invariant hoisting are all blocked for the computation that produces value.
 
-The `"memory"` clobber introduces a compiler-level memory barrier. It informs the compiler that the assembly block may read or write arbitrary memory, preventing it from reordering loads and stores across this point. This is not a CPU fence, it does not emit hardware memory-ordering instructions, but it is a strong optimization barrier at compile time.
+The `"memory"` clobber introduces a _compiler-level memory barrier_. It informs the compiler that the assembly block may read or write arbitrary memory, preventing it from reordering loads and stores across this point. This is not a CPU fence, it does not emit hardware memory-ordering instructions, but it is a strong optimization barrier at compile time.
 
 Together, these constraints create a powerful illusion: the compiler must assume the value matters, must preserve its computation, and must respect ordering, yet the generated machine code remains minimal or even empty. This makes `DoNotOptimize` ideal for benchmarking, it preserves the work without polluting the measurement with extra instructions.
 
 Go deliberately avoids providing such a facility. Without inline assembly or compiler barriers in user code, Go requires observability to be expressed through language semantics, such as global variables or visible side effects, rather than compiler-specific escape hatches. This keeps the benchmarking framework portable and minimal, at the cost of requiring deeper awareness from the benchmark author.
+
+#### 8. Explicit non-goals
+
+Equally important are the things a benchmarking framework does **not** do.
+
+Go’s framework does not:
+- prevent compiler optimizations
+- understand CPU microarchitecture
+- infer programmer intent
+
+Those responsibilities belong to the benchmark author. Understanding these boundaries is what separates a reliable benchmark from a misleading one.
 
 ### Summary
 
