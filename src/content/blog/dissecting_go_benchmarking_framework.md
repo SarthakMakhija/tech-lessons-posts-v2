@@ -656,13 +656,13 @@ In C++, this is typically implemented using an empty inline assembly block with 
 Here is a tiny _pseudo_ code snippet to explain how `DoNotOptimize` will be used:
 
 ```go
-func BenchmarkAdd(b *testing.B) {
+func BenchmarkToSumFirst100(b *testing.B) {
     for i := 0; i < b.N; i++ {
-        x := 0
-        for j := 0; j < 100; j++ {
-            x += j
+        result := 0
+        for count := 1; count <= 100; count++ {
+            result += count
         }
-        DoNotOptimize(x) // Forces 'x' to be computed
+        DoNotOptimize(result) // Forces 'result' to be computed
     }
 }
 ```
