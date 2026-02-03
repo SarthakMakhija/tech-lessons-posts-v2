@@ -17,6 +17,7 @@ In this post, we’ll dissect the Go benchmarking framework, explore its lifecyc
 - Go's benchmark source code and lifecycle
 - High-precision timers
 - Controlling compiler optimizations (similar to `DoNotOptimize` in C++)
+- Building blocks of a benchmarking framework
 
 #### A benchmark that looks correct, but isn’t
 
@@ -257,7 +258,7 @@ The execution of a benchmark function involves the following concepts:
 2. [Running Root Benchmark](#running-root-benchmark)
 
 
-#### Discovery
+#### 1. Discovery
 
 The `go test -bench` tool begins by scanning compiled packages for functions that follow the convention: `func BenchmarkX(b *testing.B)`. Below function `RunBenchmarks` is called when `go test -bench` is run.
 
@@ -308,7 +309,7 @@ The `runBenchmarks` function acts as the entry point for the entire benchmarking
 
 __Note__: The `benchFunc` inside `main` is the closure responsible for iterating over and running all filtered benchmarks. `InternalBenchmark` contains benchmark name and its function.
 
-#### Running Root Benchmark
+#### 2. Running Root Benchmark
 
 As mentioned earlier, the execution starts with `main.runN(1)`. This `runN` method is the core engine of the framework, responsible for setting up the environment and executing the benchmark function.
 
@@ -353,7 +354,7 @@ For the **Root Benchmark** (Main), `n` is always 1. Its `benchFunc` iterates ove
 
 It is important to note that `runN` is not specific to the `main` benchmark. It is the same method that will eventually run your benchmark code, which we will explore next.
 
-#### Running User Benchmark
+#### 3. Running User Benchmark
 
 The `Run` method orchestrates the creation and execution of sub-benchmarks. When `main` iterates over all user benchmarks (e.g., `BenchmarkAdd`), it calls this method.
 
@@ -393,7 +394,7 @@ func (b *B) Run(name string, f func(b *B)) bool {
 }
 ```
 
-##### Initial Verification: `run1`
+#### 4. Initial Verification: `run1`
 
 Before the framework attempts to run any benchmark millions of times, it runs it exactly once via `run1()`.
 
@@ -427,7 +428,7 @@ func (b *B) run1() bool {
 }
 ```
 
-##### Benchmark loop: `run`
+#### 5. Benchmark loop: `run`
 
 After `run1` passes, the framework proceeds to the main execution loop.
 
@@ -480,7 +481,7 @@ func (b *B) launch() {
 }
 ```
 
-##### Predicting Iterations
+#### 6. Predicting Iterations
 
 This function is the heart of the "discovery phase." It decides how many times to run the benchmark next.
 
@@ -508,11 +509,11 @@ func predictN(goalns int64, prevIters int64, prevns int64, last int64) int {
 
 This prediction loop continues until `b.Duration >= benchtime`.
 
-##### Result collection
+#### 7. Result collection
 
+`Pending`
 
-
-##### High Precision Timing
+#### 8. High Precision Timing
 
 Benchmarking code that runs in nanoseconds requires a clock with nanosecond precision.
 
@@ -620,6 +621,33 @@ Go’s framework does not:
 
 Those responsibilities belong to the benchmark author. Understanding these boundaries is what separates a reliable benchmark from a misleading one.
 
+#### 8. DoNotOptimize
+
+Some benchmarking frameworks, most notably [Google Benchmark](https://github.com/google/benchmark), provide an explicit utility called `DoNotOptimize`. Its purpose is not to disable compiler optimizations globally, but to prevent the compiler from discarding or reordering a specific computation that the benchmark author intends to measure.
+
+In C++, this is typically implemented using an empty inline assembly block with carefully chosen constraints:
+
+```cpp
+asm volatile(
+    ""              // no actual instructions
+    :
+    : "r"(value)    // value must be computed and placed in a register
+    : "memory"      // assume arbitrary memory may be read or written
+);
+```
+
+At first glance, this code appears to do nothing, and at the machine instruction level, it usually does. The power of this construct lies entirely in how the compiler is forced to reason about it.
+
+The `volatile` qualifier ensures that the assembly block cannot be removed or reordered, even though it emits no instructions. Without `volatile`, the compiler could safely delete the entire block as dead code.
+
+The `"r"(value)` input constraint tells the compiler that the assembly block uses value. This makes the value observable: it must be computed, materialized in a register, and available at this precise point in the program. As a result, dead-code elimination, constant propagation, and loop-invariant hoisting are all blocked for the computation that produces value.
+
+The `"memory"` clobber introduces a compiler-level memory barrier. It informs the compiler that the assembly block may read or write arbitrary memory, preventing it from reordering loads and stores across this point. This is not a CPU fence, it does not emit hardware memory-ordering instructions, but it is a strong optimization barrier at compile time.
+
+Together, these constraints create a powerful illusion: the compiler must assume the value matters, must preserve its computation, and must respect ordering, yet the generated machine code remains minimal or even empty. This makes `DoNotOptimize` ideal for benchmarking, it preserves the work without polluting the measurement with extra instructions.
+
+Go deliberately avoids providing such a facility. Without inline assembly or compiler barriers in user code, Go requires observability to be expressed through language semantics, such as global variables or visible side effects, rather than compiler-specific escape hatches. This keeps the benchmarking framework portable and minimal, at the cost of requiring deeper awareness from the benchmark author.
+
 ### Summary
 
 Go’s benchmarking framework is often treated as a convenience feature, a loop counter with a timer attached. In reality, it is a carefully designed execution engine that orchestrates controlled performance experiments.
@@ -629,9 +657,20 @@ Throughout this article, we saw that:
 - compiler optimizations and CPU behavior matter as much as framework mechanics
 - the framework controls *execution*, not *meaning*
 
-A Go benchmark is not:
+It is tempting to think of a benchmark as nothing more than a tight loop:
 
-> “Run this function `N` times and divide by `N`.”
+<u>Run this code `N` times and divide by `N`.</u>
+
+That intuition fails because a benchmark is not just code — it is an interaction between the benchmark runner, the compiler, and the CPU.
+
+A tight loop only describes *what* the benchmark does.
+It says nothing about:
+- how `N` is chosen,
+- when timing starts and stops,
+- which work is included or excluded,
+- or which optimizations are allowed.
+
+Those decisions are made outside the loop, by the framework and the runtime environment. Understanding this separation is the difference between writing a benchmark that runs and writing one that measures something meaningful.
 
 It is an experiment shaped by:
 - the benchmark runner
