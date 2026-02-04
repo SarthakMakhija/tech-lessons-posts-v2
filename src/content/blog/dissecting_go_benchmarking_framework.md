@@ -41,6 +41,8 @@ func add(a, b int) int {
 
 At first glance, this looks like a perfectly valid benchmark. We iterate `b.N` times and call the function we want to measure. However, if you run this benchmark, you might see a result that is suspiciously fast, perhaps a fraction of a nanosecond per operation.
 
+<u>Note: All benchmarks in this post were run on an Apple M4 Max.</u>
+
 ```text
 BenchmarkAdd-14    	1000000000	         0.2444 ns/op
 ```
