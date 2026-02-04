@@ -114,7 +114,9 @@ export async function fetchTopEssays(): Promise<TopPage[]> {
             limit: 10,
         });
 
-        const blogEntries = await getCollection('blog');
+        const blogEntries = await getCollection('blog', ({ data }) => {
+            return import.meta.env.PROD ? data.draft !== true : true;
+        });
         const blogMap = new Map(blogEntries.map((entry) => [`/en/blog/${entry.slug}`, entry.data.title]));
         // Also map with trailing slash just in case
         blogEntries.forEach(entry => blogMap.set(`/en/blog/${entry.slug}/`, entry.data.title));

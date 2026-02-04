@@ -3,9 +3,11 @@ import Layout from "../../../layouts/Layout.astro";
 import { SITE_TITLE } from "../../../consts";
 import { getCollection } from "astro:content";
 
-const notes = (await getCollection("paper-notes")).sort(
-    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
-);
+const notes = (
+    await getCollection("paper-notes", ({ data }) => {
+        return import.meta.env.PROD ? data.draft !== true : true;
+    })
+).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
 // Group notes by year
 const notesByYear = notes.reduce(

@@ -4,6 +4,9 @@ on:
   push:
     tags:
       - '*'
+  schedule:
+    - cron: '0 12 * * *' # Runs at 12:00 UTC (5:30 PM IST) every day
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
