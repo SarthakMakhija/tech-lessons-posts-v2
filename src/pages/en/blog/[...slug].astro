@@ -16,6 +16,66 @@ type Props = CollectionEntry<"blog">;
 
 const post = Astro.props;
 const { Content, headings } = await post.render();
+
+// Related Posts Logic
+const allPosts = await getCollection("blog", ({ data }) => {
+    return import.meta.env.PROD ? data.draft !== true : true;
+});
+
+const stopWords = new Set([
+    "a",
+    "an",
+    "the",
+    "in",
+    "on",
+    "at",
+    "for",
+    "to",
+    "of",
+    "and",
+    "or",
+    "with",
+    "by",
+]);
+
+function getTitleWords(title: string) {
+    return new Set(
+        title
+            .toLowerCase()
+            .split(/\W+/) // Split by non-word chars
+            .filter((w) => w.length > 2 && !stopWords.has(w)),
+    );
+}
+
+const currentTitleWords = getTitleWords(post.data.title);
+
+const relatedPosts = allPosts
+    .filter((p) => p.slug !== post.slug) // Exclude current post
+    .map((p) => {
+        const commonTags =
+            p.data.tags?.filter((tag) => post.data.tags?.includes(tag)) || [];
+
+        const otherTitleWords = getTitleWords(p.data.title);
+        const commonWords = [...currentTitleWords].filter((w) =>
+            otherTitleWords.has(w),
+        );
+
+        // Score: Tags are worth 4 (must match at least one), Title words worth 1
+        const score = commonTags.length * 4 + commonWords.length;
+
+        return {
+            ...p,
+            score,
+        };
+    })
+    .filter((p) => p.score >= 4) // Must have at least one common tag (since tag = 4pts)
+    .sort((a, b) => {
+        if (b.score !== a.score) {
+            return b.score - a.score; // Higher score first
+        }
+        return b.data.pubDate.valueOf() - a.data.pubDate.valueOf(); // Newer first
+    })
+    .slice(0, 3); // Top 3
 ---
 
 <Layout
@@ -142,6 +202,34 @@ const { Content, headings } = await post.render();
                                 </svg>
                                 {tag}
                             </div>
+                        ))}
+                    </div>
+                </div>
+            )
+        }
+
+        <!-- Related Essays -->
+        {
+            relatedPosts.length > 0 && (
+                <div class="mt-12 pt-8 border-t border-zinc-100">
+                    <h2 class="text-2xl font-bold font-sans mb-6 text-black">
+                        More from Tech Lessons
+                    </h2>
+                    <div class="grid gap-6 md:grid-cols-2">
+                        {relatedPosts.map((related) => (
+                            <a
+                                href={`/en/blog/${related.slug}/`}
+                                class="block p-6 rounded-xl border border-zinc-200 hover:border-zinc-300 hover:shadow-sm transition-all bg-white group"
+                            >
+                                <h3 class="font-mono font-medium text-lg text-zinc-900 mb-2 group-hover:text-accent-600 transition-colors line-clamp-2">
+                                    {related.data.title}
+                                </h3>
+                                <div class="text-sm text-zinc-500 font-mono">
+                                    <FormattedDate
+                                        date={related.data.pubDate}
+                                    />
+                                </div>
+                            </a>
                         ))}
                     </div>
                 </div>
