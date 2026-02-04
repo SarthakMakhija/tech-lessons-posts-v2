@@ -106,7 +106,7 @@ BenchmarkAddFix-14    	1000000000	         0.2497 ns/op
 0x0024 00036 RET	(R30)
 ```
 
-Now, the assembly looks different (and correct for what we want):
+Now, the assembly looks different:
 - `MOVD $40, R2`: The compiler has still optimized the addition `20 + 20` into a constant `40` (__constant folding__), but it _cannot_ discard it.
 - `MOVD R2, test.sink(SB)`: It moves that value `40` into the memory address of our global `sink` variable.
 - `ADD $1, R1, R1`: Increments the loop counter.
@@ -163,7 +163,7 @@ When the assembly says `MOVD R2, sink(SB)`, it does not mean "Write to the RAM s
 
 __The Journey of a Write (Store)__
 
-1.  __CPU Core (Internal Queue - Store Buffer)__: The CPU puts the value (`sink=40`) into a small, super-fast queue inside the core called the __Store Buffer__.
+1.  __CPU Core (Internal Queue-Store Buffer)__: The CPU puts the value (`sink=40`) into a small, super-fast queue inside the core called the __Store Buffer__.
     * __Time taken__: Instant (<1 cycle).
     * __Purpose__: The CPU can keep running without waiting for memory.
 
@@ -290,7 +290,7 @@ func runBenchmarks(
 			bs = append(bs, Benchmark) // [!code word:bs = append(bs, Benchmark)]
 		}
 	}
-	main := &B{
+	main := &B{ 
 		common: common{ ... },
 		importPath: importPath,
 		benchFunc: func(b *B) {
@@ -353,7 +353,7 @@ Before starting the clock, it prepares the runtime environment to ensure consist
 - __`runtime.GC()`__: It forces a full garbage collection. This ensures that memory allocated by previous benchmarks doesn't affect the current one, providing a "clean slate."
 - __`b.resetRaces()`__: If you are running with `-race`, this resets the race detector's state, preventing false positives or pollution from prior runs.
 - __`b.N`__: The number of iterations the benchmark function should run.
-- __`b.previousN` and `b.previousDuration`__: Stores the iteration count and duration of this run, which will be crucial for the *next* step: [Predicting Iterations](#6-predicting-iterations). The framework uses them to calculate the rate of the benchmark and estimate the next `N`.
+- __`b.previousN` and `b.previousDuration`__: Stores the iteration count and duration of this run, which will be crucial for the later step: [Predicting Iterations](#6-predicting-iterations). The framework uses them to calculate the rate of the benchmark and estimate the next `N`.
 
 For the **Root Benchmark** (Main), `n` is always 1. Its `benchFunc` iterates over all the user benchmarks (like `BenchmarkAdd`) and calls `b.Run` on them.
 
