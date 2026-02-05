@@ -115,6 +115,8 @@
     /* Custom Scrollbar for TOC */
     .custom-scrollbar::-webkit-scrollbar {
         width: 4px;
+        height: 4px;
+        /* for horizontal scrollbars */
     }
 
     .custom-scrollbar::-webkit-scrollbar-track {
