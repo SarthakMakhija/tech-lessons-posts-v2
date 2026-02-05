@@ -10,17 +10,17 @@ interface Props {
 const { headings } = Astro.props;
 ---
 
-<ul class="space-y-3 list-none m-0 p-0 text-zinc-600">
+<ul class="space-y-2 list-none m-0 p-0 text-zinc-600">
     {
         headings.map((heading) => {
             let indentClass = "";
-            if (heading.depth === 3) indentClass = "ml-4";
-            if (heading.depth === 4) indentClass = "ml-8";
-            if (heading.depth > 4) indentClass = "ml-10";
+            if (heading.depth === 3) indentClass = "ml-3";
+            if (heading.depth === 4) indentClass = "ml-6";
+            if (heading.depth > 4) indentClass = "ml-8";
 
             return (
                 <li
-                    class={`flex gap-3 items-start text-[15px] leading-[24px] ${indentClass}`}
+                    class={`flex gap-3 items-start text-[14px] leading-[21px] ${indentClass}`}
                 >
                     <a
                         href={`#${heading.slug}`}
