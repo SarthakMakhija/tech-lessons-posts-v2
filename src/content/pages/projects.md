@@ -19,6 +19,27 @@ I love tinkering with projects when I'm not busy.
 - **Educational Focus**: Built with a focus on understanding the internals of a query engine, inspired by [Crafting Interpreters](https://craftinginterpreters.com/) and [Database Design and Implementation](https://link.springer.com/book/10.1007/978-3-030-33836-7).
 - **End-to-End Pipeline**: Implements the query parsing flow including tokenization, AST generation, logical plans, and physical execution via iterators.
 
+### 🔹 [Cli-Craft](https://github.com/SarthakMakhija/cli-craft/)
+
+CliCraft is a robust framework for building command-line interface (CLI) applications in Zig. It provides a structured and idiomatic way to define commands, subcommands, flags, and arguments, ensuring a robust and user-friendly experience.
+
+**Features**
+
+- **Command Parsing and Execution**: Efficiently interpret and execute commands based on user input.
+- **Parent and Child Commands**: Organize your CLI with parent and child commands, enabling clean, nested subcommands.
+- **Command Aliases**: Support for alternative command names to enhance user convenience.
+- **Flags**: Full support for defining and parsing command-line flags.
+- **Local and Persistent Flags**: Distinguish between flags scoped to a specific command and those inherited by subcommands.
+- **Typed Flags**: Built-in support for int64, bool, and string types.
+- **Short Names for Flags**: Support for single-character aliases (e.g., -v for --verbose).
+- **Arguments**: Define and validate positional arguments for your commands.
+- **Argument Specification**: Specify argument rules such as exact, minimum, or maximum count.
+- **Boolean Flags with and without Value**: Handle both implicit (--verbose) and explicit (--verbose true) boolean flag values.
+- **Flags with Default Values**: Assign default values to flags, which are used if the flag is not provided by the user.
+- **Help Command**: Automatically generated help command.
+- **Help Flag**: Automatic --help or -h flag for each command and subcommand.
+- **Robust and Tested**: Backed by extensive testing to ensure correctness and reliability.
+
 ### 🔹[Go-LSM](https://github.com/SarthakMakhija/go-lsm)
 
 LSM-based key-value store in Go for educational purpose, [inspired by LSM in a Week](https://skyzh.github.io/mini-lsm/00-preface.html). 
