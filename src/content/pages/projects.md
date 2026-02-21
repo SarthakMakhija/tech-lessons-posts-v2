@@ -9,6 +9,15 @@ type: page
 
 I love tinkering with projects when I'm not busy.
 
+### 🔹 [Relop](https://github.com/SarthakMakhija/relop/)
+
+**Relop** is a minimal, in-memory implementation of relational operators built to explore query processing. It covers the entire pipeline from lexical analysis and parsing to logical planning and execution.
+
+**Key Features:**
+- **SQL Support**: Supports basic selection, filtering (`WHERE`), ordering, and joins.
+- **Educational Focus**: Built with a focus on understanding the internals of a query engine, inspired by [Crafting Interpreters](https://craftinginterpreters.com/) and [Database Design and Implementation](https://link.springer.com/book/10.1007/978-3-030-33836-7).
+- **End-to-End Pipeline**: Implements the query parsing flow including tokenization, AST generation, logical plans, and physical execution via iterators.
+
 ### 🔹[Go-LSM](https://github.com/SarthakMakhija/go-lsm)
 
 LSM-based key-value store in Go for educational purpose, [inspired by LSM in a Week](https://skyzh.github.io/mini-lsm/00-preface.html). 
