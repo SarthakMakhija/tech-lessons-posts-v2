@@ -5,7 +5,7 @@ pubDate: "2026-02-22"
 tags: ["Query", "Parsing", "Rust", "Databases"]
 ---
 
-Welcome to a new series where we will deep-dive into the internals of query processing. Over the next few articles, we will explore the lifecycle of a query, from the raw input string to the orchestrated movement of data through relational operators. We will use [Relop](https://github.com/SarthakMakhija/relop) as our foundational codebase: a minimal, handwritten relational operator engine in Rust optimized for learning and architectural transparency.
+Welcome to a series dedicated to dissecting the internals of query processing. Over the next few articles, we will follow the journey of a query, from a raw string to an executable pipeline of relational operators. We will use [Relop](https://github.com/SarthakMakhija/relop) as our foundational codebase: a minimal, handwritten relational operator engine in Rust optimized for learning and architectural transparency.
 
 #### What is this series?
 
