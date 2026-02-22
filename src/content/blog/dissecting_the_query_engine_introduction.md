@@ -5,7 +5,7 @@ pubDate: "2026-02-22"
 tags: ["Query", "Parsing", "Rust", "Databases"]
 ---
 
-Welcome to a series dedicated to dissecting the internals of query processing. Over the next few articles, we will follow the journey of a query, from a raw string to an executable pipeline of relational operators. We will use [Relop](https://github.com/SarthakMakhija/relop) as our foundational codebase: a minimal, handwritten relational operator engine in Rust optimized for learning and architectural transparency.
+Welcome to a series dedicated to dissecting the internals of query processing. Over the next few essays, we will follow the journey of a query, from a raw string to an executable pipeline of relational operators. We will use [Relop](https://github.com/SarthakMakhija/relop) as our foundational codebase: a minimal, handwritten relational operator engine in Rust optimized for learning and architectural transparency.
 
 #### What is this series?
 
@@ -37,7 +37,7 @@ Building a robust query engine involves solving several non-trivial problems:
 
 #### The Series Roadmap
 
-Here is what is planned for the upcoming articles:
+Here is what is planned for the upcoming essays:
 
 1.  **Lexical Analysis:** From raw strings to a stream of tokens.
 2.  **Thinking in Grammar:** Designing the data structures that hold a query’s intent.
