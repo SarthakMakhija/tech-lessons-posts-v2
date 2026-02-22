@@ -7,13 +7,13 @@ tags: ["Query", "Parsing", "Rust", "Databases"]
 
 Welcome to a series dedicated to dissecting the internals of query processing. Over the next few essays, we will follow the journey of a query, from a raw string to an executable pipeline of relational operators. We will use [Relop](https://github.com/SarthakMakhija/relop) as our foundational codebase: a minimal, handwritten relational operator engine in Rust optimized for learning and architectural transparency.
 
-#### What is this series?
+### What is this series?
 
 This series isn't about using a database; it’s about *how* a database transforms a declarative language (SQL-ish) into an executable plan. We will avoid the "magic" of complex, industrial-grade libraries like `sqlparser-rs` and instead look at how to build these components from scratch.
 
 By focusing on a handwritten parser and a simplified execution engine, we can touch on the core algorithms and data structures that drive systems like Postgres, without getting lost in the thousands of lines of code required for production-grade SQL compliance.
 
-#### A Brief on Query Processing
+### A Brief on Query Processing
 
 Query processing is the multi-stage pipeline that takes a query and produces a result set. It typically follows these steps:
 
@@ -26,7 +26,7 @@ Query processing is the multi-stage pipeline that takes a query and produces a r
 
 > This series focuses on the journey from Lexical Analysis to the generation of a Logical Plan and execution of the same. Topics like cost-based optimization and physical plan generation are outside our current scope.
 
-#### Typical Challenges in Query Processing
+### Typical Challenges in Query Processing
 
 Building a robust query engine involves solving several non-trivial problems:
 
@@ -35,7 +35,7 @@ Building a robust query engine involves solving several non-trivial problems:
 *   **Performance vs Generality:** Designing a parser that is fast enough for high-frequency queries but flexible enough to support complex language features.
 *   **Bridging the Gap:** Moving from a "syntactic" world (strings and trees) to a "physical" world (bytes and iterators).
 
-#### The Series Roadmap
+### The Series Roadmap
 
 Here is what is planned for the upcoming essays:
 
