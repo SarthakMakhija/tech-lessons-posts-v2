@@ -139,6 +139,37 @@ table_source (A JOIN B JOIN C)
 
 > In Relop, joins are left-associative. After parsing the base table, the parser processes each subsequent JOIN in a loop and incrementally builds the AST by attaching the new table to the right of the existing structure. Each iteration wraps the previously constructed subtree as the left operand of a new Join node. As a result, a query like `A JOIN B JOIN C` is interpreted as `(A JOIN B) JOIN C`, matching the left-associative behavior expected in SQL engines.
 
+### Abstract Syntax Tree (AST)
+
+Once the parser validates that the tokens follow the grammar, it doesn't just return "True." It builds a data structure called an **Abstract Syntax Tree (AST)**. It's a tree representation of the query that captures the hierarchical structure of the language.
+
+*   **Tree**: Because languages are hierarchical (a query contains clauses, which contain expressions).
+*   **Abstract**: Because it omits concrete syntax details (like semicolons) and preserves only structural meaning
+
+For our `SELECT * FROM employees` query, the AST might look like this in Rust:
+
+```rust
+enum Ast {
+    Select {
+        projection: Projection,
+        source: TableSource,
+    }
+}
+
+enum Projection {
+    Star,
+    Identifier(String),
+}
+
+enum TableSource {
+    Table(String),
+}
+```
+
+The AST is the "final product" of the parsing phase. It is a clean, structured representation of the user's intent that the rest of the database engine can easily understand.
+
+> In Rust, ASTs are beautifully modeled using **Enums**. Since a query node can have multiple variants (e.g., a `Projection` can be a `Star` or specific `Columns`), Rust's algebraic data types allow us to represent this hierarchy with full type safety.
+
 ### From Grammar to Tree
 
 Consider the following grammar:
@@ -176,37 +207,6 @@ graph TD
     Source --> TName[Identifier: users]
     Source --> Alias[Alias: u]
 ```
-
-### Abstract Syntax Tree (AST)
-
-Once the parser validates that the tokens follow the grammar, it doesn't just return "True." It builds a data structure called an **Abstract Syntax Tree (AST)**. It's a tree representation of the query that captures the hierarchical structure of the language.
-
-*   **Tree**: Because languages are hierarchical (a query contains clauses, which contain expressions).
-*   **Abstract**: Because it omits concrete syntax details (like semicolons) and preserves only structural meaning
-
-For our `SELECT * FROM employees` query, the AST might look like this in Rust:
-
-```rust
-enum Ast {
-    Select {
-        projection: Projection,
-        source: TableSource,
-    }
-}
-
-enum Projection {
-    Star,
-    Identifier(String),
-}
-
-enum TableSource {
-    Table(String),
-}
-```
-
-The AST is the "final product" of the parsing phase. It is a clean, structured representation of the user's intent that the rest of the database engine can easily understand.
-
-> In Rust, ASTs are beautifully modeled using **Enums**. Since a query node can have multiple variants (e.g., a `Projection` can be a `Star` or specific `Columns`), Rust's algebraic data types allow us to represent this hierarchy with full type safety.
 
 ### Conclusion
 
