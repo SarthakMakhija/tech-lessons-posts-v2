@@ -1,6 +1,6 @@
 ---
 author: "Sarthak Makhija"
-title: "Dissecting the Query Engine: From Parsing to Execution - Dealing with Complexity"
+title: "Dissecting the Query Engine: From Parsing to Execution - Handling Expressions and Precedence"
 pubDate: "2026-02-26"
 tags: ["Query", "Expressions", "Precedence", "Parsing", "AST"]
 ---
@@ -372,6 +372,48 @@ impl Parser {
             Ok(Expression::single(self.expect_clause()?))
         }
     }
+}
+```
+
+The updated AST for `SELECT` is:
+
+```rust
+#[derive(Debug)]
+pub(crate) enum Ast {
+    /// Represents a `SELECT` statement.
+    Select {
+        /// The source to select from (table or join).
+        source: TableSource,
+        /// The projection (columns or all) to select.
+        projection: Projection,
+        /// The WHERE filter criteria.
+        where_clause: Option<WhereClause>,
+        /// The ORDER BY clause, defining the columns and directions used to order rows.
+        order_by: Option<Vec<OrderingKey>>,
+        /// The LIMIT (max records) to return.
+        limit: Option<usize>,
+    },
+}
+
+#[derive(Debug, Eq, PartialEq)]
+pub(crate) enum TableSource {
+    Table {
+        name: String,
+        alias: Option<String>,
+    },
+    ...
+}
+
+/// `WhereClause` represents the filtering criteria in a SELECT statement.
+#[derive(Debug, Eq, PartialEq)]
+pub(crate) struct WhereClause(pub(crate) Expression);
+
+#[derive(Debug, Eq, PartialEq)]
+pub(crate) enum Expression {
+    Single(Clause),
+    And(Vec<Expression>),
+    Or(Vec<Expression>),
+    Grouped(Box<Expression>),
 }
 ```
 
