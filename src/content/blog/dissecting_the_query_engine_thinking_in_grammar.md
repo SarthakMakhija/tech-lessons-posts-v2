@@ -22,7 +22,7 @@ Without a formal grammar, a language is just a collection of "if-else" statement
 
 To describe our grammar, we use **Extended Backus–Naur Form (EBNF)**. It is a notation technique for context-free grammars.
 
-In EBNF, we define "rules" (or **productions**). It is called a production because a rule "produces" a sequence of symbols or literals. Each rule has a name and a definition of what it consists of. For example, a simplified `SELECT` query in [Relop](https://github.com/SarthakMakhija/relop) might look like this:
+In EBNF, we define "rules" (or **productions**). Each rule is called a production because it describes how a non-terminal symbol can be expanded into a sequence of terminals and/or non-terminals. Each rule has a name and a definition of what it consists of. For example, a simplified `SELECT` query in [Relop](https://github.com/SarthakMakhija/relop) might look like this:
 
 ```ebnf
 select_statement = "SELECT" projection "FROM" table_source ;
@@ -52,7 +52,7 @@ In this example, `table_source` can be a `join_clause`, and a `join_clause` cont
 
 Before we map this grammar to code, let's look at the pattern we'll use: **Recursive Descent**. 
 
-A recursive descent parser is a top-down parser. It starts at the "root" of your grammar (the highest-level rule) and works its way down by calling functions for each sub-rule. If a rule fails to match, the parser can backtrack and try a different path. It's essentially a set of mutually recursive functions that mirror the structure of your EBNF.
+A recursive descent parser is a top-down parser. It begins at the root rule of the grammar and expands into sub-rules using a set of mutually recursive functions. In our implementation, each grammar rule maps directly to a parsing function, and decisions are made deterministically based on the next token, without backtracking. The result is a parser whose control flow closely mirrors the structure of the EBNF.
 
 ### Mapping Grammar to Code
 
@@ -107,7 +107,7 @@ Consider this "obvious" rule for an expression:
 expression = expression "+" term | term ;
 ```
 
-If we map this directly to code, the function `parse_expression()` would immediately call `parse_expression()` as its first action. It would never reach a point where it consumes a token, leading to an immediate **stack overflow**. To fix this for a recursive descent parser, we must refactor our grammar to be **right-recursive** (or use loops) to ensure we consume a token *before* recursing.
+If we map this directly to code, the function `parse_expression()` would immediately call `parse_expression()` as its first action. It would never reach a point where it consumes a token, leading to an immediate **stack overflow**. To fix this, we typically refactor the grammar to remove left recursion, often by converting it into an iterative form inside the parser.
 
 #### 2. Ambiguity and Associativity
 
@@ -117,15 +117,15 @@ Our previous `JOIN` example (`join_clause = table_source "JOIN" table_source`) f
 1.  `(A JOIN B) JOIN C` (The first `table_source` produces `A JOIN B`).
 2.  `A JOIN (B JOIN C)` (The second `table_source` produces `B JOIN C`).
 
-Both are valid paths according to that grammar, but they might lead to different execution plans. This is where **Associativity** comes in. Most databases (and our grammar) prefer **left-associativity** for joins.
+Both parses are valid according to that grammar, and they produce different parse trees. This is where **Associativity** comes in. Most databases (and our grammar) prefer **left-associativity** for joins.
 
-By refactoring the rule to be right-recursive, we both solve the infinite loop and define the associativity:
+By refactoring the rule to eliminate left recursion, we avoid infinite recursion in the parser. Associativity is then enforced either by grammar structure or by how we construct the AST.
 
 ```ebnf
 table_source = identifier [ "JOIN" table_source "ON" expression ] ;
 ```
 
-Here, the parser consumes an `identifier` first, then optionally recurses into another `JOIN`. This forces the nesting to the **right**, creating a clear path for the parser:
+Here, the parser consumes an `identifier` first, then optionally recurses into another `JOIN`. Note that this structure makes joins right-associative at the grammar level; left-associativity must instead be enforced during AST construction or by using iterative parsing patterns.
 
 ```diff
 table_source (A JOIN B JOIN C)
@@ -137,12 +137,52 @@ table_source (A JOIN B JOIN C)
 +                     └── table_source (C)
 ```
 
+> In Relop, joins are left-associative. After parsing the base table, the parser processes each subsequent JOIN in a loop and incrementally builds the AST by attaching the new table to the right of the existing structure. Each iteration wraps the previously constructed subtree as the left operand of a new Join node. As a result, a query like `A JOIN B JOIN C` is interpreted as `(A JOIN B) JOIN C`, matching the left-associative behavior expected in SQL engines.
+
+### From Grammar to Tree
+
+Consider the following grammar:
+
+```ebnf
+select
+= "SELECT" projection "FROM" table_source [";"] ;
+
+table_source
+= identifier ["AS" identifier] [join_clause]* ;
+
+projection
+= "*"
+| identifier ("," identifier)*
+```
+
+and sample query: 
+
+```sql
+SELECT id, email FROM users AS u;
+```
+
+The parser will provide the following AST.
+
+```mermaid
+graph TD
+    Root[SelectStatement]
+
+    Root --> Proj[Projection]
+    Root --> Source[TableSource]
+
+    Proj --> Col1[Identifier: id]
+    Proj --> Col2[Identifier: email]
+
+    Source --> TName[Identifier: users]
+    Source --> Alias[Alias: u]
+```
+
 ### Abstract Syntax Tree (AST)
 
-Once the parser validates that the tokens follow the grammar, it doesn't just return "True." It builds a data structure called an **Abstract Syntax Tree (AST)**.
+Once the parser validates that the tokens follow the grammar, it doesn't just return "True." It builds a data structure called an **Abstract Syntax Tree (AST)**. It's a tree representation of the query that captures the hierarchical structure of the language.
 
 *   **Tree**: Because languages are hierarchical (a query contains clauses, which contain expressions).
-*   **Abstract**: Because it ignores "syntactic sugar" like semicolons or parentheses. It only cares about the **semantic structure**.
+*   **Abstract**: Because it omits concrete syntax details (like semicolons) and preserves only structural meaning
 
 For our `SELECT * FROM employees` query, the AST might look like this in Rust:
 
