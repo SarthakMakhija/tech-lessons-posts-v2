@@ -11,13 +11,18 @@ Welcome to the second part of our series on dissecting a query engine. In the [i
 
 Before we can understand the *meaning* of a query, we must first identify its individual components. This is the job of the **Lexer** (also known as a tokenizer). 
 
-To talk about lexical analysis, we need to define three key terms:
+To reason clearly about lexical analysis, we need three foundational terms:
 
 1.  **Lexeme**: A sequence of characters in the source code that matches a pattern for a token. For example, the characters `S`, `E`, `L`, `E`, `C`, `T` form a lexeme.
-2.  **Token**: A pair consisting of a **Token Type** and an optional **Attribute Value** (the lexeme). For instance, the lexeme `SELECT` becomes a token of type `Keyword`.
+2.  **Token**: Typically a pair of:
+    - A Token Type
+    - An optional Attribute Value (the lexeme itself)
+    For instance, the lexeme `SELECT` becomes a token of type `Keyword`.
 3.  **Lexer**: The component that scans the input character by character and groups them into lexemes to produce a stream of tokens.
 
-### Grammar and Lexer
+<img src = "/dissecting_the_query_engine_lex_tokens.png">
+
+### Grammar and the Lexer
 
 A common mistake when starting out is to jump straight into coding the lexer. However, a lexer cannot exist in a vacuum; it is driven by the **Grammar** of the language.
 
@@ -31,23 +36,23 @@ identifier       = [a-zA-Z_][a-zA-Z0-9_]* ;
 
 This grammar implicitly dictates the tokens our lexer must recognize:
 *   **Keywords**: `SELECT`, `FROM`
-*   **Icons/Symbols**: `*`, `;`
+*   **Symbols**: `*`, `;`
 *   **Dynamic Identifiers**: Any string matching the `identifier` pattern.
 
-It is important to emphasize that **having a grammar does not mean the lexer understands it.** The grammar provides the definitions for the lexemes the lexer should care about, but the lexer itself is blind to the rules of sequence or hierarchy. It simply knows how to extract these building blocks from a stream of characters.
+It is important to emphasize that **having a grammar does not mean the lexer understands it.** The grammar provides the definitions for the lexemes the lexer should care about, but the lexer itself is blind to the rules of sequence or hierarchy. It only knows how to slice a stream of characters into recognizable tokens.
 
 ### Lexer Design Patterns
 
-There are several ways to implement a lexer. In the world of systems engineering, you'll typically encounter three patterns:
+There are several common approaches to implementing a lexer:
 
 1.  **The State Machine**: This approach models the lexer as a finite automaton that changes its internal state based on the characters it reads. Transitions are powerful because they allow the lexer to handle **context**:
     - **String Literals**: Encountering a `"` moves the lexer into a "string" state where whitespace is preserved until the closing `"` is found.
-    - **Compound Operators**: Seeing `=` might move it to a "potential equality" state to check if the *next* character is also `=`, helping it distinguish between `=` and `==`.
+    - **Compound Operators**: Seeing `!` might move it to a "potential inequality" state to check if the *next* character is `=`, helping it distinguish between `!=` and `!`.
     - **Comments**: Seeing `/` could move it to a "comment" state to safely ignore characters until a newline.
-2.  **Regular Expression Matching**: Using a series of regular expressions to "chunk" the input. While simpler to write, this can be slower and harder to debug for complex languages.
-3.  **Peek and Advance (The Relop Way)**: A simplified version of a state machine where the lexer looks at the current character (`peek`), decides which token type it *might* be, and then enters a specific loop to `advance` and consume the rest of that lexeme. This balance of simplicity and control is perfect for pedagogical projects.
+2.  **Regular Expression Matching**: Using a series of regular expressions to "chunk" the input. While simpler to write, this can be harder to debug for complex languages.
+3.  **Peek and Advance (The Relop Way)**: It is effectively a small, hand-rolled state machine where the lexer looks at the current character (`peek`), decides which token type it *might* be, and then enters a specific loop to `advance` and consume the rest of that lexeme. This balance of simplicity and control is perfect for pedagogical projects.
 
-### Approach to a Lexer
+### The Core Loop of a Lexer
 
 For many handwritten lexers, the fundamental logic involves scanning the input string character by character. The lexer maintains a "position" pointer and moves forward, grouping characters until it finds a boundary (like whitespace or a symbol) that marks the end of a lexeme.
 
@@ -154,7 +159,7 @@ This implementation highlights a few fundamental lexing patterns:
 
 ### What a Lexer Does Not Know
  
-It is equally important to understand the boundaries of a lexer. A lexer is "dumb" regarding the rules of the language beyond simple character grouping. 
+It is equally important to understand the boundaries of a lexer. A lexer is deliberately unaware of the rules of the language beyond character grouping.
 
 While the grammar told us *what* lexemes to look for, the lexer has no concept of the *structure* defined by that grammar.
 
