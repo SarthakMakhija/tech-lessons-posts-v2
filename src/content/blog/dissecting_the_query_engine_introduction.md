@@ -5,6 +5,15 @@ pubDate: "2026-02-22"
 tags: ["Query", "Parsing", "Rust", "Databases"]
 ---
 
+Pending
+
+1. Hyperlinks in this series
+2. Review all
+3. See if any images are needed
+4. Essay on logical plan
+5. Essay on execution
+
+
 What actually happens when you write:
 
 ```sql
