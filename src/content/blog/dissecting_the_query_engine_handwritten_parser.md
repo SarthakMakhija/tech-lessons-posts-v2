@@ -54,8 +54,6 @@ The beauty of a **Recursive Descent Parser** is that it mirrors the grammar almo
 Consider our simplified grammar and its translation, [dbe8c3e2a9411d217f4f25da629b0fc5e5e0da4d](https://github.com/SarthakMakhija/relop/commit/dbe8c3e2a9411d217f4f25da629b0fc5e5e0da4d):
 
 ```ebnf
-statement = show_tables | describe_table | select ;
-show_tables = "SHOW" "TABLES" [";"] ;
 select = "SELECT" "*" "FROM" identifier [";"] ;
 ```
 
@@ -63,27 +61,6 @@ Our implementation uses a `TokenCursor` to navigate the stream and helper method
 
 ```rust
 impl Parser {
-    pub(crate) fn parse(&mut self) -> Result<Ast, ParseError> {
-        let ast = self.parse_statement()?;
-        self.expect_end_of_stream()?; // The Importance of EOF
-        Ok(ast)
-    }
-
-    fn parse_statement(&mut self) -> Result<Ast, ParseError> {
-        let token = self.cursor.peek().ok_or(ParseError::NoTokens)?;
-        
-        if token.matches(TokenType::Keyword, "show") {
-            self.parse_show_tables()
-        } else if token.matches(TokenType::Keyword, "select") {
-            self.parse_select()
-        } else {
-            Err(ParseError::UnsupportedToken {
-                expected: "show | describe | select".to_string(),
-                found: token.lexeme().to_string(),
-            })
-        }
-    }
-
     fn parse_select(&mut self) -> Result<Ast, ParseError> {
         self.expect_keyword("select")?;
         self.expect_star()?;
@@ -203,4 +180,4 @@ The EOF token ensures that we haven't just matched a *prefix* of the user's inpu
 
 A handwritten parser provides precise control over error handling, structure, and performance. By mapping our EBNF rules to simple, predictable Rust methods, we've transformed the stream of tokens into a structured syntactic model (the AST) that our engine can understand.
 
-In the next part, we'll tackle the most challenging part of parsing: **Expressions and Precedence**.
+In the next part, we'll tackle the most challenging part of parsing: [Expressions and Precedence](/en/blog/dissecting_the_query_engine_expressions_and_precedence).

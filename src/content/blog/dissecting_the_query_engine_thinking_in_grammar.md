@@ -212,4 +212,4 @@ graph TD
 
 Grammar is the "bridge" between the raw tokens of the lexer and the structured trees of the AST. By defining our language rules in EBNF, we create a clear path for implementing a robust and maintainable parser.
 
-In the next part, we will get our hands dirty and implement these rules using the **Recursive Descent** pattern.
+In the next part, we will get our hands dirty and implement these rules using the [Recursive Descent](/en/blog/dissecting_the_query_engine_handwritten_parser) parser.

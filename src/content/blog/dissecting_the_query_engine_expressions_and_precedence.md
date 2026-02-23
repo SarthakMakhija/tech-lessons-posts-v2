@@ -20,20 +20,6 @@ If we don't encode this precedence into our grammar, the parser won't know wheth
 Before we dive into expressions, let's look at the basic grammar we've established for a query. This is our foundation:
 
 ```ebnf
-query
-    = statement EOF ;
-
-statement
-    = show_tables
-    | describe_table
-    | select;
-
-show_tables
-    = "SHOW" "TABLES" [";"] ;
-
-describe_table
-    = "DESCRIBE" "TABLE" identifier [";"] ;
-
 select
     = "SELECT" projection "FROM" identifier [where] [";"] ;
 
@@ -57,8 +43,76 @@ literal
     = LITERAL ;
 ```
 
-In this version, the `WHERE` clause is extremely limited. It only supports a single comparison (e.g., `id = 1`).
-The code for parser corresponding to the above grammar is [here](https://github.com/SarthakMakhija/relop/commit/57c1b6424d8cdc32c61bc7b41d53d1fb8fd272dc).
+In this version, the `WHERE` clause is extremely limited. It only supports a single comparison (e.g., `id = 1`). 
+
+Here is how the implementation looks:
+
+```rust
+fn parse_select(&mut self) -> Result<Ast, ParseError> {
+    self.expect_keyword("select")?;
+    let projection = self.expect_projection()?;
+    self.expect_keyword("from")?;
+    let table_name = self.expect_identifier()?;
+    let where_clause = self.maybe_where_clause()?;
+    let order_by = self.maybe_order_by()?;
+    let limit = self.maybe_limit()?;
+    let _ = self.eat_if(|token| token.is_semicolon());
+
+    Ok(Ast::Select {
+        table_name: table_name.to_string(),
+        projection,
+        where_clause,
+        order_by,
+        limit,
+    })
+}
+
+fn maybe_where_clause(&mut self) -> Result<Option<WhereClause>, ParseError> {
+    let is_where_clause = self.eat_if(|token| token.is_keyword("where"));
+    if is_where_clause {
+        let where_clause = self.expect_clause()?;
+        return Ok(Some(where_clause));
+    }
+    Ok(None)
+}
+
+fn expect_clause(&mut self) -> Result<WhereClause, ParseError> {
+    let column_name = self.expect_identifier()?;
+    let operator = self.expect_operator()?;
+    let literal = self.expect_literal()?;
+
+    Ok(WhereClause::Comparison {
+        column_name,
+        operator,
+        literal,
+    })
+}
+
+fn expect_operator(&mut self) -> Result<Operator, ParseError> {
+    match self.cursor.next() {
+        Some(token) => Operator::from_token(token),
+        None => Err(ParseError::UnexpectedEndOfInput),
+    }
+}
+
+fn expect_literal(&mut self) -> Result<Literal, ParseError> {
+    match self.cursor.next() {
+        Some(token) => Literal::from_token(token),
+        None => Err(ParseError::UnexpectedEndOfInput),
+    }
+}
+```
+
+#### Understanding the Baseline Parser
+
+This code reflects a direct translation of our simple grammar. Each function, like `expect_projection` or `expect_keyword`, corresponds to a specific rule.
+
+At this stage:
+- **`parse_select`** acts as the orchestrator, calling sub-parsers in the exact sequence expected by the SQL syntax.
+- **`maybe_where_clause`** shows the "Maybe" pattern, it checks for the `WHERE` keyword and, if missing, returns `Ok(None)` instead of erroring.
+- **`expect_clause`** is completely linear. It expects exactly one identifier, one operator, and one literal. There is no concept of nesting or grouping yet.
+
+The code for the complete parser corresponding to the above grammar is [here](https://github.com/SarthakMakhija/relop/commit/57c1b6424d8cdc32c61bc7b41d53d1fb8fd272dc).
 
 ### Step 1: Adding AND
 
@@ -349,7 +403,49 @@ When the parser is deep inside the precedence ladder and sees a `(`, it uses `pr
 
 ### From Grammar to Code: The Implementation
 
-In [Relop](https://github.com/SarthakMakhija/relop), the implementation of this recursive logic is surprisingly clean. Here is a deconstructed look at how the parser handles expressions:
+In [Relop](https://github.com/SarthakMakhija/relop), the implementation of this recursive logic is surprisingly clean. The updated AST for `SELECT` is:
+
+```rust
+#[derive(Debug)]
+pub(crate) enum Ast {
+    /// Represents a `SELECT` statement.
+    Select {
+        /// The source to select from (table or join).
+        source: TableSource,
+        /// The projection (columns or all) to select.
+        projection: Projection,
+        /// The WHERE filter criteria.
+        where_clause: Option<WhereClause>,
+        /// The ORDER BY clause, defining the columns and directions used to order rows.
+        order_by: Option<Vec<OrderingKey>>,
+        /// The LIMIT (max records) to return.
+        limit: Option<usize>,
+    },
+}
+
+#[derive(Debug, Eq, PartialEq)]
+pub(crate) enum TableSource {
+    Table {
+        name: String,
+        alias: Option<String>,
+    },
+    ...
+}
+
+/// `WhereClause` represents the filtering criteria in a SELECT statement.
+#[derive(Debug, Eq, PartialEq)]
+pub(crate) struct WhereClause(pub(crate) Expression);
+
+#[derive(Debug, Eq, PartialEq)]
+pub(crate) enum Expression {
+    Single(Clause),
+    And(Vec<Expression>),
+    Or(Vec<Expression>),
+    Grouped(Box<Expression>),
+}
+```
+
+Here is a deconstructed look at how the parser handles expressions:
 
 ```rust
 impl Parser {
@@ -396,48 +492,6 @@ impl Parser {
             Ok(Expression::single(self.expect_clause()?))
         }
     }
-}
-```
-
-The updated AST for `SELECT` is:
-
-```rust
-#[derive(Debug)]
-pub(crate) enum Ast {
-    /// Represents a `SELECT` statement.
-    Select {
-        /// The source to select from (table or join).
-        source: TableSource,
-        /// The projection (columns or all) to select.
-        projection: Projection,
-        /// The WHERE filter criteria.
-        where_clause: Option<WhereClause>,
-        /// The ORDER BY clause, defining the columns and directions used to order rows.
-        order_by: Option<Vec<OrderingKey>>,
-        /// The LIMIT (max records) to return.
-        limit: Option<usize>,
-    },
-}
-
-#[derive(Debug, Eq, PartialEq)]
-pub(crate) enum TableSource {
-    Table {
-        name: String,
-        alias: Option<String>,
-    },
-    ...
-}
-
-/// `WhereClause` represents the filtering criteria in a SELECT statement.
-#[derive(Debug, Eq, PartialEq)]
-pub(crate) struct WhereClause(pub(crate) Expression);
-
-#[derive(Debug, Eq, PartialEq)]
-pub(crate) enum Expression {
-    Single(Clause),
-    And(Vec<Expression>),
-    Or(Vec<Expression>),
-    Grouped(Box<Expression>),
 }
 ```
 

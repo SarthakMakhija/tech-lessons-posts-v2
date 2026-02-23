@@ -5,15 +5,6 @@ pubDate: "2026-02-22"
 tags: ["Query", "Parsing", "Rust", "Databases"]
 ---
 
-Pending
-
-1. Hyperlinks in this series
-2. Review all
-3. See if any images are needed
-4. Essay on logical plan
-5. Essay on execution
-
-
 What actually happens when you write:
 
 ```sql
@@ -26,7 +17,9 @@ This series dissects that journey.
 
 We will follow a query from raw text to tokens, from tokens to syntax trees, from syntax trees to relational operators, and finally to execution. Along the way, we will peel back the abstractions that make databases feel like magic.
 
-To make this exploration concrete, we will use [Relop](https://github.com/SarthakMakhija/relop): a minimal, handwritten relational operator engine in Rust designed for learning and architectural transparency
+To make this exploration concrete, we will use [Relop](https://github.com/SarthakMakhija/relop): a minimal, handwritten relational operator engine in Rust designed for learning and architectural transparency.
+
+> While Relop simulates core database concepts like storage, catalog, and schema, it is strictly an **in-memory engine**. It provides the architectural "scaffolding" of a real database without the overhead of disk I/O, allowing us to focus entirely on the query processing logic.
 
 ### What is this series?
 
@@ -45,29 +38,19 @@ By focusing on a handwritten parser and a simplified execution engine, we can to
 
 Query processing is the multi-stage pipeline that takes a query and produces a result set. It typically follows these steps:
 
-1.  **Lexical Analysis:** Breaking the raw string into tokens (e.g., `SELECT`, `*`, `employees`).
-2.  **Syntactic Analysis (Parsing):** Validating the tokens against a grammar and building an Abstract Syntax Tree (AST).
-3.  **Semantic Analysis:** Ensuring the query makes sense (do the tables exist? are the column types compatible?).
-4.  **Logical Planning:** Transforming the AST into a tree of relational operators (Scale, Filter, Join).
-5.  **Optimization:** Reordering operators to make the query run faster (e.g., pushing filters down).
-6.  **Physical Planning & Execution:** Turning the logical plan into executable code that iterates over rows.
+1.  **Lexical Analysis:** Breaking the raw string into tokens (e.g., `SELECT`, `WHERE`).
+2.  **Syntactic Analysis (Parsing):** Validating tokens against a grammar and building an Abstract Syntax Tree (AST).
+3.  **Logical Planning:** Transforming the AST into a tree of relational operators (Scan, Filter, Join).
+4.  **Execution (The Volcano Model):** Turning the plan into executable operators that pull rows from storage.
 
-> This series focuses on the journey from Lexical Analysis to the generation of a Logical Plan and execution of the same. Topics like cost-based optimization and physical plan generation are outside our current scope.
+> This series focuses on the practical path from Lexical Analysis to the generation of a **Logical Plan** and its immediate execution. We'll skip complex cost-based optimization to focus on the core "plumbing" of a query engine.
 
-Conceptually, the flow that this series covers looks like this:
+Conceptually, the flow looks like this:
 
-```json
-SQL String
-    ↓
-Tokens
-    ↓
-AST
-    ↓
-Logical Plan (Relational Algebra Tree)
-    ↓
-Executable Operators
-    ↓
-Rows
+```text
+SQL String  ───▶  Tokens  ───▶  AST  ───▶  Logical Plan  ───▶  Executable  ───▶  Rows
+ (Text)          (Lexer)      (Parser)     (Relational         Operators      (Result)
+                                            Algebra)          (Executor)
 ```
 
 ### Typical Challenges in Query Processing
@@ -84,9 +67,20 @@ Building a robust query engine involves solving several non-trivial problems:
 Here is what is planned for the upcoming essays:
 
 1.  [Lexical Analysis](/en/blog/dissecting_the_query_engine_lexical_analysis): From raw strings to a stream of tokens.
-2.  **Thinking in Grammar:** Designing the data structures that hold a query’s intent.
-3.  **Handwritten Parser:** Mapping the Grammar to Recursive Descent Code.
-4.  **Expressions and Precedence:** Solving the logic puzzle of `AND`, `OR`, and parentheses.
-5.  **From Syntax to Plan:** Crossing the bridge into execution.
+2.  [Thinking in Grammar](/en/blog/dissecting_the_query_engine_thinking_in_grammar): Designing the data structures that hold a query’s intent.
+3.  [Handwritten Parser](/en/blog/dissecting_the_query_engine_handwritten_parser): Mapping the Grammar to Recursive Descent Code.
+4.  [Expressions and Precedence](/en/blog/dissecting_the_query_engine_expressions_and_precedence): Solving the logic puzzle of `AND`, `OR`, and parentheses.
+5.  **The Logical Plan:** Crossing the bridge into execution.
 
 Let's start with Part 1: [Lexical Analysis](/en/blog/dissecting_the_query_engine_lexical_analysis/).
+
+
+Pending
+
+1. Hyperlinks in this series
+2. Review all
+3. See if any images are needed
+4. Essay on logical plan
+5. Essay on execution
+6. In the code snippets which are large, add underline
+7. Minimize grammar where possible
