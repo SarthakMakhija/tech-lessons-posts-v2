@@ -45,4 +45,4 @@ Here is what is planned for the upcoming essays:
 4.  **Expressions and Precedence:** Solving the logic puzzle of `AND`, `OR`, and parentheses.
 5.  **From Syntax to Plan:** Crossing the bridge into execution.
 
-Let's start with Part 1: The Anatomy of a Lexer.
+Let's start with Part 1: [The Anatomy of a Lexer](/en/blog/dissecting_the_query_engine_lexical_analysis/).

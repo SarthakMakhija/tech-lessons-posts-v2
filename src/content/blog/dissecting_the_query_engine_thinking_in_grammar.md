@@ -1,0 +1,175 @@
+---
+author: "Sarthak Makhija"
+title: "Dissecting the Query Engine: From Parsing to Execution - Thinking in Grammar"
+pubDate: "2026-02-24"
+tags: ["Query", "Grammar", "EBNF", "AST", "Parsing"]
+---
+
+In the [previous essay](/en/blog/dissecting_the_query_engine_lexical_analysis/), we explored how a lexer transforms a raw string into a stream of tokens. But a stream of tokens is still just a list of words. To understand the **intent** of a query, we need a way to define the rules of how those words can be combined. This is where **Grammar** comes in.
+
+### Introduction to Grammar
+
+A grammar is a formal set of rules that defines the structure of a language. :h[If the lexer provides the vocabulary, the grammar provides the syntax.]
+
+A grammar serves three main purposes:
+1.  **Definition**: It explicitly states what is a "valid" query and what is not.
+2.  **Guide**: It acts as a blueprint for the Parser (which we will build in the next part).
+3.  **Communication**: It allows developers to discuss the language design without ambiguity.
+
+Without a formal grammar, a language is just a collection of "if-else" statements in your code, making it nearly impossible to maintain as complexity grows.
+
+### EBNF: The Language of Grammars
+
+To describe our grammar, we use **Extended Backus–Naur Form (EBNF)**. It is a notation technique for context-free grammars.
+
+In EBNF, we define "rules" (or **productions**). It is called a production because a rule "produces" a sequence of symbols or literals. Each rule has a name and a definition of what it consists of. For example, a simplified `SELECT` query in [Relop](https://github.com/SarthakMakhija/relop) might look like this:
+
+```ebnf
+select_statement = "SELECT" projection "FROM" table_source ;
+projection       = "*" | identifier ;
+table_source     = identifier ;
+identifier       = [a-zA-Z_][a-zA-Z0-9_]* ;
+```
+
+From this definition, we can see that a `select_statement` *must* start with the literal "SELECT", followed by something that satisfies the `projection` rule, then "FROM", and finally something that satisfies `table_source`.
+
+### Recursive Grammar
+
+Real-world languages aren't just flat lists of rules; they are often **recursive**. A rule is recursive if its definition eventually refers back to itself.
+
+Consider a `JOIN` in SQL. A table source could be a simple table name, or it could be a join between table sources.
+
+```ebnf
+table_source = identifier | join_clause ;
+join_clause  = table_source "JOIN" table_source "ON" expression ;
+```
+
+In this example, `table_source` can be a `join_clause`, and a `join_clause` contains more `table_source`s. This recursion allows us to model infinitely deep structures—like joining multiple tables together.
+
+> While recursion is powerful, it introduces two major challenges: **Ambiguity** and **Left Recursion**. We will discuss these in detail later in the [Challenge](#the-challenge-ambiguity-and-left-recursion) section.
+
+### Recursive Descent Parsing
+
+Before we map this grammar to code, let's look at the pattern we'll use: **Recursive Descent**. 
+
+A recursive descent parser is a top-down parser. It starts at the "root" of your grammar (the highest-level rule) and works its way down by calling functions for each sub-rule. If a rule fails to match, the parser can backtrack and try a different path. It's essentially a set of mutually recursive functions that mirror the structure of your EBNF.
+
+### Mapping Grammar to Code
+
+When translating EBNF to a recursive descent parser, we follow predictable patterns. Consider a fuller definition of a `SELECT` statement:
+
+```ebnf
+select = "SELECT" projection "FROM" table_source [where] [order] [limit] [";"] ;
+```
+
+In our Rust implementation, this grammar rule translates almost line-for-line into a method:
+
+-   Literal strings like `"SELECT"` translate to **expectations** (e.g., `self.expect_keyword("select")?`).
+-   Named rules like `projection` translate to **calls** to other parsing methods (e.g., `self.expect_projection()?`).
+-   Optional components in brackets `[ ]` translate to **conditional** checks (e.g., `self.maybe_where_clause()?`).
+
+Here is how the parser implementation looks for the above grammar:
+
+```rust
+fn parse_select(&mut self) -> Result<Ast, ParseError> {
+    self.expect_keyword("select")?;
+    let projection = self.expect_projection()?;
+    self.expect_keyword("from")?;
+    let source = self.expect_table_source()?;
+    
+    let where_clause = self.maybe_where_clause()?;
+    let order_by = self.maybe_order_by()?;
+    let limit = self.maybe_limit()?;
+    // ...
+}
+```
+
+And a specific method like `expect_projection` might look like this, handling the choice between a `*` and specific columns:
+
+```rust
+fn expect_projection(&mut self) -> Result<Projection, ParseError> {
+    if self.eat_if(|token| token.is_star()) {
+        return Ok(Projection::All);
+    }
+    let columns = self.expect_columns()?;
+    Ok(Projection::Columns(columns))
+}
+```
+
+### The Challenge: Ambiguity and Left Recursion
+
+Now that we see how grammar rules map to functions, we can understand two major technical challenges in language design.
+
+#### 1. Left Recursion (The Infinite Loop)
+
+Consider this "obvious" rule for an expression:
+```ebnf
+expression = expression "+" term | term ;
+```
+
+If we map this directly to code, the function `parse_expression()` would immediately call `parse_expression()` as its first action. It would never reach a point where it consumes a token, leading to an immediate **stack overflow**. To fix this for a recursive descent parser, we must refactor our grammar to be **right-recursive** (or use loops) to ensure we consume a token *before* recursing.
+
+#### 2. Ambiguity and Associativity
+
+A grammar is **ambiguous** if a single query can be produced using two or more different paths (or parse trees). 
+
+Our previous `JOIN` example (`join_clause = table_source "JOIN" table_source`) faced this exact challenge. The query `A JOIN B JOIN C` could be interpreted in two ways:
+1.  `(A JOIN B) JOIN C` (The first `table_source` produces `A JOIN B`).
+2.  `A JOIN (B JOIN C)` (The second `table_source` produces `B JOIN C`).
+
+Both are valid paths according to that grammar, but they might lead to different execution plans. This is where **Associativity** comes in. Most databases (and our grammar) prefer **left-associativity** for joins.
+
+By refactoring the rule to be right-recursive, we both solve the infinite loop and define the associativity:
+
+```ebnf
+table_source = identifier [ "JOIN" table_source "ON" expression ] ;
+```
+
+Here, the parser consumes an `identifier` first, then optionally recurses into another `JOIN`. This forces the nesting to the **right**, creating a clear path for the parser:
+
+```diff
+table_source (A JOIN B JOIN C)
++ └── identifier (A)
++      └── JOIN
++           └── table_source (B JOIN C)
++                ├── identifier (B)
++                └── JOIN
++                     └── table_source (C)
+```
+
+### Abstract Syntax Tree (AST)
+
+Once the parser validates that the tokens follow the grammar, it doesn't just return "True." It builds a data structure called an **Abstract Syntax Tree (AST)**.
+
+*   **Tree**: Because languages are hierarchical (a query contains clauses, which contain expressions).
+*   **Abstract**: Because it ignores "syntactic sugar" like semicolons or parentheses. It only cares about the **semantic structure**.
+
+For our `SELECT * FROM employees` query, the AST might look like this in Rust:
+
+```rust
+enum Ast {
+    Select {
+        projection: Projection,
+        source: TableSource,
+    }
+}
+
+enum Projection {
+    Star,
+    Identifier(String),
+}
+
+enum TableSource {
+    Table(String),
+}
+```
+
+The AST is the "final product" of the parsing phase. It is a clean, structured representation of the user's intent that the rest of the database engine can easily understand.
+
+> In Rust, ASTs are beautifully modeled using **Enums**. Since a query node can have multiple variants (e.g., a `Projection` can be a `Star` or specific `Columns`), Rust's algebraic data types allow us to represent this hierarchy with full type safety.
+
+### Conclusion
+
+Grammar is the "bridge" between the raw tokens of the lexer and the structured trees of the AST. By defining our language rules in EBNF, we create a clear path for implementing a robust and maintainable parser.
+
+In the next part, we will get our hands dirty and implement these rules using the **Recursive Descent** pattern.
