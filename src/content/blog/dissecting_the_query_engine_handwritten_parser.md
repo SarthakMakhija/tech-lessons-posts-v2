@@ -7,7 +7,7 @@ tags: ["Query", "Parser", "Rust", "Recursive Descent"]
 
 In the [previous essay](/en/blog/dissecting_the_query_engine_thinking_in_grammar/), we designed our language using EBNF and defined the structure of our Abstract Syntax Tree (AST). Now, it’s time to breathe life into those rules. In this part, we will build a **Handwritten Recursive Descent Parser** in Rust to transform a stream of tokens into an AST.
 
-The outcome of the parsing phase is the **AST** (Abstract Syntax Tree), a tree representation of the query that the engine can actually work with. Within the parser's domain, we speak in the vocabulary of clinical language structures: statements, clauses, projections, and table sources.
+The outcome of the parsing phase is the **AST** (Abstract Syntax Tree), a tree representation of the query that the engine can actually work with. Within the parser’s domain, we speak in the vocabulary of language structure: statements, clauses, projections, and table sources.
 
 ### The Parser’s Boundary: Syntax vs. Semantics
 
@@ -39,15 +39,17 @@ pub enum ParseError {
     /// Specialized errors for specific literal logic
     LimitOutOfRange(String),
     ZeroLimit,
-    // ...
+    
+    /// Indicates that no tokens were available to parse.
+    NoTokens,
 }
 ```
 
-For example, if a user types `SELECT *`, the parser will produce an `UnexpectedEndOfInput` error because it was expecting `FROM` after the projection.
+For example, if a user types `SELECT *`, the parser will produce an `UnexpectedEndOfInput` error because it was expecting `FROM` after the projection, according to the grammar.
 
 ### Mapping Grammar to Code
 
-The beauty of a **Recursive Descent Parser** is that it mirrors the grammar almost one-to-one. Every rule in our EBNF becomes a method in our `Parser` struct.
+The beauty of a **Recursive Descent Parser** is that it mirrors the grammar almost one-to-one. This one-to-one mapping is the defining characteristic of recursive descent
 
 Consider our simplified grammar and its translation, [dbe8c3e2a9411d217f4f25da629b0fc5e5e0da4d](https://github.com/SarthakMakhija/relop/commit/dbe8c3e2a9411d217f4f25da629b0fc5e5e0da4d):
 
@@ -155,7 +157,7 @@ pub(crate) struct Token {
 }
 ```
 
-The cursor provides two fundamental operations that drive the entire parsing process:
+The cursor provides two fundamental primitives that drive the entire parsing process:
 
 1.  **Lookahead with `peek()`**: This allows the parser to see the current token without consuming it. This is how we decide which "branch" of the grammar to follow. By looking at the first token, we can distinguish between a `SELECT`, a `SHOW`, or a `DESCRIBE` statement.
 2.  **Consumption with `next()`**: Once the parser validates that a token satisfies a rule, it calls `next()` to advance the pointer. This represents "making progress" in the query.
@@ -187,18 +189,18 @@ The `parse_select` method is a perfect example of how the parser enforces a stri
 3.  **Source Identification**: It expects the `FROM` keyword, then extracts the table name using `expect_identifier()`.
 4.  **Optional Cleanup**: Finally, it calls `maybe_semicolon()` to handle the trailing symbol if present.
 
-By stripping away the "sugar," we create a clean model that focus entirely on the **intent** of the user.
+By stripping away the "sugar," we create a clean model that focuses entirely on the **intent** of the user.
 
 ### The Sentinel: Why EOF Matters
 
 You might have noticed the call to `self.expect_end_of_stream()` in the main `parse` method. This checks for the **EOF (End of Stream)** token.
 
-In query parsing, the EOF token is the "sentinel" that ensures the **entire** input was consumed. Without checking for EOF, a query like `SELECT * FROM table garbage_at_the_end` would be considered valid by the parser because it would stop successfully after parsing the table name, leaving the "garbage" unexamined.
+In query parsing, the EOF token is the "sentinel" that ensures the **entire** input was consumed. Without enforcing EOF, the parser may successfully match only a prefix of the input, silently ignoring trailing tokens. Eg; a query like `SELECT * FROM table garbage_at_the_end` would be considered valid by the parser because it would stop successfully after parsing the table name, leaving the "garbage" unexamined.
 
 The EOF token ensures that we haven't just matched a *prefix* of the user's input, but that the *whole* string satisfies our grammar.
 
 ### Conclusion
 
-A handwritten parser provides ultimate control over error messages and performance. By mapping our EBNF rules to simple, predictable Rust methods, we've transformed the "dictionary" of tokens into a "semantic model" (the AST) that our engine can understand.
+A handwritten parser provides precise control over error handling, structure, and performance. By mapping our EBNF rules to simple, predictable Rust methods, we've transformed the stream of tokens into a structured syntactic model (the AST) that our engine can understand.
 
 In the next part, we'll tackle the most challenging part of parsing: **Expressions and Precedence**.
