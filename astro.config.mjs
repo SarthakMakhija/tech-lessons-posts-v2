@@ -8,6 +8,7 @@ import sitemap from '@astrojs/sitemap';
 
 import remarkDirective from 'remark-directive';
 import { remarkHighlight } from './src/plugins/remark-highlight.mjs';
+import { remarkMermaid } from './src/plugins/remark-mermaid.mjs';
 import {
   transformerNotationDiff,
   transformerNotationHighlight,
@@ -21,13 +22,13 @@ export default defineConfig({
   integrations: [
     react(),
     mdx({
-      remarkPlugins: [remarkDirective, remarkHighlight],
+      remarkPlugins: [remarkDirective, remarkHighlight, remarkMermaid],
     }),
     sitemap(),
   ],
 
   markdown: {
-    remarkPlugins: [remarkDirective, remarkHighlight],
+    remarkPlugins: [remarkDirective, remarkHighlight, remarkMermaid],
     shikiConfig: {
       transformers: [
         transformerNotationDiff(),
