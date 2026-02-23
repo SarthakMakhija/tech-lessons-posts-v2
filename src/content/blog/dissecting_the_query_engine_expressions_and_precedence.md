@@ -39,16 +39,16 @@ select
 
 projection
     = "*"
-    | identifier ("," identifier)*
+    | identifier ("," identifier)* ;
 
 where
-    = "WHERE" clause
+    = "WHERE" clause ;
 
 clause
-    = identifier operator literal
+    = identifier operator literal ;
 
 operator
-    = "=" | ">" | "<" | ">=" | "<=" | "!="
+    = "=" | ">" | "<" | ">=" | "<=" | "!=" ;
 
 identifier
     = IDENTIFIER ;
@@ -79,7 +79,7 @@ Here, `WHERE` starts with one `clause`, followed by any number (zero or more) of
 
 #### Overview of the code
 
-At this stage, the parser handles `AND` logic using a simple "collect" loop. It first expects a single condition and then iteratively look for more `AND <condition>` pairs.
+At this stage, the parser handles `AND` logic using a simple "collect" loop. It first expects a single condition and then iteratively looks for more `AND <condition>` pairs.
 
 ```rust
 fn maybe_where_clause(&mut self) -> Result<Option<WhereClause>, ParseError> {
@@ -156,7 +156,7 @@ We've created an **ambiguous** grammar. This grammar doesn't tell the parser whi
 
 #### How to Think About Precedence
 
-The rule is simple: **The rule with lower precedence calls the rule with higher precedence.**
+The rule is simple: **The rule representing the lower-precedence operator delegates to the rule representing the higher-precedence operator.**
 
 1.  **Expression (OR)**: The entry point for logic. It handles `OR` operations.
 2.  **And Expression**: Handles `AND` operations.
@@ -253,7 +253,7 @@ OR (
 
 This substitution shows us that an `OR` node must be able to hold an `AND` node. But if we introduce parentheses, like `(A OR B) AND C`, then an `AND` node would need to hold an `OR` node!
 
-This "circular" requirement—where `AND` can contain `OR`, and `OR` can contain `AND`, tells us that we cannot use fixed types like `Vec<Condition>`. Both must instead hold a unified, **Recursive Expression**:
+This "circular" requirement, where `AND` can contain `OR`, and `OR` can contain `AND`, tells us that we cannot use fixed types like `Vec<Condition>`. Both must instead hold a unified, **Recursive Expression**:
 
 ```rust
 #[derive(Debug, Eq, PartialEq)]
@@ -269,7 +269,31 @@ pub(crate) enum Expression {
 }
 ```
 
-This recursive structure is infinitely flexible. An `And` node can now hold a `Single(A)` and an `Or` node, which in turn holds `Single(B)` and `Single(C)`.
+This recursive structure allows arbitrary nesting depth. An `And` node can now hold a `Single(A)` and an `Or` node, which in turn holds `Single(B)` and `Single(C)`.
+
+For example:
+
+```SQL
+name = 'relop' OR language = 'rust' AND type = 'query-parsing'
+```
+
+Produces the following tree:
+
+```mermaid
+graph TD
+    OR["OR"]
+    Name["name = 'relop'"]
+    AND["AND"]
+    Lang["language = 'rust'"]
+    Type["type = 'query-parsing'"]
+
+    OR --> Name
+    OR --> AND
+    AND --> Lang
+    AND --> Type
+```
+
+Notice how the recursive structure naturally reflects precedence: the `AND` expression is constructed first and then becomes a child of the `OR`.
 
 ### Step 3: Adding Parentheses
 
@@ -432,6 +456,6 @@ Let's break down the transformation from grammar to code step-by-step:
 
 ### Conclusion
 
-Handling expressions is a rite of passage for every parser developer. By encoding precedence directly into the grammar rules and leveraging recursion, we can transform complex nested strings into a perfectly structured tree.
+Handling expressions and precedence is often the most intricate part of building a parser. By encoding precedence directly into the grammar rules and leveraging recursion, we can transform complex nested strings into a perfectly structured tree.
 
 With expressions handled, our parser is now powerful enough to represent almost any logical query. In the next part, we will move beyond syntax and explore the **Logical Plan**: how the engine transforms this Abstract Syntax Tree into a series of relational operations that can actually be executed.
