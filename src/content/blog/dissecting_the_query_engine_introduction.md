@@ -80,8 +80,9 @@ Pending
 
 1. Hyperlinks in this series
 2. Review all
-3. See if any images are needed
-4. Essay on logical plan
+3. See if any images are needed - not needed
+4. Essay on logical plan - done
 5. Essay on execution
 6. In the code snippets which are large, add underline
 7. Minimize grammar where possible
+8. Have consistent essay heading
