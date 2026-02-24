@@ -6,7 +6,7 @@ weight: 3
 tags: ["Query", "Grammar", "EBNF", "AST", "Parsing"]
 ---
 
-In the [previous essay](/en/blog/dissecting_the_query_engine_lexical_analysis/), we explored how a lexer transforms a raw string into a stream of tokens. But a stream of tokens is still just a list of words. To understand the **intent** of a query, we need a way to define the rules of how those words can be combined. This is where **Grammar** comes in.
+In the [previous essay](/en/blog/inside_a_query_engine_lexical_analysis/), we explored how a lexer transforms a raw string into a stream of tokens. But a stream of tokens is still just a list of words. To understand the **intent** of a query, we need a way to define the rules of how those words can be combined. This is where **Grammar** comes in.
 
 ### Introduction to Grammar
 
@@ -213,4 +213,4 @@ graph TD
 
 Grammar is the "bridge" between the raw tokens of the lexer and the structured trees of the AST. By defining our language rules in EBNF, we create a clear path for implementing a robust and maintainable parser.
 
-In the next part, we will get our hands dirty and implement these rules using the [Recursive Descent](/en/blog/dissecting_the_query_engine_handwritten_parser) parser.
+In the next part, we will get our hands dirty and implement these rules using the [Recursive Descent](/en/blog/inside_a_query_engine_handwritten_parser) parser.

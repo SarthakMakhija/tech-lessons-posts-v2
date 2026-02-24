@@ -6,7 +6,7 @@ weight: 4
 tags: ["Query", "Lexer", "Rust", "Databases"]
 ---
 
-Welcome to the second part of our series on dissecting a query engine. In the [introduction](/en/blog/dissecting_the_query_engine_introduction), we traced the journey of a query from a raw string to an executable pipeline. Today, we focus on the very first stage of that journey: **Lexical Analysis**.
+Welcome to the second part of our series on dissecting a query engine. In the [introduction](/en/blog/inside_a_query_engine_introduction), we traced the journey of a query from a raw string to an executable pipeline. Today, we focus on the very first stage of that journey: **Lexical Analysis**.
 
 ### Introduction
 
@@ -174,7 +174,7 @@ Think of the lexer as a component that can recognize individual words but doesn'
 
 Lexical analysis is about creating order from a chaotic string of characters. By transforming raw input into a structured stream of tokens, we provide the clean interface required for the next stage of query processing.
 
-In the next part, we will move from words to sentences and talk about [Thinking in Grammar](/en/blog/dissecting_the_query_engine_thinking_in_grammar/) and the design of the Abstract Syntax Tree.
+In the next part, we will move from words to sentences and talk about [Thinking in Grammar](/en/blog/inside_a_query_engine_thinking_in_grammar/) and the design of the Abstract Syntax Tree.
 
 ### References
 

@@ -6,7 +6,7 @@ weight: 2
 tags: ["Query", "Parser", "Rust", "Recursive Descent"]
 ---
 
-In the [previous essay](/en/blog/dissecting_the_query_engine_thinking_in_grammar/), we designed our language using EBNF and defined the structure of our Abstract Syntax Tree (AST). Now, it’s time to breathe life into those rules. In this part, we will build a **Handwritten Recursive Descent Parser** in Rust to transform a stream of tokens into an AST.
+In the [previous essay](/en/blog/inside_a_query_engine_thinking_in_grammar/), we designed our language using EBNF and defined the structure of our Abstract Syntax Tree (AST). Now, it’s time to breathe life into those rules. In this part, we will build a **Handwritten Recursive Descent Parser** in Rust to transform a stream of tokens into an AST.
 
 The outcome of the parsing phase is the **AST** (Abstract Syntax Tree), a tree representation of the query that the engine can actually work with. Within the parser’s domain, we speak in the vocabulary of language structure: statements, clauses, projections, and table sources.
 
@@ -181,7 +181,7 @@ The EOF token ensures that we haven't just matched a *prefix* of the user's inpu
 
 A handwritten parser provides precise control over error handling, structure, and performance. By mapping our EBNF rules to simple, predictable Rust methods, we've transformed the stream of tokens into a structured syntactic model (the AST) that our engine can understand.
 
-In the next part, we'll tackle the most challenging part of parsing: [Expressions and Precedence](/en/blog/dissecting_the_query_engine_expressions_and_precedence).
+In the next part, we'll tackle the most challenging part of parsing: [Expressions and Precedence](/en/blog/inside_a_query_engine_expressions_and_precedence).
 
 ### References
 

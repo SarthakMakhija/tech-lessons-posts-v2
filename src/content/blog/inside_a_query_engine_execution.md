@@ -6,7 +6,7 @@ weight: 1
 tags: ["Query", "Execution", "Volcano Model", "Rust", "Database Internals"]
 ---
 
-In the last part, we saw how the [Logical Plan](/en/blog/dissecting-the-query-engine-logical-plan) acts as a blueprint for our query. It is a static tree that describes *what* relational transformations must happen to the data.
+In the last part, we saw how the [Logical Plan](/en/blog/inside_a_query-engine-logical-plan) acts as a blueprint for our query. It is a static tree that describes *what* relational transformations must happen to the data.
 
 This final part is about the **Executor**: the component that takes that blueprint and turns it into living, breathing code.
 

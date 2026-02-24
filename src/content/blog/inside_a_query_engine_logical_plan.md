@@ -223,7 +223,7 @@ graph LR
 
 _(Note: Relop does not implement a cost-based optimizer or a separate physical planning phase.)._
 
-We've crossed the bridge from language into the world of relational operators. With a Logical Plan in hand, we have a clear recipe for execution. In the final part of this series, we will look at the **Executor**: the component that takes this plan and turns it into a living stream of rows.
+We've crossed the bridge from language into the world of relational operators. With a Logical Plan in hand, we have a clear recipe for execution. In the final part of this series, we will look at the [Executor](/en/blog/inside_a_query_engine_execution) the component that takes this plan and turns it into a living stream of rows.
 
 ### References
 

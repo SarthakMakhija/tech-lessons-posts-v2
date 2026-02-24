@@ -67,12 +67,12 @@ Building a robust query engine involves solving several non-trivial problems:
 
 Here is what is planned for the upcoming essays:
 
-1.  [Lexical Analysis](/en/blog/dissecting_the_query_engine_lexical_analysis): From raw strings to a stream of tokens.
-2.  [Thinking in Grammar](/en/blog/dissecting_the_query_engine_thinking_in_grammar): Designing the data structures that hold a query’s intent.
-3.  [Handwritten Parser](/en/blog/dissecting_the_query_engine_handwritten_parser): Mapping the Grammar to Recursive Descent Code.
-4.  [Expressions and Precedence](/en/blog/dissecting_the_query_engine_expressions_and_precedence): Solving the logic puzzle of `AND`, `OR`, and parentheses.
-5.  [The Logical Plan](/en/blog/dissecting_the_query_engine_logical_plan): Converting the AST to a tree of relational operators.
-6. [Execution](/en/blog/dissecting_the_query_engine_execution): Turning the Logical Plan into executable code.
+1.  [Lexical Analysis](/en/blog/inside_a_query_engine_lexical_analysis): From raw strings to a stream of tokens.
+2.  [Thinking in Grammar](/en/blog/inside_a_query_engine_thinking_in_grammar): Designing the data structures that hold a query’s intent.
+3.  [Handwritten Parser](/en/blog/inside_a_query_engine_handwritten_parser): Mapping the Grammar to Recursive Descent Code.
+4.  [Expressions and Precedence](/en/blog/inside_a_query_engine_expressions_and_precedence): Solving the logic puzzle of `AND`, `OR`, and parentheses.
+5.  [The Logical Plan](/en/blog/inside_a_query_engine_logical_plan): Converting the AST to a tree of relational operators.
+6. [Execution](/en/blog/inside_a_query_engine_execution): Turning the Logical Plan into executable code.
 
 Let's start with Part 1: [Lexical Analysis](/en/blog/dissecting_the_query_engine_lexical_analysis/).
 
@@ -86,7 +86,7 @@ Pending
 5. Essay on execution - done
 6. In the code snippets which are large, add underline
 7. Minimize grammar where possible
-8. Have consistent essay heading
+8. Have consistent essay heading - done
 9. Minimize header image - done
 10. Validate that article content is not copied
 11. Add references - done

@@ -6,7 +6,7 @@ weight: 1
 tags: ["Query", "Expressions", "Precedence", "Parsing", "AST"]
 ---
 
-In the previous parts of this series, we built a [Handwritten Parser](/en/blog/dissecting_the_query_engine_handwritten_parser/) capable of understanding basic `SELECT` statements. But real-world queries are rarely that simple. Users want to filter data using complex logic: `WHERE (age > 25 OR salary > 50000) AND status = 'active'`.
+In the previous parts of this series, we built a [Handwritten Parser](/en/blog/inside_a_query_engine_handwritten_parser/) capable of understanding basic `SELECT` statements. But real-world queries are rarely that simple. Users want to filter data using complex logic: `WHERE (age > 25 OR salary > 50000) AND status = 'active'`.
 
 Supporting this requires us to tackle the most challenging part of parsing: **Expressions, Precedence, and Parentheses**.
 
@@ -513,7 +513,7 @@ Let's break down the transformation from grammar to code step-by-step:
 
 Handling expressions and precedence is often the most intricate part of building a parser. By encoding precedence directly into the grammar rules and leveraging recursion, we can transform complex nested strings into a perfectly structured tree.
 
-With expressions handled, our parser is now powerful enough to represent almost any logical query. In the next part, we will move beyond syntax and explore the [Logical Plan](/en/blog/dissecting_the_query_engine_logical_plan): how the engine transforms this Abstract Syntax Tree into a series of relational operations.
+With expressions handled, our parser is now powerful enough to represent almost any logical query. In the next part, we will move beyond syntax and explore the [Logical Plan](/en/blog/inside_a_query_engine_logical_plan): how the engine transforms this Abstract Syntax Tree into a series of relational operations.
 
 ### References
 
