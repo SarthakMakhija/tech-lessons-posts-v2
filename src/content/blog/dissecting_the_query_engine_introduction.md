@@ -2,7 +2,7 @@
 author: "Sarthak Makhija"
 title: "Dissecting the Query Engine: From Parsing to Execution - Introduction"
 pubDate: "2026-02-22"
-heroImage: "/dissecting_the_query_engine-title.png"
+heroImage: "/dissecting_the_query_engine-title.webp"
 tags: ["Query", "Parsing", "Rust", "Databases"]
 ---
 
@@ -87,7 +87,7 @@ Pending
 6. In the code snippets which are large, add underline
 7. Minimize grammar where possible
 8. Have consistent essay heading
-9. Minimize header image
+9. Minimize header image - done
 10. Validate that article content is not copied
 11. Add references - done
 12. Add weight in the blog - done
