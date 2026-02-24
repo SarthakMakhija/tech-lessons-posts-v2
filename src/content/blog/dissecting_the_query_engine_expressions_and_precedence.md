@@ -512,4 +512,4 @@ Let's break down the transformation from grammar to code step-by-step:
 
 Handling expressions and precedence is often the most intricate part of building a parser. By encoding precedence directly into the grammar rules and leveraging recursion, we can transform complex nested strings into a perfectly structured tree.
 
-With expressions handled, our parser is now powerful enough to represent almost any logical query. In the next part, we will move beyond syntax and explore the **Logical Plan**: how the engine transforms this Abstract Syntax Tree into a series of relational operations that can actually be executed.
+With expressions handled, our parser is now powerful enough to represent almost any logical query. In the next part, we will move beyond syntax and explore the [Logical Plan](/en/blog/dissecting_the_query_engine_logical_plan): how the engine transforms this Abstract Syntax Tree into a series of relational operations.
