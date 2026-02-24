@@ -224,3 +224,7 @@ graph LR
 By building these layers by hand, the Lexer, the Recursive Descent Parser, the Algebraic Planner, and the Volcano Executor, we have demystified how a query engine transforms a declarative specification into a stream of evaluated rows.
 
 Thank you for following along on this journey through the query engine. Happy coding!
+
+### References
+
+- [Volcano-An Extensible and Parallel Query Evaluation System, Goetz Graefe](https://paperhub.s3.amazonaws.com/dace52a42c07f7f8348b08dc2b186061.pdf)
