@@ -7,7 +7,11 @@ const posts = (
     await getCollection("blog", ({ data }) => {
         return import.meta.env.PROD ? data.draft !== true : true;
     })
-).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+).sort((a, b) => {
+    const dateDiff = b.data.pubDate.valueOf() - a.data.pubDate.valueOf();
+    if (dateDiff !== 0) return dateDiff;
+    return (a.data.weight ?? 0) - (b.data.weight ?? 0);
+});
 
 // Group posts by year
 const postsByYear = posts.reduce(

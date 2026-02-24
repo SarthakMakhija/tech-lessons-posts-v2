@@ -87,3 +87,6 @@ Pending
 6. In the code snippets which are large, add underline
 7. Minimize grammar where possible
 8. Have consistent essay heading
+9. Minimize header image
+10. Validate that article content is not copied
+11. Add references

@@ -1,7 +1,8 @@
 ---
 author: "Sarthak Makhija"
 title: "Dissecting the Query Engine: From Syntax to Algebra"
-pubDate: "2026-02-27"
+pubDate: "2026-02-24"
+weight: 2
 tags: ["Query", "Logical Plan", "Relational Algebra", "Database Internals"]
 ---
 

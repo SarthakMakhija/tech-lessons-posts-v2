@@ -1,7 +1,8 @@
 ---
 author: "Sarthak Makhija"
 title: "Dissecting the Query Engine: From Parsing to Execution - Handling Expressions and Precedence"
-pubDate: "2026-02-26"
+pubDate: "2026-02-23"
+weight: 1
 tags: ["Query", "Expressions", "Precedence", "Parsing", "AST"]
 ---
 

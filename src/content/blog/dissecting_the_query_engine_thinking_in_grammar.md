@@ -1,7 +1,8 @@
 ---
 author: "Sarthak Makhija"
 title: "Dissecting the Query Engine: From Parsing to Execution - Thinking in Grammar"
-pubDate: "2026-02-24"
+pubDate: "2026-02-23"
+weight: 3
 tags: ["Query", "Grammar", "EBNF", "AST", "Parsing"]
 ---
 

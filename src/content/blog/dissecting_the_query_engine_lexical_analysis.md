@@ -2,6 +2,7 @@
 author: "Sarthak Makhija"
 title: "Dissecting the Query Engine: From Parsing to Execution - Lexical Analysis"
 pubDate: "2026-02-23"
+weight: 4
 tags: ["Query", "Lexer", "Rust", "Databases"]
 ---
 
