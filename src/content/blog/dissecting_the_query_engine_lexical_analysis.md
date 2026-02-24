@@ -175,3 +175,8 @@ Think of the lexer as a component that can recognize individual words but doesn'
 Lexical analysis is about creating order from a chaotic string of characters. By transforming raw input into a structured stream of tokens, we provide the clean interface required for the next stage of query processing.
 
 In the next part, we will move from words to sentences and talk about [Thinking in Grammar](/en/blog/dissecting_the_query_engine_thinking_in_grammar/) and the design of the Abstract Syntax Tree.
+
+### References
+
+- [Crafting Interpreters](https://craftinginterpreters.com/contents.html)
+  - Chapters 4,5,6

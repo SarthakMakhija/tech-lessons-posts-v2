@@ -182,3 +182,8 @@ The EOF token ensures that we haven't just matched a *prefix* of the user's inpu
 A handwritten parser provides precise control over error handling, structure, and performance. By mapping our EBNF rules to simple, predictable Rust methods, we've transformed the stream of tokens into a structured syntactic model (the AST) that our engine can understand.
 
 In the next part, we'll tackle the most challenging part of parsing: [Expressions and Precedence](/en/blog/dissecting_the_query_engine_expressions_and_precedence).
+
+### References
+
+- [Crafting Interpreters](https://craftinginterpreters.com/contents.html)
+  - Chapters 4,5,6

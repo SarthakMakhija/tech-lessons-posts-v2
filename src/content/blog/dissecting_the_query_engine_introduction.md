@@ -89,4 +89,5 @@ Pending
 8. Have consistent essay heading
 9. Minimize header image
 10. Validate that article content is not copied
-11. Add references
+11. Add references - done
+12. Add weight in the blog - done
