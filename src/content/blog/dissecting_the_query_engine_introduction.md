@@ -2,6 +2,7 @@
 author: "Sarthak Makhija"
 title: "Dissecting the Query Engine: From Parsing to Execution - Introduction"
 pubDate: "2026-02-22"
+heroImage: "/dissecting_the_query_engine-title.png"
 tags: ["Query", "Parsing", "Rust", "Databases"]
 ---
 
@@ -71,7 +72,7 @@ Here is what is planned for the upcoming essays:
 3.  [Handwritten Parser](/en/blog/dissecting_the_query_engine_handwritten_parser): Mapping the Grammar to Recursive Descent Code.
 4.  [Expressions and Precedence](/en/blog/dissecting_the_query_engine_expressions_and_precedence): Solving the logic puzzle of `AND`, `OR`, and parentheses.
 5.  [The Logical Plan](/en/blog/dissecting_the_query_engine_logical_plan): Converting the AST to a tree of relational operators.
-6. **Execution**: ....
+6. [Execution](/en/blog/dissecting_the_query_engine_execution): Turning the Logical Plan into executable code.
 
 Let's start with Part 1: [Lexical Analysis](/en/blog/dissecting_the_query_engine_lexical_analysis/).
 
@@ -82,7 +83,7 @@ Pending
 2. Review all
 3. See if any images are needed - not needed
 4. Essay on logical plan - done
-5. Essay on execution
+5. Essay on execution - done
 6. In the code snippets which are large, add underline
 7. Minimize grammar where possible
 8. Have consistent essay heading
