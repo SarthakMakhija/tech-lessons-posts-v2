@@ -70,7 +70,7 @@ Here is what is planned for the upcoming essays:
 2.  [Thinking in Grammar](/en/blog/dissecting_the_query_engine_thinking_in_grammar): Designing the data structures that hold a query’s intent.
 3.  [Handwritten Parser](/en/blog/dissecting_the_query_engine_handwritten_parser): Mapping the Grammar to Recursive Descent Code.
 4.  [Expressions and Precedence](/en/blog/dissecting_the_query_engine_expressions_and_precedence): Solving the logic puzzle of `AND`, `OR`, and parentheses.
-5.  **The Logical Plan:** Crossing the bridge into execution.
+5.  [The Logical Plan](/en/blog/dissecting_the_query_engine_logical_plan): Converting the AST to a tree of relational operators.
 6. **Execution**: ....
 
 Let's start with Part 1: [Lexical Analysis](/en/blog/dissecting_the_query_engine_lexical_analysis/).
