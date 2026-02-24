@@ -14,7 +14,7 @@ A grammar is a formal set of rules that defines the structure of a language. :h[
 
 A grammar serves three main purposes:
 1.  **Definition**: It explicitly states what is a "valid" query and what is not.
-2.  **Guide**: It acts as a blueprint for the Parser (which we will build in the next part).
+2.  **Guide**: It acts as a blueprint for the Parser (which we will build in the [next part](/en/blog/inside_a_query_engine_handwritten_parser/)).
 3.  **Communication**: It allows developers to discuss the language design without ambiguity.
 
 Without a formal grammar, a language is just a collection of "if-else" statements in your code, making it nearly impossible to maintain as complexity grows.
@@ -23,7 +23,7 @@ Without a formal grammar, a language is just a collection of "if-else" statement
 
 To describe our grammar, we use **Extended Backus–Naur Form (EBNF)**. It is a notation technique for context-free grammars.
 
-In EBNF, we define "rules" (or **productions**). Each rule is called a production because it describes how a non-terminal symbol can be expanded into a sequence of terminals and/or non-terminals. Each rule has a name and a definition of what it consists of. For example, a simplified `SELECT` query in [Relop](https://github.com/SarthakMakhija/relop) might look like this:
+In EBNF, we define "rules" (or **productions**). Each rule is called a production because it describes how a non-terminal symbol can be expanded into a sequence of terminals and/or non-terminals. Each rule has a name and a definition of what it consists of. For example, a simplified `SELECT` query in Relop might look like this:
 
 ```ebnf
 select_statement = "SELECT" projection "FROM" table_source ;
@@ -31,6 +31,8 @@ projection       = "*" | identifier ;
 table_source     = identifier ;
 identifier       = [a-zA-Z_][a-zA-Z0-9_]* ;
 ```
+
+The latest grammar is available [here](https://github.com/SarthakMakhija/relop/blob/main/docs/grammar.ebnf).
 
 From this definition, we can see that a `select_statement` *must* start with the literal "SELECT", followed by something that satisfies the `projection` rule, then "FROM", and finally something that satisfies `table_source`.
 
@@ -45,7 +47,7 @@ table_source = identifier | join_clause ;
 join_clause  = table_source "JOIN" table_source "ON" expression ;
 ```
 
-In this example, `table_source` can be a `join_clause`, and a `join_clause` contains more `table_source`s. This recursion allows us to model infinitely deep structures—like joining multiple tables together.
+In this example, `table_source` can be a `join_clause`, and a `join_clause` contains more `table_source`s. This recursion allows us to model infinitely deep structures, like joining multiple tables together.
 
 > While recursion is powerful, it introduces two major challenges: **Ambiguity** and **Left Recursion**. We will discuss these in detail later in the [Challenge](#the-challenge-ambiguity-and-left-recursion) section.
 
@@ -53,7 +55,7 @@ In this example, `table_source` can be a `join_clause`, and a `join_clause` cont
 
 Before we map this grammar to code, let's look at the pattern we'll use: **Recursive Descent**. 
 
-A recursive descent parser is a top-down parser. It begins at the root rule of the grammar and expands into sub-rules using a set of mutually recursive functions. In our implementation, each grammar rule maps directly to a parsing function, and decisions are made deterministically based on the next token, without backtracking. The result is a parser whose control flow closely mirrors the structure of the EBNF.
+A recursive descent parser is a top-down parser. It begins at the root rule of the grammar and expands into sub-rules using a set of  functions. In our implementation, each grammar rule maps directly to a parsing function, and decisions are made deterministically based on the next token, without backtracking. The result is a parser whose control flow closely mirrors the structure of the EBNF.
 
 ### Mapping Grammar to Code
 
@@ -99,7 +101,7 @@ fn expect_projection(&mut self) -> Result<Projection, ParseError> {
 
 ### The Challenge: Ambiguity and Left Recursion
 
-Now that we see how grammar rules map to functions, we can understand two major technical challenges in language design.
+Now that we see how grammar rules map to functions, we can understand two major technical challenges in language design with respect to recursive descent parsing.
 
 #### 1. Left Recursion (The Infinite Loop)
 
@@ -120,7 +122,7 @@ Our previous `JOIN` example (`join_clause = table_source "JOIN" table_source`) f
 
 Both parses are valid according to that grammar, and they produce different parse trees. This is where **Associativity** comes in. Most databases (and our grammar) prefer **left-associativity** for joins.
 
-By refactoring the rule to eliminate left recursion, we avoid infinite recursion in the parser. Associativity is then enforced either by grammar structure or by how we construct the AST.
+By refactoring the rule to eliminate left recursion, we avoid infinite recursion in the parser. Associativity is then enforced either by grammar structure or by how we construct the AST. Our refactored grammar for `table_source` is:
 
 ```ebnf
 table_source = identifier [ "JOIN" table_source "ON" expression ] ;
@@ -138,7 +140,7 @@ table_source (A JOIN B JOIN C)
 +                     └── table_source (C)
 ```
 
-> In Relop, joins are left-associative. After parsing the base table, the parser processes each subsequent JOIN in a loop and incrementally builds the AST by attaching the new table to the right of the existing structure. Each iteration wraps the previously constructed subtree as the left operand of a new Join node. As a result, a query like `A JOIN B JOIN C` is interpreted as `(A JOIN B) JOIN C`, matching the left-associative behavior expected in SQL engines.
+> In Relop, joins are left-associative. After parsing the base table, the parser processes each subsequent JOIN in a loop and incrementally builds the AST by attaching the new table to the right of the existing structure. Each iteration wraps the previously constructed subtree as the left operand of a new Join node. As a result, a query like `A JOIN B JOIN C` is interpreted as `(A JOIN B) JOIN C`, matching the left-associative behavior expected in SQL engines. The code is available [here](https://github.com/SarthakMakhija/relop/blob/main/src/query/parser/mod.rs#L150).
 
 ### Abstract Syntax Tree (AST)
 
@@ -167,7 +169,7 @@ enum TableSource {
 }
 ```
 
-The AST is the "final product" of the parsing phase. It is a clean, structured representation of the user's intent that the rest of the database engine can easily understand.
+The AST is the "final product" of the parsing phase. It is a clean, structured representation of the user's intent that the rest of the database engine can easily understand. The AST for Relop is available [here](https://github.com/SarthakMakhija/relop/blob/main/src/query/parser/ast.rs#L8).
 
 > In Rust, ASTs are beautifully modeled using **Enums**. Since a query node can have multiple variants (e.g., a `Projection` can be a `Star` or specific `Columns`), Rust's algebraic data types allow us to represent this hierarchy with full type safety.
 
@@ -187,7 +189,7 @@ projection
 | identifier ("," identifier)*
 ```
 
-and sample query: 
+and a sample query: 
 
 ```sql
 SELECT id, email FROM users AS u;

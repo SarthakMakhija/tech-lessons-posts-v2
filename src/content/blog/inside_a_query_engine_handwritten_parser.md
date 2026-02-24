@@ -50,7 +50,7 @@ For example, if a user types `SELECT *`, the parser will produce an `UnexpectedE
 
 ### Mapping Grammar to Code
 
-The beauty of a **Recursive Descent Parser** is that it mirrors the grammar almost one-to-one. This one-to-one mapping is the defining characteristic of recursive descent
+The beauty of a **Recursive Descent Parser** is that it mirrors the grammar almost one-to-one. This one-to-one mapping is the defining characteristic of recursive descent.
 
 Consider our simplified grammar and its translation, [dbe8c3e2a9411d217f4f25da629b0fc5e5e0da4d](https://github.com/SarthakMakhija/relop/commit/dbe8c3e2a9411d217f4f25da629b0fc5e5e0da4d):
 
@@ -58,7 +58,7 @@ Consider our simplified grammar and its translation, [dbe8c3e2a9411d217f4f25da62
 select = "SELECT" "*" "FROM" identifier [";"] ;
 ```
 
-Our implementation uses a `TokenCursor` to navigate the stream and helper methods like `expect_keyword` and `maybe_semicolon` to handle the logic:
+Our implementation uses a `TokenCursor` to navigate the stream of tokens and helper methods like `expect_keyword` and `maybe_semicolon` to handle the logic of building AST:
 
 ```rust
 impl Parser {
@@ -176,6 +176,8 @@ You might have noticed the call to `self.expect_end_of_stream()` in the main `pa
 In query parsing, the EOF token is the "sentinel" that ensures the **entire** input was consumed. Without enforcing EOF, the parser may successfully match only a prefix of the input, silently ignoring trailing tokens. Eg; a query like `SELECT * FROM table garbage_at_the_end` would be considered valid by the parser because it would stop successfully after parsing the table name, leaving the "garbage" unexamined.
 
 The EOF token ensures that we haven't just matched a *prefix* of the user's input, but that the *whole* string satisfies our grammar.
+
+The complete `Parser` is available [here](https://github.com/SarthakMakhija/relop/blob/main/src/query/parser/mod.rs#L18).
 
 ### Conclusion
 

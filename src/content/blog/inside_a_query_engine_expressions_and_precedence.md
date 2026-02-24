@@ -18,7 +18,7 @@ If we don't encode this precedence into our grammar, the parser won't know wheth
 
 ### The Building Blocks: A Simple Starting Point
 
-Before we dive into expressions, let's look at the basic grammar we've established for a query. This is our foundation:
+Before we dive into expressions, let's look at the basic grammar for a `SELECT` query. This is our foundation:
 
 ```ebnf
 select
@@ -113,7 +113,7 @@ At this stage:
 - **`maybe_where_clause`** shows the "Maybe" pattern, it checks for the `WHERE` keyword and, if missing, returns `Ok(None)` instead of erroring.
 - **`expect_clause`** is completely linear. It expects exactly one identifier, one operator, and one literal. There is no concept of nesting or grouping yet.
 
-The code for the complete parser corresponding to the above grammar is [here](https://github.com/SarthakMakhija/relop/commit/57c1b6424d8cdc32c61bc7b41d53d1fb8fd272dc).
+The code for the complete parser corresponding to the above grammar is [here](https://github.com/SarthakMakhija/relop/commit/57c1b6424d8cdc32c61bc7b41d53d1fb8fd272dc). (Note: This was the `Parser` during the early stages of development.)
 
 ### Step 1: Adding AND
 
@@ -176,7 +176,7 @@ fn expect_condition(&mut self) -> Result<Condition, ParseError> {
 }
 ```
 
-In our Rust AST, we might model this using a specialized enum:
+In our Rust AST, we model this using a specialized enum:
 
 ```rust
 pub(crate) enum WhereClause {
@@ -198,6 +198,8 @@ pub(crate) enum Condition {
 }
 ```
 
+Introduction of `AND` was all about iteratively looking for more `AND` clauses.
+
 ### Step 2: Introducing OR and Precedence
 
 When we add `OR`, things get interesting. If we were to naively define `WHERE` as:
@@ -213,7 +215,7 @@ We've created an **ambiguous** grammar. This grammar doesn't tell the parser whi
 
 The rule is simple: **The rule representing the lower-precedence operator delegates to the rule representing the higher-precedence operator.**
 
-1.  **Expression (OR)**: The entry point for logic. It handles `OR` operations.
+1.  **Expression (OR)**: The entry point for logic. It handles `OR` operations and calls `and_expression`.
 2.  **And Expression**: Handles `AND` operations.
 3.  **Clause**: The actual comparison (`id = 1`).
 
@@ -404,7 +406,7 @@ When the parser is deep inside the precedence ladder and sees a `(`, it uses `pr
 
 ### From Grammar to Code: The Implementation
 
-In [Relop](https://github.com/SarthakMakhija/relop), the implementation of this recursive logic is surprisingly clean. The updated AST for `SELECT` is:
+In [Relop](https://github.com/SarthakMakhija/relop/blob/main/src/query/parser/mod.rs#L233), the implementation of this recursive logic is surprisingly clean. The updated AST for `SELECT` is:
 
 ```rust
 #[derive(Debug)]

@@ -6,11 +6,11 @@ weight: 1
 tags: ["Query", "Execution", "Volcano Model", "Rust", "Database Internals"]
 ---
 
-In the last part, we saw how the [Logical Plan](/en/blog/inside_a_query-engine-logical-plan) acts as a blueprint for our query. It is a static tree that describes *what* relational transformations must happen to the data.
+In the last part, we saw how the [Logical Plan](/en/blog/inside_a_query_engine_logical_plan) acts as a blueprint for our query. It is a static tree that describes *what* relational transformations must happen to the data.
 
 This final part is about the **Executor**: the component that takes that blueprint and turns it into living, breathing code.
 
-_(Note: Relop does not implement a cost-based optimizer or a separate physical planning phase.)_
+_(Note: Relop does not implement a cost-based optimizer or a separate physical planning phase. The Executor works on the LogicalPlan directly.)_
 
 ### From Logical Plan to Running Code
 
@@ -21,7 +21,7 @@ The boundary between planning and execution is clear:
 
 When we move from the plan to the executor, we aren't just traversing a tree; we are building a stack of **iterators** that will pull data through the system.
 
-This "realization" happens recursively. The executor looks at a plan node, creates the corresponding execution operator, and then recursively does the same for its children. 
+This "realization" happens recursively. The executor looks at a logical plan node, creates the corresponding execution operator (called `ResultSet`), and then recursively does the same for its children. 
 
 Here is how the core `execute_select` logic looks in Relop:
 
@@ -78,13 +78,63 @@ The result is a tree of `ResultSet` objects that perfectly mirrors our `LogicalP
 
 In this model, execution begins at the **root** of the logical plan, the top-most operator in the tree (for example, the Projection in a `SELECT` query). When the client requests a row by calling `next()` on the root iterator, that `iterator` pulls from its child iterator. This cascading chain continues downward until a row is produced by the base data source (the `table scan`), after which the row flows back up through each layer to the client.
 
-```mermaid
-graph TD
-    Projection -->|pull next row| Filter
-    Filter -->|pull next row| Scan
+Let's take an example.
+
+```SQL
+SELECT id
+FROM users
+WHERE age > 30;
 ```
 
-Each operator in the tree is transformed into an "iterator" that performs its specific transformation (filtering, projecting, etc.) on the rows bubbling up from below.
+The above query produces the following logical plan:
+
+```text
+Projection(columns = ["id"])
+    └── Filter(predicate = age > 30)
+            └── Scan(table = "users")
+```
+
+```rust
+LogicalPlan::Projection {
+    columns: vec!["id"],
+    base_plan: Box::new(
+        LogicalPlan::Filter {
+            predicate: age > 30,
+            base_plan: Box::new(
+                LogicalPlan::Scan {
+                    table_name: "users",
+                    alias: None,
+                }
+            )
+        }
+    )
+}
+```
+
+When the Executor runs, it **mirrors** this **tree** with **concrete operator implementations**:
+
+```text
+SQL:
+SELECT id FROM users WHERE age > 30;
+
+────────────────────────────────────────────────────────────
+
+Logical Plan (Descriptive)        ResultSet Tree (Executable)
+
+Projection                        ProjectResultSet
+  └── Filter                        └── FilterResultSet
+        └── Scan                          └── ScanResultsSet
+
+────────────────────────────────────────────────────────────
+```
+
+When the user calls `next()` on the root iterator, the following happens:
+
+1. The `Projection ResultSet` calls `next()` on its child iterator (the `Filter`).
+2. The `Filter` operator calls `next()` on its child iterator (the `Scan`).
+3. The `Scan` operator reads a row from the table.
+4. The `Filter` operator checks if the row satisfies the predicate.
+5. If the row satisfies the predicate, the `Projection` operator projects the row and returns it.
 
 ### ResultSet: Why It Is Not an Iterator
 
@@ -147,7 +197,7 @@ Notice that no operator needs to know how the row was originally produced. Each 
 
 While unary operators are simple decorators, the **Join** is a bit more complex. It is a binary operator that must coordinate two different `ResultSet` sources. In Relop, joins are left-associative.
 
-Relop implements a **Nested Loop Join**. For a join between table A and table B, the logic is:
+Relop implements a [Nested Loop Join](https://github.com/SarthakMakhija/relop/blob/main/src/query/executor/result_set.rs#L292). For a join between table A and table B, the logic is:
 1.  Pull a row from A (the outer table).
 2.  Reset the iterator for B (the inner table) and pull every row from it.
 3.  Combine the current A row with each B row and evaluate the join condition.
@@ -191,7 +241,7 @@ As rows flow through this pipeline, they are wrapped in a **RowView**. This is a
 In a pull-based model, there are two types of operators:
 
 1.  **Streaming Operators**: These yield rows as soon as they receive them from their child. `Filter`, `Projection`, and `Limit` are streaming. They have a very low memory footprint because they don't store rows.
-2.  **Blocking Operators**: These must consume **all** input from their child before they can yield the first result. `Sort` (`OrderingResultSet`) is a prime example. To sort the data, the engine must buffer the entire input set into memory, sort it, and only then start yielding rows to the parent. **Blocking operators** break the pure streaming pipeline and introduce memory buffering
+2.  **Blocking Operators**: These must consume **all** input from their child before they can yield the first result. `Sort` (`OrderingResultSet`) is a prime example. To sort the data, the engine must buffer the entire input set into memory, sort it, and only then start yielding rows to the parent. **Blocking operators** break the pure streaming pipeline and introduce memory buffering.
 
 This distinction is fundamental to understanding the performance and memory profile of a query.
 
@@ -201,16 +251,16 @@ Let's trace a final query through the entire system:
 
 `SELECT id FROM users WHERE age > 30`
 
-1.  **Client** calls `executor.execute()`, which returns a `ResultSet`.
-2.  **Client** calls `result_set.iterator()`.
-3.  The **Projection** iterator is created; it calls `.iterator()` on the **Filter**.
-4.  The **Filter** iterator is created; it calls `.iterator()` on the **Scan**.
-5.  **Client** calls `next()` on the Projection.
-6.  **Projection** calls `next()` on the Filter.
-7.  **Filter** calls `next()` on the **Scan** repeatedly until a row matches `age > 30`.
-8.  **Scan** reads a row from memory and returns it to the Filter.
-9.  **Filter** returns exactly that row to the Projection.
-10. **Projection** trims the row to only include the `id` and returns it to the Client.
+1. The **client** calls `executor.execute()`, which returns a `ResultSet`.
+2. The **client** calls `result_set.iterator()`.
+3. The **client** calls `next()` to request a row.
+4. The **top-level operator** (`Projection`) asks its child (`Filter`) for the next row.
+5. The **Filter** asks the **Scan** for rows until one satisfies `age > 30`.
+6. The **Scan** reads a row from the table and returns it upward.
+7. The **Filter** checks the predicate and passes the matching row upward.
+8. The `Projection` keeps only the `id` column.
+
+The final row is returned to the client. This process repeats from point 3 on every `next()` call until the client has consumed all rows.
 
 ### Architecture Recap
 

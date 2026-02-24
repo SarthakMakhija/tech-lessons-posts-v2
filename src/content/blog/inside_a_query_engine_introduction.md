@@ -28,23 +28,20 @@ This series is not about using a database.
 
 It is about understanding how a database transforms a __declarative language__ into a __procedural execution plan__.
 
-SQL tells the system what to compute.
-The query engine decides how to compute it.
+:h[SQL tells the system what to compute. The query engine decides how to compute it.]
 
-Instead of relying on industrial-grade libraries like `sqlparser-rs`, we will build core components by hand. The goal is not SQL completeness, but clarity. By stripping away production-level complexity, we can focus on the essential algorithms and data structures that power real systems like Postgres—without getting lost in tens of thousands of lines of code.
-
-By focusing on a handwritten parser and a simplified execution engine, we can touch on the core algorithms and data structures that drive systems like Postgres, without getting lost in the thousands of lines of code required for production-grade SQL compliance.
+Instead of relying on industrial-grade libraries like `sqlparser-rs`, we will build core components by hand. The goal is not SQL completeness, but clarity. By focusing on a handwritten parser and a simplified execution engine, we can touch on the core algorithms and data structures that drive systems like Postgres, without getting lost in the thousands of lines of code required for production-grade SQL compliance.
 
 ### A Brief on Query Processing
 
-Query processing is the multi-stage pipeline that takes a query and produces a result set. It typically follows these steps:
+Query processing is a multi-stage pipeline that transforms a declarative SQL string into a result set. In a full-fledged database system, this pipeline may include optimization and physical planning phases.
+
+In this series and in Relop, we focus on the following structural stages:
 
 1.  **Lexical Analysis:** Breaking the raw string into tokens (e.g., `SELECT`, `WHERE`).
 2.  **Syntactic Analysis (Parsing):** Validating tokens against a grammar and building an Abstract Syntax Tree (AST).
 3.  **Logical Planning:** Transforming the AST into a tree of relational operators (Scan, Filter, Join).
 4.  **Execution (The Volcano Model):** Turning the plan into executable operators that pull rows from storage.
-
-> This series focuses on the practical path from Lexical Analysis to the generation of a **Logical Plan** and its immediate execution. We'll skip complex cost-based optimization to focus on the core "plumbing" of a query engine.
 
 Conceptually, the flow looks like this:
 
@@ -74,21 +71,4 @@ Here is what is planned for the upcoming essays:
 5.  [The Logical Plan](/en/blog/inside_a_query_engine_logical_plan): Converting the AST to a tree of relational operators.
 6. [Execution](/en/blog/inside_a_query_engine_execution): Turning the Logical Plan into executable code.
 
-Let's start with Part 1: [Lexical Analysis](/en/blog/dissecting_the_query_engine_lexical_analysis/).
-
-
-Pending
-
-1. Hyperlinks in this series
-2. Review all
-3. See if any images are needed - not needed
-4. Essay on logical plan - done
-5. Essay on execution - done
-6. In the code snippets which are large, add underline
-7. Minimize grammar where possible
-8. Have consistent essay heading - done
-9. Minimize header image - done
-10. Validate that article content is not copied
-11. Add references - done
-12. Add weight in the blog - done
-13. Add * on search console
+Let's start with Part 1: [Lexical Analysis](/en/blog/inside_a_query_engine_lexical_analysis/).

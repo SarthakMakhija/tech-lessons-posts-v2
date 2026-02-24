@@ -6,7 +6,7 @@ weight: 2
 tags: ["Query", "Logical Plan", "Relational Algebra", "Database Internals"]
 ---
 
-In the previous parts of this series, we've focused on the **syntax** of a query—how to break a string into tokens and how to validate those tokens against a grammar to build an Abstract Syntax Tree (AST).
+In the previous parts of this series, we've focused on the **syntax** of a query, how to break a string into tokens and how to validate those tokens against a grammar to build an Abstract Syntax Tree (AST).
 
 But a database doesn't "execute" an AST. An AST is a linguistic structure; it represents how the query was written. To run the query, we need to understand what it **means** algebraically.
 
@@ -22,7 +22,6 @@ The Logical Plan is **algebraic**. It represents the query as a tree of relation
 | :--- | :--- | :--- |
 | **Focus** | How the query is written (Syntax) | Algebraic interpretation of the query |
 | **Form** | Hierarchical representation of tokens | Tree of relational operators |
-| **Goal** | Validation and structural analysis | Execution and optimization |
 
 ### Why the AST Is Not Enough
 
@@ -44,7 +43,7 @@ The :h[AST captures the structure of the query, but the Logical Plan describes t
 
 The Logical Plan is built using the building blocks of **Relational Algebra**. Don't let the name intimidate you; in the context of a query engine, these are simply operations that take one or more relations (tables/data sets) as input and produce a new relation as output.
 
-In [Relop](https://github.com/SarthakMakhija/relop), we focus on a core set of operators:
+In [Relop](https://github.com/SarthakMakhija/relop/blob/main/src/query/plan/mod.rs#L11), we focus on a core set of operators:
 
 *   **Scan:** The base operator that reads rows from a table.
 *   **Selection:** Also known as **Filter**. It picks rows that satisfy a predicate (e.g., `age > 30`).
@@ -115,8 +114,6 @@ In Relop, this is handled by `LogicalPlanner`:
 pub(crate) struct LogicalPlanner;
 
 impl LogicalPlanner {
-    /// Converts an Ast into a LogicalPlan.
-    /// The hierarchy is: Scan → Filter → Projection → Sort → Limit
     pub(crate) fn plan(ast: Ast) -> Result<LogicalPlan, PlanningError> {
         match ast {
             Ast::Select {
@@ -176,9 +173,9 @@ impl LogicalPlanner {
 
 #### How the Planner Works
 
-1.  **Bottom-Up Construction**: Although the SQL statement starts with `SELECT`, the planner builds the plan from the "leaves" (the data source) upwards. Notice that the planner reverses the surface structure of SQL. Although the query begins with SELECT, the logical plan begins with the data source.
+1.  **Bottom-Up Construction**: Although a SQL query begins with `SELECT`, the planner starts by constructing the data source. It first plans the `FROM` clause (producing a `Scan` or `Join`), and then wraps that source with additional operators like `Filter`, `Projection`, `Sort`, and `Limit`.
 2.  **Conversion**: It converts syntactic expressions (from the AST) into logical **Predicates**. While the AST's `Expression` enum is about nested logic, a `Predicate` is about something that can be evaluated against a row.
-3.  **Strict Hierarchy**: The planner enforces a standard order (Scan → Filter → Projection). This ensures that the later stages (like Projection) have access to all the columns they might need from the earlier stages.
+3.  **Strict Hierarchy**: The planner enforces a standard order (Scan → Filter → Projection). Each stage builds on the one before it. The `Scan` provides raw rows, `Filter` reduces them, `Projection` narrows the columns, and so on. This ensures that later operators have access to the full context they require.
 
 The `LogicalPlanner` in Relop is available [here](https://github.com/SarthakMakhija/relop/blob/main/src/query/plan/mod.rs#L74).
 
@@ -198,7 +195,7 @@ Select {                         Projection(name)
 }
 ```
 
-The AST is a data structure defining **what the user said**. The Logical Plan is a tree defining how relations are transformed and combined.
+The AST is a data structure defining **what the user said**. The Logical Plan is a tree defining **how relations are transformed and combined**.
 
 ### Logical Plan as an Intermediate Representation (IR)
 
@@ -218,12 +215,12 @@ The transition from a syntactic AST to an algebraic Logical Plan is the moment a
 
 ```mermaid
 graph LR
-    SQL[Query] --> Lexer --> Parser --> AST --> Planner --> Plan --> Executor
+    SQL[Query] --> Lexer --> Parser --> AST --> Planner --> LogicalPlan --> Executor
 ```
 
 _(Note: Relop does not implement a cost-based optimizer or a separate physical planning phase.)._
 
-We've crossed the bridge from language into the world of relational operators. With a Logical Plan in hand, we have a clear recipe for execution. In the final part of this series, we will look at the [Executor](/en/blog/inside_a_query_engine_execution) the component that takes this plan and turns it into a living stream of rows.
+We've crossed the bridge from language into the world of relational operators. With a Logical Plan in hand, we have a clear recipe for execution. In the final part of this series, we will look at the [Execution](/en/blog/inside_a_query_engine_execution) of this plan and turn it into a living stream of rows.
 
 ### References
 

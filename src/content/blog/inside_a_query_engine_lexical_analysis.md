@@ -14,11 +14,10 @@ Before we can understand the *meaning* of a query, we must first identify its in
 
 To reason clearly about lexical analysis, we need three foundational terms:
 
-1.  **Lexeme**: A sequence of characters in the source code that matches a pattern for a token. For example, the characters `S`, `E`, `L`, `E`, `C`, `T` form a lexeme.
+1.  **Lexeme**: A sequence of characters in the input that matches a pattern for a token. For example, the characters `S`, `E`, `L`, `E`, `C`, `T` form a lexeme.
 2.  **Token**: Typically a pair of:
     - A Token Type
-    - An optional Attribute Value (the lexeme itself)
-    For instance, the lexeme `SELECT` becomes a token of type `Keyword`.
+    - An Attribute Value (the lexeme itself). For instance, the lexeme `SELECT` becomes a token of type `Keyword`.
 3.  **Lexer**: The component that scans the input character by character and groups them into lexemes to produce a stream of tokens.
 
 <img src = "/dissecting_the_query_engine_lex_tokens.png">
@@ -46,12 +45,12 @@ It is important to emphasize that **having a grammar does not mean the lexer und
 
 There are several common approaches to implementing a lexer:
 
-1.  **The State Machine**: This approach models the lexer as a finite automaton that changes its internal state based on the characters it reads. Transitions are powerful because they allow the lexer to handle **context**:
+1.  **The State Machine**: This approach models the lexer as a finite state machine that changes its internal state based on the characters it reads. Transitions are powerful because they allow the lexer to handle **context**:
     - **String Literals**: Encountering a `"` moves the lexer into a "string" state where whitespace is preserved until the closing `"` is found.
     - **Compound Operators**: Seeing `!` might move it to a "potential inequality" state to check if the *next* character is `=`, helping it distinguish between `!=` and `!`.
     - **Comments**: Seeing `/` could move it to a "comment" state to safely ignore characters until a newline.
-2.  **Regular Expression Matching**: Using a series of regular expressions to "chunk" the input. While simpler to write, this can be harder to debug for complex languages.
-3.  **Peek and Advance (The Relop Way)**: It is effectively a small, hand-rolled state machine where the lexer looks at the current character (`peek`), decides which token type it *might* be, and then enters a specific loop to `advance` and consume the rest of that lexeme. This balance of simplicity and control is perfect for pedagogical projects.
+2.  **Regular Expression Matching**: Using a series of regular expressions to "chunk" the input. While simpler to write, this can be harder to debug for complex languages (/DSL).
+3.  **Peek and Advance (The Relop Way)**: It is effectively a small, hand-rolled state machine where the lexer looks at the current character (`peek`), decides which token type it *might* be, and then enters a specific loop to `advance` and consume the rest of that lexeme. This balance of simplicity and control is perfect for teaching projects.
 
 ### The Core Loop of a Lexer
 
@@ -170,11 +169,13 @@ While the grammar told us *what* lexemes to look for, the lexer has no concept o
 
 Think of the lexer as a component that can recognize individual words but doesn't understand the rules of a sentence. It identifies the words; the **Parser** is responsible for making sense of them.
 
+The current version of lexer is available [here](https://github.com/SarthakMakhija/relop/blob/main/src/query/lexer/mod.rs).
+
 ### Conclusion
 
 Lexical analysis is about creating order from a chaotic string of characters. By transforming raw input into a structured stream of tokens, we provide the clean interface required for the next stage of query processing.
 
-In the next part, we will move from words to sentences and talk about [Thinking in Grammar](/en/blog/inside_a_query_engine_thinking_in_grammar/) and the design of the Abstract Syntax Tree.
+In the next part, we will move from words to sentences and talk about [Thinking in Grammar](/en/blog/inside_a_query_engine_thinking_in_grammar/).
 
 ### References
 
