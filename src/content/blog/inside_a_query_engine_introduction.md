@@ -1,6 +1,6 @@
 ---
 author: "Sarthak Makhija"
-title: "Dissecting the Query Engine: From Parsing to Execution - Introduction"
+title: "Inside a Query Engine: Introduction"
 pubDate: "2026-02-22"
 heroImage: "/dissecting_the_query_engine-title.webp"
 tags: ["Query", "Parsing", "Rust", "Databases"]
@@ -91,3 +91,4 @@ Pending
 10. Validate that article content is not copied
 11. Add references - done
 12. Add weight in the blog - done
+13. Add * on search console

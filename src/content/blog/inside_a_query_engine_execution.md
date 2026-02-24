@@ -1,6 +1,6 @@
 ---
 author: "Sarthak Makhija"
-title: "Dissecting the Query Engine: Execution"
+title: "Inside a Query Engine (Part 6): Execution"
 pubDate: "2026-02-24"
 weight: 1
 tags: ["Query", "Execution", "Volcano Model", "Rust", "Database Internals"]

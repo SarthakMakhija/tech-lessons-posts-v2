@@ -1,6 +1,6 @@
 ---
 author: "Sarthak Makhija"
-title: "Dissecting the Query Engine: From Parsing to Execution - Handwritten Parser"
+title: "Inside a Query Engine (Part 3): Handwritten Parser"
 pubDate: "2026-02-23"
 weight: 2
 tags: ["Query", "Parser", "Rust", "Recursive Descent"]
