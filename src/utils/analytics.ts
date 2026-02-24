@@ -115,7 +115,7 @@ export async function fetchTopEssays(): Promise<TopPage[]> {
         });
 
         const blogEntries = await getCollection('blog', ({ data }) => {
-            return import.meta.env.PROD ? data.draft !== true : true;
+            return data.draft !== true;
         });
         const blogMap = new Map(blogEntries.map((entry) => [`/en/blog/${entry.slug}`, entry.data.title]));
         // Also map with trailing slash just in case

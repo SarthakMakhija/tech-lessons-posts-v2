@@ -3,7 +3,9 @@ author: "Sarthak Makhija"
 title: "Inside a Query Engine: Introduction"
 pubDate: "2026-02-22"
 heroImage: "/dissecting_the_query_engine-title.webp"
+caption: "Image by ChatGPT"
 tags: ["Query", "Parsing", "Rust", "Databases"]
+draft: true
 ---
 
 What actually happens when you write:

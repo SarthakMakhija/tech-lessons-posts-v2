@@ -5,9 +5,7 @@ import FormattedDate from "../../../components/FormattedDate.astro";
 import TableOfContents from "../../../components/TableOfContents.astro";
 
 export async function getStaticPaths() {
-    const posts = await getCollection("blog", ({ data }) => {
-        return import.meta.env.PROD ? data.draft !== true : true;
-    });
+    const posts = await getCollection("blog");
     return posts.map((post) => ({
         params: { slug: post.slug },
         props: post,
@@ -20,7 +18,7 @@ const { Content, headings } = await post.render();
 
 // Related Posts Logic
 const allPosts = await getCollection("blog", ({ data }) => {
-    return import.meta.env.PROD ? data.draft !== true : true;
+    return data.draft !== true;
 });
 
 const stopWords = new Set([

@@ -4,6 +4,7 @@ title: "Inside a Query Engine (Part 1): Lexical Analysis"
 pubDate: "2026-02-23"
 weight: 4
 tags: ["Query", "Lexer", "Rust", "Databases"]
+draft: true
 ---
 
 Welcome to the second part of our series on dissecting a query engine. In the [introduction](/en/blog/inside_a_query_engine_introduction), we traced the journey of a query from a raw string to an executable pipeline. Today, we focus on the very first stage of that journey: **Lexical Analysis**.

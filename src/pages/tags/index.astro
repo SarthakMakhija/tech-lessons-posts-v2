@@ -3,7 +3,7 @@ import Layout from "../../layouts/Layout.astro";
 import { getCollection } from "astro:content";
 
 const posts = await getCollection("blog", ({ data }) => {
-    return import.meta.env.PROD ? data.draft !== true : true;
+    return data.draft !== true;
 });
 const uniqueTags = [
     ...new Set(posts.map((post) => post.data.tags).flat()),

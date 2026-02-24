@@ -4,6 +4,7 @@ title: "Inside a Query Engine (Part 2): Thinking in Grammar"
 pubDate: "2026-02-23"
 weight: 3
 tags: ["Query", "Grammar", "EBNF", "AST", "Parsing"]
+draft: true
 ---
 
 In the [previous essay](/en/blog/inside_a_query_engine_lexical_analysis/), we explored how a lexer transforms a raw string into a stream of tokens. But a stream of tokens is still just a list of words. To understand the **intent** of a query, we need a way to define the rules of how those words can be combined. This is where **Grammar** comes in.

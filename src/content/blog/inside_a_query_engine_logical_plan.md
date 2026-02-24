@@ -4,6 +4,7 @@ title: "Inside a Query Engine (Part 5): From Syntax to Algebra"
 pubDate: "2026-02-24"
 weight: 2
 tags: ["Query", "Logical Plan", "Relational Algebra", "Database Internals"]
+draft: true
 ---
 
 In the previous parts of this series, we've focused on the **syntax** of a query, how to break a string into tokens and how to validate those tokens against a grammar to build an Abstract Syntax Tree (AST).
