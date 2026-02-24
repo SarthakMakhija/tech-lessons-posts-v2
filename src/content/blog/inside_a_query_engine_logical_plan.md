@@ -8,7 +8,7 @@ tags: ["Query", "Logical Plan", "Relational Algebra", "Database Internals"]
 
 In the previous parts of this series, we've focused on the **syntax** of a query, how to break a string into tokens and how to validate those tokens against a grammar to build an Abstract Syntax Tree (AST).
 
-But a database doesn't "execute" an AST. An AST is a linguistic structure; it represents how the query was written. To run the query, we need to understand what it **means** algebraically.
+But a database doesn't "execute" an AST. An **AST** is a linguistic structure; it **represents how the query was written**. To run the query, we need to understand what it **means algebraically**.
 
 This part covers the transition: **From Syntax to Algebra**.
 
@@ -175,7 +175,7 @@ impl LogicalPlanner {
 
 1.  **Bottom-Up Construction**: Although a SQL query begins with `SELECT`, the planner starts by constructing the data source. It first plans the `FROM` clause (producing a `Scan` or `Join`), and then wraps that source with additional operators like `Filter`, `Projection`, `Sort`, and `Limit`.
 2.  **Conversion**: It converts syntactic expressions (from the AST) into logical **Predicates**. While the AST's `Expression` enum is about nested logic, a `Predicate` is about something that can be evaluated against a row.
-3.  **Strict Hierarchy**: The planner enforces a standard order (Scan → Filter → Projection). Each stage builds on the one before it. The `Scan` provides raw rows, `Filter` reduces them, `Projection` narrows the columns, and so on. This ensures that later operators have access to the full context they require.
+3.  **Strict Hierarchy**: The planner enforces a standard order (**Projection → Filter → Scan; top-to-bottom**). Each stage builds on the one before it. The `Scan` provides raw rows, `Filter` reduces them, `Projection` narrows the columns, and so on. This ensures that later operators have access to the full context they require.
 
 The `LogicalPlanner` in Relop is available [here](https://github.com/SarthakMakhija/relop/blob/main/src/query/plan/mod.rs#L74).
 

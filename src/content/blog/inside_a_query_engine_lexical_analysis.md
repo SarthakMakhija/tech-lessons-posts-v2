@@ -46,9 +46,9 @@ It is important to emphasize that **having a grammar does not mean the lexer und
 There are several common approaches to implementing a lexer:
 
 1.  **The State Machine**: This approach models the lexer as a finite state machine that changes its internal state based on the characters it reads. Transitions are powerful because they allow the lexer to handle **context**:
-    - **String Literals**: Encountering a `"` moves the lexer into a "string" state where whitespace is preserved until the closing `"` is found.
-    - **Compound Operators**: Seeing `!` might move it to a "potential inequality" state to check if the *next* character is `=`, helping it distinguish between `!=` and `!`.
-    - **Comments**: Seeing `/` could move it to a "comment" state to safely ignore characters until a newline.
+    - **String Literals**: Encountering a **"** moves the lexer into a "string" state where whitespace is preserved until the closing **"** is found.
+    - **Compound Operators**: Seeing **!** might move it to a "potential inequality" state to check if the *next* character is **=**, helping it distinguish between **!=** and **!**.
+    - **Comments**: Seeing **/** could move it to a "comment" state to safely ignore characters until a newline.
 2.  **Regular Expression Matching**: Using a series of regular expressions to "chunk" the input. While simpler to write, this can be harder to debug for complex languages (/DSL).
 3.  **Peek and Advance (The Relop Way)**: It is effectively a small, hand-rolled state machine where the lexer looks at the current character (`peek`), decides which token type it *might* be, and then enters a specific loop to `advance` and consume the rest of that lexeme. This balance of simplicity and control is perfect for teaching projects.
 

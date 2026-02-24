@@ -120,15 +120,13 @@ Our previous `JOIN` example (`join_clause = table_source "JOIN" table_source`) f
 1.  `(A JOIN B) JOIN C` (The first `table_source` produces `A JOIN B`).
 2.  `A JOIN (B JOIN C)` (The second `table_source` produces `B JOIN C`).
 
-Both parses are valid according to that grammar, and they produce different parse trees. This is where **Associativity** comes in. Most databases (and our grammar) prefer **left-associativity** for joins.
-
-By refactoring the rule to eliminate left recursion, we avoid infinite recursion in the parser. Associativity is then enforced either by grammar structure or by how we construct the AST. Our refactored grammar for `table_source` is:
+Both parses are valid according to that grammar, and they produce different parse trees. We must refactor the grammar to remove ambiguity. Our refactored grammar for `table_source` is:
 
 ```ebnf
 table_source = identifier [ "JOIN" table_source "ON" expression ] ;
 ```
 
-Here, the parser consumes an `identifier` first, then optionally recurses into another `JOIN`. Note that this structure makes joins right-associative at the grammar level; left-associativity must instead be enforced during AST construction or by using iterative parsing patterns.
+Here, the parser consumes an `identifier` first, then optionally recurses into another `JOIN`. Note that this structure makes joins right-associative at the grammar level; left-associativity (if needed) must instead be enforced during AST construction or by using iterative parsing patterns.
 
 ```diff
 table_source (A JOIN B JOIN C)

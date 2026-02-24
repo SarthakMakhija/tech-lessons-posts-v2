@@ -52,7 +52,7 @@ fn execute_select(
             )))
         }
         LogicalPlan::Filter { base_plan: base, predicate } => {
-            let result_set = self.execute_select(*base)?;
+            let result_set = self.execute_select(*base)?; // [!code word:execute_select]
             Ok(Box::new(result_set::FilterResultSet::new(
                 result_set, predicate,
             )))
@@ -80,7 +80,7 @@ In this model, execution begins at the **root** of the logical plan, the top-mos
 
 Let's take an example.
 
-```SQL
+```sql
 SELECT id
 FROM users
 WHERE age > 30;
@@ -95,6 +95,7 @@ Projection(columns = ["id"])
 ```
 
 ```rust
+//pseudo-code
 LogicalPlan::Projection {
     columns: vec!["id"],
     base_plan: Box::new(
@@ -130,11 +131,12 @@ Projection                        ProjectResultSet
 
 When the user calls `next()` on the root iterator, the following happens:
 
-1. The `Projection ResultSet` calls `next()` on its child iterator (the `Filter`).
-2. The `Filter` operator calls `next()` on its child iterator (the `Scan`).
-3. The `Scan` operator reads a row from the table.
-4. The `Filter` operator checks if the row satisfies the predicate.
-5. If the row satisfies the predicate, the `Projection` operator projects the row and returns it.
+1. The `Projection` calls `next()` on its child iterator (the `Filter`).
+2. The `Filter` operator implementation calls `next()` on its child iterator (the `Scan`).
+3. The `Scan` operator implementation reads a row from the table.
+4. The `Filter` operator implementation checks if the row satisfies the predicate.
+5. If the row satisfies the predicate, the `Projection` operator implementation projects the row and returns it.
+6. This process repeats from point 1 on every `next()` call until the client has consumed all rows.
 
 ### ResultSet: Why It Is Not an Iterator
 
@@ -249,9 +251,11 @@ This distinction is fundamental to understanding the performance and memory prof
 
 Let's trace a final query through the entire system:
 
-`SELECT id FROM users WHERE age > 30`
+```sql
+SELECT id FROM users WHERE age > 30
+```
 
-1. The **client** calls `executor.execute()`, which returns a `ResultSet`.
+1. The [client](https://github.com/SarthakMakhija/relop/blob/main/src/client/mod.rs#L310) calls `executor.execute()`, which returns a `ResultSet`.
 2. The **client** calls `result_set.iterator()`.
 3. The **client** calls `next()` to request a row.
 4. The **top-level operator** (`Projection`) asks its child (`Filter`) for the next row.
@@ -261,6 +265,28 @@ Let's trace a final query through the entire system:
 8. The `Projection` keeps only the `id` column.
 
 The final row is returned to the client. This process repeats from point 3 on every `next()` call until the client has consumed all rows.
+
+```rust
+impl ResultSet for FilterResultSet {
+    fn iterator(&self) -> Result<Box<dyn Iterator<Item = RowViewResult> + '_>, ExecutionError> {
+        let inner_iterator = self.inner.iterator()?;
+        let result = inner_iterator.filter_map(move |row_view_result| match row_view_result {
+            Ok(row_view) => match self.predicate.matches(&row_view) {
+                Ok(true) => Some(Ok(row_view)),
+                Ok(false) => None,
+                Err(err) => Some(Err(err)),
+            },
+            Err(error) => Some(Err(error)),
+        });
+        Ok(Box::new(result))
+    }
+
+    fn schema(&self) -> &Schema {
+        self.inner.schema()
+    }
+}
+```
+<center><i>FilterResultSet for reference</i></center>
 
 ### Architecture Recap
 
