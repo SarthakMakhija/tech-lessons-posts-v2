@@ -1,7 +1,7 @@
 ---
 author: "Sarthak Makhija"
 title: "Inside a Query Engine (Part 7): Execution"
-pubDate: "2026-02-24"
+pubDate: "2026-03-09"
 weight: 1
 tags: ["Query", "Execution", "Volcano Model", "Database Internals", "Rust"]
 draft: false
@@ -32,36 +32,81 @@ fn execute_select(
     logical_plan: LogicalPlan,
 ) -> Result<Box<dyn result_set::ResultSet>, ExecutionError> {
     match logical_plan {
-        LogicalPlan::Scan { table_name, alias } => {
+        LogicalPlan::Scan {
+            table_name,
+            alias,
+            filter,
+            schema: _,
+        } => {
             let (table_entry, table) = self
                 .catalog
                 .scan(table_name.as_ref())
                 .map_err(ExecutionError::Catalog)?;
 
-            let table_scan = table_entry.scan();
-            Ok(Box::new(result_set::ScanResultsSet::new(
-                table_scan, table, alias,
-            )))
+            let result_set: Box<dyn result_set::ResultSet> = match filter {
+                Some(predicate) => {
+                    let prefix = alias.clone().unwrap_or_else(|| table.name().to_string());
+                    let prefixed_schema = table.schema_ref().with_prefix(&prefix);
+                    let bound_predicate = predicate.bind(&prefixed_schema)?;
+
+                    Box::new(ScanResultsSet::new(
+                        table_entry.scan_with_filter(bound_predicate),
+                        table,
+                        alias,
+                    ))
+                }
+                None => {
+                    let table_scan = table_entry.scan();
+                    Box::new(ScanResultsSet::new(table_scan, table, alias))
+                }
+            };
+            Ok(result_set)
         }
         LogicalPlan::Join { left, right, on } => {
             let left_result_set = self.execute_select(*left)?;
             let right_result_set = self.execute_select(*right)?;
-            Ok(Box::new(result_set::NestedLoopJoinResultSet::new(
-                left_result_set,
-                right_result_set,
-                on,
-            )))
+
+            let merged_schema = left_result_set.schema().merge_with_prefixes(
+                None,
+                right_result_set.schema(),
+                None,
+            );
+            let bound_on = on
+                .map(|predicate| predicate.bind(&merged_schema))
+                .transpose()?;
+
+            let is_equijoin = bound_on.as_ref().map_or(false, |predicate| {
+                predicate.is_equijoin(left_result_set.schema(), right_result_set.schema())
+            });
+
+            if is_equijoin {
+                Ok(Box::new(HashJoinResultSet::new(
+                    left_result_set,
+                    right_result_set,
+                    bound_on,
+                )))
+            } else {
+                Ok(Box::new(NestedLoopJoinResultSet::new(
+                    left_result_set,
+                    right_result_set,
+                    bound_on,
+                )))
+            }
         }
-        LogicalPlan::Filter { base_plan: base, predicate } => {
+        LogicalPlan::Filter {
+            base_plan: base,
+            predicate,
+        } => {
             let result_set = self.execute_select(*base)?; // [!code word:execute_select]
-            Ok(Box::new(result_set::FilterResultSet::new(
-                result_set, predicate,
-            )))
+            let bound_predicate = predicate.bind(result_set.schema())?;
+            Ok(Box::new(FilterResultSet::new(result_set, bound_predicate)))
         }
-        LogicalPlan::Projection { base_plan: base, columns } => {
+        LogicalPlan::Projection {
+            base_plan: base,
+            columns,
+        } => {
             let result_set = self.execute_select(*base)?;
-            let project_result_set =
-                result_set::ProjectResultSet::new(result_set, &columns[..])?;
+            let project_result_set = ProjectResultSet::new(result_set, &columns[..])?;
             Ok(Box::new(project_result_set))
         }
         // ... handled similarly for Sort, Limit, etc.
@@ -69,9 +114,19 @@ fn execute_select(
 }
 ```
 
-In this code, you can see the **Recursive Construction**. To execute a `Filter`, we first execute its `base_plan`. This recursion continues until we reach a `Scan`, which hits the catalog and provides the actual data source. 
+#### Predicate Binding
 
-The result is a tree of `ResultSet` objects that perfectly mirrors our `LogicalPlan`, but where each node is now a piece of code ready to iterate over rows.
+You might notice a recurring theme in the code above: `predicate.bind(schema)`. What is **Predicate Binding**?
+
+When a query is parsed, the AST contains unverified column references (e.g., `age > 30`). During logical planning, these are transformed into `Predicate` structures, but they still only contain the *name* of the column as a string.
+
+Before we can execute a filter rapidly against thousands of rows, the engine needs to know exactly *where* in the data array that column lives. **Binding** takes the schema corresponding to that point in the plan, looks up the name "age", and replaces the string-based reference with a numeric index (e.g., column index `2`). This guarantees that during the tight inner loop of row evaluation, the executor doesn't waste time doing string comparisons to find values; it simply accesses the array index directly.
+
+> In Relop, binding happens at the executor level.
+
+In this code, you can also see the **Recursive Construction** in action. To execute a `Projection`, we first execute its `base_plan`. This recursion continues until we reach a `Scan`, which hits the catalog and provides the actual data source. 
+
+The result is a tree of `ResultSet` objects that perfectly mirrors our `LogicalPlan` (optimized), but where each node is now a piece of code ready to iterate over rows.
 
 ### The Execution Model: Pull-Based (Volcano Model)
 
@@ -95,19 +150,22 @@ Projection(columns = ["id"])
             └── Scan(table = "users")
 ```
 
+which is optimized to:
+
+```text
+Projection(columns = ["id"])
+    └── Scan(table = "users", filter = age > 30)
+```
+
 ```rust
 //pseudo-code
 LogicalPlan::Projection {
     columns: vec!["id"],
     base_plan: Box::new(
-        LogicalPlan::Filter {
-            predicate: age > 30,
-            base_plan: Box::new(
-                LogicalPlan::Scan {
-                    table_name: "users",
-                    alias: None,
-                }
-            )
+        LogicalPlan::Scan {
+            table_name: "users",
+            alias: None,
+            predicate: Some(Predicate::Column("age".to_string()).gt(30)),
         }
     )
 }
@@ -119,25 +177,23 @@ When the Executor runs, it **mirrors** this **tree** with **concrete operator im
 SQL:
 SELECT id FROM users WHERE age > 30;
 
-────────────────────────────────────────────────────────────
+────────────────────────────────────────────────────────────────────────────────
+Optimized Logical Plan (Descriptive)        Optimized ResultSet Tree (Executable)
 
-Logical Plan (Descriptive)        ResultSet Tree (Executable)
-
-Projection                        ProjectResultSet
-  └── Filter                        └── FilterResultSet
-        └── Scan                          └── ScanResultsSet
-
-────────────────────────────────────────────────────────────
+Projection                                  ProjectResultSet
+  └── Scan                                      └── ScanResultsSet
+────────────────────────────────────────────────────────────────────────────────
 ```
 
 When the user calls `next()` on the root iterator, the following happens:
 
-1. The `Projection` calls `next()` on its child iterator (the `Filter`).
-2. The `Filter` operator implementation calls `next()` on its child iterator (the `Scan`).
-3. The `Scan` operator implementation reads a row from the table.
-4. The `Filter` operator implementation checks if the row satisfies the predicate.
-5. If the row satisfies the predicate, the `Projection` operator implementation projects the row and returns it.
-6. This process repeats from point 1 on every `next()` call until the client has consumed all rows.
+1. The `Projection` calls `next()` on its child iterator (the `Scan`).
+2. The `Scan` operator implementation reads a row from the table.
+3. The operator implementation checks if the row satisfies the predicate and sends it upward.
+4. The `Projection` operator implementation projects the row and returns it.
+5. This process repeats from point 1 on every `next()` call until the client has consumed all rows.
+
+> Relop is an in-memory query engine. Even though the predicate is pushed into Scan, the Scan operator still has to check the predicate for every row. However, `RowView` is only constructed if the row satisfies the predicate. This is a micro-optimization.
 
 ### ResultSet: Why It Is Not an Iterator
 
@@ -165,34 +221,32 @@ Why this extra layer?
 
 The implementation of most operators follows a simple pattern: they are **decorators**. Every operator wraps another `ResultSet` and transforms the iterator it produces.
 
-Consider the `FilterResultSet`:
+Consider the `ProjectResultSet`:
 
 ```rust
-pub struct FilterResultSet {
+pub struct ProjectResultSet {
     inner: Box<dyn ResultSet>,
-    predicate: Predicate,
+    visible_positions: Vec<usize>,
 }
 
-impl ResultSet for FilterResultSet {
+impl ResultSet for ProjectResultSet {
     fn iterator(&self) -> Result<Box<dyn Iterator<Item = RowViewResult> + '_>, ExecutionError> {
         let inner_iterator = self.inner.iterator()?;
-        // The transformation happens here
-        Ok(Box::new(inner_iterator.filter(|row| {
-           // check predicate...
+        // The transformation happens here: projects only visible columns
+        Ok(Box::new(inner_iterator.map(move |row_view_result| {
+            row_view_result.map(|row_view| row_view.project(&self.visible_positions))
         })))
     }
 }
 ```
 
-By stacking these decorators **`Limit` → `Sort` → `Projection` → `Filter` → `Scan`**, we form an execution pipeline where the `Scan` operator sits at the very base, providing the source data for the layers above. Each layer wraps the previous one, and data flows through them like a stream.
+By stacking these decorators (e.g. **`Sort` → `Projection` → `Scan`**), we form an execution pipeline where the `Scan` operator sits at the very base, providing the source data for the layers above. Each layer wraps the previous one, and data flows through them like a stream.
 
 Each operator transforms the row in a specific way:
 
-- **Scan** produces the initial `RowView` from raw table data.
-- **Filter** evaluates a `Predicate` against the `RowView`. This is where the logical expressions we parsed earlier finally become executable code.
+- **Scan** evaluates a `Predicate` against the raw table data. If the predicate matches, it produces the initial `RowView`. This is where the logical expressions we parsed earlier finally become executable code.
 - **Projection** rewrites the `RowView` by restricting which columns are visible, effectively narrowing the schema without copying the underlying row.
-- **Sort** may buffer many `RowViews` in memory before reordering them.
-- **Limit** simply truncates the stream after a fixed number of rows.
+- **Sort** generally buffers `RowViews` in memory before reordering them. However, if a Top-K limit was optimized and pushed down to the `Sort` node, it will use a bounded binary heap to sort and hold only the required rows, drastically reducing memory buffering!
 
 Notice that no operator needs to know how the row was originally produced. Each layer only sees a `RowView` coming from below and returns a transformed `RowView` to its parent. This isolation is what makes the pipeline composable.
 
@@ -200,7 +254,9 @@ Notice that no operator needs to know how the row was originally produced. Each 
 
 While unary operators are simple decorators, the **Join** is a bit more complex. It is a binary operator that must coordinate two different `ResultSet` sources. In Relop, joins are left-associative.
 
-Relop implements a [Nested Loop Join](https://github.com/SarthakMakhija/relop/blob/main/src/query/executor/result_set.rs#L292). For a join between table A and table B, the logic is:
+Relop implements a [Nested Loop Join](https://github.com/SarthakMakhija/relop/blob/main/src/query/executor/nested_loop_join_result_set.rs) and [Hash Join](https://github.com/SarthakMakhija/relop/blob/main/src/query/executor/hash_join_result_set.rs). I will explain the nested loop join here.
+
+For a join between table A and table B, the logic is:
 1.  Pull a row from A (the outer table).
 2.  Reset the iterator for B (the inner table) and pull every row from it.
 3.  Combine the current A row with each B row and evaluate the join condition.
@@ -235,9 +291,9 @@ This recursive "reset and iterate" pattern allows Relop to handle arbitrarily co
 
 As rows flow through this pipeline, they are wrapped in a **RowView**. This is a lightweight structure that allows operators to access column values without constantly copying data.
 
-- **Filters** evaluate `Predicates` against a `RowView`. This is where the logical expressions we parsed in Part 4 finally come to life.
+- **Scans** evaluate `Predicates` against a `RowView`. This is where the logical expressions we parsed in Part 4 finally come to life.
 - **Projections** rewrite the `RowView` to hide columns that aren't needed.
-- **Joins** merge two `RowViews` into a single combined view before evaluating the `ON` condition.
+- **Joins** merge two `RowViews` into a single combined view.
 
 ### Blocking vs. Streaming Operators
 
@@ -245,6 +301,8 @@ In a pull-based model, there are two types of operators:
 
 1.  **Streaming Operators**: These yield rows as soon as they receive them from their child. `Filter`, `Projection`, and `Limit` are streaming. They have a very low memory footprint because they don't store rows.
 2.  **Blocking Operators**: These must consume **all** input from their child before they can yield the first result. `Sort` (`OrderingResultSet`) is a prime example. To sort the data, the engine must buffer the entire input set into memory, sort it, and only then start yielding rows to the parent. **Blocking operators** break the pure streaming pipeline and introduce memory buffering.
+
+This is exactly why **Limit Pushdown** is so valuable. As we saw in the [Query Optimization](/en/blog/inside_a_query_engine_query_optimization) post, if the engine pushes a `Limit` down into the `Sort` node, the `OrderingResultSet` optimizes its execution by using a bounded Binary Heap. Instead of fully buffering the entire input stream, it only retains the top-K limit rows in memory, drastically mitigating the memory penalty of a blocking operator!
 
 This distinction is fundamental to understanding the performance and memory profile of a query.
 
@@ -259,35 +317,11 @@ SELECT id FROM users WHERE age > 30
 1. The [client](https://github.com/SarthakMakhija/relop/blob/main/src/client/mod.rs#L310) calls `executor.execute()`, which returns a `ResultSet`.
 2. The **client** calls `result_set.iterator()`.
 3. The **client** calls `next()` to request a row.
-4. The **top-level operator** (`Projection`) asks its child (`Filter`) for the next row.
-5. The **Filter** asks the **Scan** for rows until one satisfies `age > 30`.
-6. The **Scan** reads a row from the table and returns it upward.
-7. The **Filter** checks the predicate and passes the matching row upward.
-8. The `Projection` keeps only the `id` column.
+4. The **top-level operator** (`Projection`) asks its child (`Scan`) for the next row.
+5. The **Scan** pulls a row and passes the matching row (`age > 30`) upward.
+6. The `Projection` keeps only the `id` column.
 
 The final row is returned to the client. This process repeats from point 3 on every `next()` call until the client has consumed all rows.
-
-```rust
-impl ResultSet for FilterResultSet {
-    fn iterator(&self) -> Result<Box<dyn Iterator<Item = RowViewResult> + '_>, ExecutionError> {
-        let inner_iterator = self.inner.iterator()?;
-        let result = inner_iterator.filter_map(move |row_view_result| match row_view_result {
-            Ok(row_view) => match self.predicate.matches(&row_view) {
-                Ok(true) => Some(Ok(row_view)),
-                Ok(false) => None,
-                Err(err) => Some(Err(err)),
-            },
-            Err(error) => Some(Err(error)),
-        });
-        Ok(Box::new(result))
-    }
-
-    fn schema(&self) -> &Schema {
-        self.inner.schema()
-    }
-}
-```
-<center><i>FilterResultSet for reference</i></center>
 
 ### Architecture Recap
 
@@ -295,10 +329,10 @@ We have traced a query from its birth as a string to its final realization as a 
 
 ```mermaid
 graph LR
-    SQL --> Lexer --> Parser --> AST --> Planner --> LogicalPlan --> Executor --> ResultSet --> Iterator --> Rows
+    SQL --> Lexer --> Parser --> AST --> LogicalPlan --> Optimizer --> OptimizedLogicalPlan --> Executor --> Rows
 ```
 
-By building these layers by hand, the Lexer, the Recursive Descent Parser, the Algebraic Planner, and the Volcano Executor, we have demystified how a query engine transforms a declarative specification into a stream of evaluated rows.
+By building these layers by hand, the Lexer, the Recursive Descent Parser, the Algebraic Planner, the Optimizer, and the Volcano Executor, we have demystified how a query engine transforms a declarative specification into a stream of evaluated rows.
 
 Thank you for following along on this journey through the query engine. Happy coding!
 

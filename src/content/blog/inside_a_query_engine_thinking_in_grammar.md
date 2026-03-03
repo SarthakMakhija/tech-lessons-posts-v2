@@ -1,7 +1,7 @@
 ---
 author: "Sarthak Makhija"
 title: "Inside a Query Engine (Part 2): Thinking in Grammar"
-pubDate: "2026-02-23"
+pubDate: "2026-03-04"
 weight: 3
 tags: ["Query", "Grammar", "EBNF", "AST", "Parsing", "Rust"]
 draft: false

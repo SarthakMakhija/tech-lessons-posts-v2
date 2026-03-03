@@ -1,10 +1,11 @@
 ---
 author: "Sarthak Makhija"
 title: "Inside a Query Engine: Introduction"
-pubDate: "2026-02-22"
+pubDate: "2026-03-03"
 heroImage: "/inside_a_query_engine-title.webp"
 caption: "Image by Gemini"
 tags: ["Query", "Parsing", "Databases", "Rust"]
+weight: 2
 draft: false
 ---
 
@@ -18,7 +19,7 @@ How does that string transform into rows flowing through relational operators?
 
 This series dissects that journey.
 
-We will follow a query from raw text to tokens, from tokens to syntax trees, from syntax trees to relational operators, and finally to execution. Along the way, we will peel back the abstractions that make databases feel like magic.
+We will follow a query from raw text to tokens, from tokens to syntax trees, from syntax trees to relational operators, to optimization, and finally to execution. Along the way, we will peel back the abstractions that make databases feel like magic.
 
 To make this exploration concrete, we will use [Relop](https://github.com/SarthakMakhija/relop): a minimal, handwritten relational operator engine in Rust designed for learning and architectural transparency.
 

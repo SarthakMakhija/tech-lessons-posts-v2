@@ -1,8 +1,8 @@
 ---
 author: "Sarthak Makhija"
 title: "Inside a Query Engine (Part 1): Lexical Analysis"
-pubDate: "2026-02-23"
-weight: 4
+pubDate: "2026-03-03"
+weight: 1
 tags: ["Query", "Lexer", "Databases", "Rust"]
 draft: false
 ---

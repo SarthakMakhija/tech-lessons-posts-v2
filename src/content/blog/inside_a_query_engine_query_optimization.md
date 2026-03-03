@@ -1,7 +1,7 @@
 ---
 author: "Sarthak Makhija"
 title: "Inside a Query Engine (Part 6): Query Optimization"
-pubDate: "2026-02-24"
+pubDate: "2026-03-08"
 weight: 2
 tags: ["Query", "Query Optimization", "Logical Plan", "Relational Algebra", "Database Internals", "Rust"]
 draft: false
@@ -388,4 +388,4 @@ By discarding rows that fall outside our Top-K bounds *during* ingestion, `Order
 
 Logical optimization transforms our naive algebraic tree into an efficient roadmap for execution. Through simple rule-based transformations like Predicate Pushdown and Limit Pushdown, we ensure that less work is done across the tree, vastly improving performance without complicating the underlying execution model.
 
-We've crossed the bridge from language into the world of relational operators. With an optimizedLogical Plan in hand, we have a clear recipe for execution. In the final part of this series, we will look at the [Execution](/en/blog/inside_a_query_engine_execution) of this plan and turn it into a living stream of rows.
+We've crossed the bridge from language into the world of relational operators. With an optimized Logical Plan in hand, we have a clear recipe for execution. In the final part of this series, we will look at the [Execution](/en/blog/inside_a_query_engine_execution) of this plan and turn it into a living stream of rows.

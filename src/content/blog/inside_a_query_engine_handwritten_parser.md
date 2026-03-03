@@ -1,7 +1,7 @@
 ---
 author: "Sarthak Makhija"
 title: "Inside a Query Engine (Part 3): Handwritten Parser"
-pubDate: "2026-02-23"
+pubDate: "2026-03-05"
 weight: 2
 tags: ["Query", "Parser", "Recursive Descent", "Rust"]
 draft: false

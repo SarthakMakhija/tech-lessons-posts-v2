@@ -1,7 +1,7 @@
 ---
 author: "Sarthak Makhija"
 title: "Inside a Query Engine (Part 4): Expressions and Precedence"
-pubDate: "2026-02-23"
+pubDate: "2026-03-06"
 weight: 1
 tags: ["Query", "Expressions", "Precedence", "Parsing", "AST", "Rust"]
 draft: false
