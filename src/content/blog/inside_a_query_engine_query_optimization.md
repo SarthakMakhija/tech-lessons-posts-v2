@@ -4,7 +4,7 @@ title: "Inside a Query Engine (Part 6): Query Optimization"
 pubDate: "2026-03-08"
 weight: 2
 tags: ["Query", "Query Optimization", "Logical Plan", "Relational Algebra", "Database Internals", "Rust"]
-draft: false
+draft: true
 ---
 
 In the previous part of this series, we saw how an Abstract Syntax Tree (AST) translates into a [Logical Plan](/en/blog/inside_a_query_engine_logical_plan), a tree of relational transformations. We successfully moved from a linguistic structure to an algebraic one.

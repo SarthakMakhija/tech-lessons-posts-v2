@@ -4,7 +4,7 @@ title: "Inside a Query Engine (Part 7): Execution"
 pubDate: "2026-03-09"
 weight: 1
 tags: ["Query", "Execution", "Volcano Model", "Database Internals", "Rust"]
-draft: false
+draft: true
 ---
 
 In the last part, we saw how the [Logical Plan](/en/blog/inside_a_query_engine_logical_plan) acts as a blueprint for our query. It is a static tree that describes *what* relational transformations must happen to the data.
