@@ -2,10 +2,10 @@
 author: "Sarthak Makhija"
 title: "Inside a Query Engine: Introduction"
 pubDate: "2026-02-22"
-heroImage: "/dissecting_the_query_engine-title.webp"
-caption: "Image by ChatGPT"
+heroImage: "/inside_a_query_engine-title.png"
+caption: "Image by Gemini"
 tags: ["Query", "Parsing", "Rust", "Databases"]
-draft: true
+draft: false
 ---
 
 What actually happens when you write:
@@ -48,9 +48,9 @@ In this series and in Relop, we focus on the following structural stages:
 Conceptually, the flow looks like this:
 
 ```text
-SQL String  ───▶  Tokens  ───▶  AST  ───▶  Logical Plan  ───▶  Executable  ───▶  Rows
- (Text)          (Lexer)      (Parser)     (Relational         Operators      (Result)
-                                            Algebra)          (Executor)
+SQL String  ───▶  Tokens  ───▶  AST  ───▶  Logical Plan  ───▶  Optimizer  ───▶   Optimized    ───▶  Executable  ───▶  Rows
+ (Text)          (Lexer)      (Parser)     (Relational                         Logical Plan         Operators      (Result)
+                                            Algebra)                                               (Executor)
 ```
 
 ### Typical Challenges in Query Processing
@@ -71,6 +71,7 @@ Here is what is planned for the upcoming essays:
 3.  [Handwritten Parser](/en/blog/inside_a_query_engine_handwritten_parser): Mapping the Grammar to Recursive Descent Code.
 4.  [Expressions and Precedence](/en/blog/inside_a_query_engine_expressions_and_precedence): Solving the logic puzzle of `AND`, `OR`, and parentheses.
 5.  [The Logical Plan](/en/blog/inside_a_query_engine_logical_plan): Converting the AST to a tree of relational operators.
-6. [Execution](/en/blog/inside_a_query_engine_execution): Turning the Logical Plan into executable code.
+6.  [Query Optimization](/en/blog/inside_a_query_engine_query_optimization): Applying heuristics to transform a naive logical plan into an efficient one.
+7.  [Execution](/en/blog/inside_a_query_engine_execution): Turning the Optimized Logical Plan into executable code.
 
 Let's start with Part 1: [Lexical Analysis](/en/blog/inside_a_query_engine_lexical_analysis/).

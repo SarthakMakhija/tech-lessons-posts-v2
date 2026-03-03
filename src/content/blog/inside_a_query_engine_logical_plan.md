@@ -4,7 +4,7 @@ title: "Inside a Query Engine (Part 5): From Syntax to Algebra"
 pubDate: "2026-02-24"
 weight: 2
 tags: ["Query", "Logical Plan", "Relational Algebra", "Database Internals"]
-draft: true
+draft: false
 ---
 
 In the previous parts of this series, we've focused on the **syntax** of a query, how to break a string into tokens and how to validate those tokens against a grammar to build an Abstract Syntax Tree (AST).
@@ -216,12 +216,12 @@ The transition from a syntactic AST to an algebraic Logical Plan is the moment a
 
 ```mermaid
 graph LR
-    SQL[Query] --> Lexer --> Parser --> AST --> Planner --> LogicalPlan --> Executor
+    SQL --> Lexer --> Parser --> AST --> LogicalPlan --> Optimizer --> OptimizedLogicalPlan --> Executor --> Rows
 ```
 
-_(Note: Relop does not implement a cost-based optimizer or a separate physical planning phase.)._
+_(Note: Relop does not implement a physical planning phase.)._
 
-We've crossed the bridge from language into the world of relational operators. With a Logical Plan in hand, we have a clear recipe for execution. In the final part of this series, we will look at the [Execution](/en/blog/inside_a_query_engine_execution) of this plan and turn it into a living stream of rows.
+We've crossed the bridge from language into the world of relational operators. With a Logical Plan in hand, we have a clear recipe for what we want. But before we actually execute it, we can make that recipe cheaper. In the next part of this series, we will look at [Query Optimization](/en/blog/inside_a_query_engine_query_optimization) to see how Relop transforms this naive plan into an efficient one.
 
 ### References
 
