@@ -2,7 +2,7 @@
 author: "Sarthak Makhija"
 title: "Inside a Query Engine: Introduction"
 pubDate: "2026-02-22"
-heroImage: "/inside_a_query_engine-title.png"
+heroImage: "/inside_a_query_engine-title.webp"
 caption: "Image by Gemini"
 tags: ["Query", "Parsing", "Rust", "Databases"]
 draft: false
@@ -43,14 +43,15 @@ In this series and in Relop, we focus on the following structural stages:
 1.  **Lexical Analysis:** Breaking the raw string into tokens (e.g., `SELECT`, `WHERE`).
 2.  **Syntactic Analysis (Parsing):** Validating tokens against a grammar and building an Abstract Syntax Tree (AST).
 3.  **Logical Planning:** Transforming the AST into a tree of relational operators (Scan, Filter, Join).
-4.  **Execution (The Volcano Model):** Turning the plan into executable operators that pull rows from storage.
+4.  **Optimization:** Applying logical rules to transform the naive plan into a more efficient one (e.g. Predicate Pushdown).
+5.  **Execution (The Volcano Model):** Turning the optimized plan into executable operators that pull rows from storage.
 
 Conceptually, the flow looks like this:
 
 ```text
 SQL String  ───▶  Tokens  ───▶  AST  ───▶  Logical Plan  ───▶  Optimizer  ───▶   Optimized    ───▶  Executable  ───▶  Rows
- (Text)          (Lexer)      (Parser)     (Relational                         Logical Plan         Operators      (Result)
-                                            Algebra)                                               (Executor)
+ (Text)          (Lexer)      (Parser)     (Relational                         Logical Plan         Operators       (Result)
+                                            Algebra)                                                (Executor)
 ```
 
 ### Typical Challenges in Query Processing
