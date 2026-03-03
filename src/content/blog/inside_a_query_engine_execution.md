@@ -3,7 +3,7 @@ author: "Sarthak Makhija"
 title: "Inside a Query Engine (Part 7): Execution"
 pubDate: "2026-02-24"
 weight: 1
-tags: ["Query", "Execution", "Volcano Model", "Rust", "Database Internals"]
+tags: ["Query", "Execution", "Volcano Model", "Database Internals", "Rust"]
 draft: false
 ---
 

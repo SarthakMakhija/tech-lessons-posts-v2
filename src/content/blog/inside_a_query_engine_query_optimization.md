@@ -3,7 +3,7 @@ author: "Sarthak Makhija"
 title: "Inside a Query Engine (Part 6): Query Optimization"
 pubDate: "2026-02-24"
 weight: 2
-tags: ["Query", "Logical Plan", "Relational Algebra", "Database Internals"]
+tags: ["Query", "Query Optimization", "Logical Plan", "Relational Algebra", "Database Internals", "Rust"]
 draft: false
 ---
 

@@ -4,7 +4,7 @@ title: "Inside a Query Engine: Introduction"
 pubDate: "2026-02-22"
 heroImage: "/inside_a_query_engine-title.webp"
 caption: "Image by Gemini"
-tags: ["Query", "Parsing", "Rust", "Databases"]
+tags: ["Query", "Parsing", "Databases", "Rust"]
 draft: false
 ---
 
