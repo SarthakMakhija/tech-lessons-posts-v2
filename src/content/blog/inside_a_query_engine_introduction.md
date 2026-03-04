@@ -47,6 +47,8 @@ In this series and in Relop, we focus on the following structural stages:
 4.  **Optimization:** Applying logical rules to transform the naive plan into a more efficient one (e.g. Predicate Pushdown).
 5.  **Execution (The Volcano Model):** Turning the optimized plan into executable operators that pull rows from storage.
 
+*(Note: Relop does not implement a physical planning phase.)*
+
 Conceptually, the flow looks like this:
 
 ```text
