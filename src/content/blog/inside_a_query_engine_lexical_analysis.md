@@ -177,7 +177,7 @@ The current version of lexer is available [here](https://github.com/SarthakMakhi
 
 Lexical analysis is about creating order from a chaotic string of characters. By transforming raw input into a structured stream of tokens, we provide the clean interface required for the next stage of query processing.
 
-In the next part, we will move from words to sentences and talk about Thinking in Grammar. (Coming Soon)
+In the next part, we will move from words to sentences and talk about [Thinking in Grammar](/en/blog/inside_a_query_engine_thinking_in_grammar/).
 
 ### References
 

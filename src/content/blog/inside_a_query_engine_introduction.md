@@ -72,8 +72,8 @@ Building a robust query engine involves solving several non-trivial problems:
 Here is what is planned for the upcoming essays:
 
 1.  [Lexical Analysis](/en/blog/inside_a_query_engine_lexical_analysis): From raw strings to a stream of tokens.
-2.  Thinking in Grammar: Designing the data structures that hold a query’s intent. (Coming Soon)
-3.  Handwritten Parser: Mapping the Grammar to Recursive Descent Code. (Coming Soon)
+2.  [Thinking in Grammar](/en/blog/inside_a_query_engine_thinking_in_grammar): Designing the data structures that hold a query’s intent.
+3.  [Handwritten Parser](/en/blog/inside_a_query_engine_handwritten_parser): Mapping the Grammar to Recursive Descent Code.
 4.  Expressions and Precedence: Solving the logic puzzle of `AND`, `OR`, and parentheses. (Coming Soon)
 5.  The Logical Plan: Converting the AST to a tree of relational operators. (Coming Soon)
 6.  Query Optimization: Applying heuristics to transform a naive logical plan into an efficient one. (Coming Soon)

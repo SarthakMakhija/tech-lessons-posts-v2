@@ -5,7 +5,7 @@ description: "Part 4 of Dissecting a Query Engine: Step-by-step guide to buildin
 pubDate: "2026-03-05"
 weight: 2
 tags: ["Query", "Parser", "Recursive Descent", "Rust"]
-draft: true
+draft: false
 ---
 
 In the [previous essay](/en/blog/inside_a_query_engine_thinking_in_grammar/), we designed our language using EBNF and defined the structure of our Abstract Syntax Tree (AST). Now, it’s time to breathe life into those rules. In this part, we will build a **Handwritten Recursive Descent Parser** in Rust to transform a stream of tokens into an AST.
@@ -185,7 +185,7 @@ The complete `Parser` is available [here](https://github.com/SarthakMakhija/relo
 
 A handwritten parser provides precise control over error handling, structure, and performance. By mapping our EBNF rules to simple, predictable Rust methods, we've transformed the stream of tokens into a structured syntactic model (the AST) that our engine can understand.
 
-In the next part, we'll tackle the most challenging part of parsing: [Expressions and Precedence](/en/blog/inside_a_query_engine_expressions_and_precedence).
+In the next part, we'll tackle the most challenging part of parsing: Expressions and Precedence. (Coming Soon)
 
 ### References
 
