@@ -1,6 +1,7 @@
 ---
 author: "Sarthak Makhija"
 title: "Many flavors of Networking IO"
+description: "Dive into the many flavors of Networking I/O. Understand synchronous, asynchronous, blocking, and non-blocking I/O models in modern network programming."
 pubDate: 2024-05-22
 tags: ["TCP", "Networking", "Golang", "Event loop"]
 heroImage: "/flavors-of-networking-title.webp"

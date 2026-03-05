@@ -1,6 +1,7 @@
 ---
 author: "Sarthak Makhija"
 title: "Inside a Query Engine (Part 1): Lexical Analysis"
+description: "Part 2 of Dissecting a Query Engine: Deep dive into lexical analysis, extracting tokens from SQL queries, and managing state in a handwritten lexer."
 pubDate: "2026-03-03"
 weight: 1
 tags: ["Query", "Lexer", "Databases", "Rust"]

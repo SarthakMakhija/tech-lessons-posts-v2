@@ -1,6 +1,7 @@
 ---
 author: "Sarthak Makhija"
 title: "Cache-Line Hash Table"
+description: "Learn how to significantly optimize hash table design in Go by exploiting CPU cache lines, improving memory access patterns and overall performance."
 pubDate: 2024-04-19
 tags: ["CPU Cache-Line", "Hash Table", "CLHT", "Cache-Line Hash Table", "Golang", "xsync"]
 heroImage: "/clht_title.webp"

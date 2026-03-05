@@ -1,6 +1,7 @@
 ---
 author: "Sarthak Makhija"
 title: "Testing Serverless Journey"
+description: "Testing serverless applications efficiently. Learn how to use LocalStack for robust integration testing of AWS Lambda, API Gateway, and DynamoDB components locally."
 pubDate: 2020-03-14
 tags: ["AWS Lambda", "Serverless", "Localstack"]
 heroImage: /testing-serverless.webp

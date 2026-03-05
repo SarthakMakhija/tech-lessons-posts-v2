@@ -1,6 +1,7 @@
 ---
 author: "Sarthak Makhija"
 title: "Invoking C Code from Golang"
+description: "Learn how to bridge the gap between Go and C using CGO. A practical guide to calling C functions directly from your Go applications for performance gains."
 pubDate: 2021-12-21
 tags: ["Golang", "C", "CGO"]
 heroImage: /invoking-C-code-from-golang.png

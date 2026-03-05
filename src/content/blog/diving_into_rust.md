@@ -1,6 +1,7 @@
 ---
 author: "Sarthak Makhija"
 title: "Diving into Rust by building an assertions crate"
+description: "Embark on a journey into Rust programming. This guide explores ownership, borrowing, and why Rust's unique memory safety model is transforming systems programming."
 pubDate: 2024-01-24
 tags: ["Rust", "Assertions", "Elegant-assertions", "Clearcheck"]
 heroImage: /diving-into-rust.webp

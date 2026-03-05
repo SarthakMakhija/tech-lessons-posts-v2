@@ -1,6 +1,7 @@
 ---
 author: "Sarthak Makhija"
 title: "Flips: Feature Flipping for Java"
+description: "Introducing Flips, an open-source feature flipping library for Java and Spring Boot. Learn how to implement feature toggles easily in your Java applications."
 pubDate: 2017-10-07
 tags: ["Flips", "Feature toggles", "Spring", "Spring MVC"]
 heroImage: /flips-feature-title-image.webp

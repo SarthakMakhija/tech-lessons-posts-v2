@@ -1,6 +1,7 @@
 ---
 author: "Sarthak Makhija"
 title: "Code without automated tests? Are we serious?"
+description: "Dealing with legacy code without tests is daunting. Learn effective strategies like characterization testing to safely understand and safely refactor untested systems."
 pubDate: 2023-02-24
 tags: ["Agile", "Testing", "Refactoring"]
 heroImage: /code-without-tests.png

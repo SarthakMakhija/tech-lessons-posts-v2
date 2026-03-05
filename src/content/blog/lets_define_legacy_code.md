@@ -1,6 +1,7 @@
 ---
 author: "Sarthak Makhija"
 title: "Let's define Legacy code"
+description: "What exactly is legacy code? An exploration of different definitions, from Michael Feathers' code without tests to code acquired from other companies."
 pubDate: 2018-04-10
 tags: ["Legacy code", "Boy Scout Rule", "Clean Code", "Refactoring"]
 heroImage: /legacy-code.webp

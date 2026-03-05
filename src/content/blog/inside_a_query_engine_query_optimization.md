@@ -1,6 +1,7 @@
 ---
 author: "Sarthak Makhija"
 title: "Inside a Query Engine (Part 6): Query Optimization"
+description: "Part 6 of Dissecting a Query Engine: Discover the crucial role of the query optimizer in transforming a logical plan into an efficient logical execution plan."
 pubDate: "2026-03-08"
 weight: 2
 tags: ["Query", "Query Optimization", "Logical Plan", "Relational Algebra", "Database Internals", "Rust"]

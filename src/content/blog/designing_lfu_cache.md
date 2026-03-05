@@ -1,6 +1,7 @@
 ---
 author: "Sarthak Makhija"
 title: "Designing an in-memory LFU cache"
+description: "A comprehensive guide to designing and implementing an efficient Least Frequently Used (LFU) cache in Go with O(1) time complexity."
 pubDate: 2023-05-26
 tags: ["Cache", "TinyLFU", "CacheD", "Rust"]
 heroImage: /lfu-cache-title.webp

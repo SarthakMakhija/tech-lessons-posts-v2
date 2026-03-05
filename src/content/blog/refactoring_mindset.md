@@ -1,6 +1,7 @@
 ---
 author: "Sarthak Makhija"
 title: "Refactoring Mindset"
+description: "Cultivating a refactoring mindset: Learn key principles like building safety nets, making small changes, and recognizing code smells to sustainably improve your codebase."
 pubDate: 2025-01-14
 tags: ["Refactoring", "Refactoring Mindset", "Mindful Refactoring", "Code Smells", "Clean Code"]
 heroImage: "/refactoring-mindset-title.webp"

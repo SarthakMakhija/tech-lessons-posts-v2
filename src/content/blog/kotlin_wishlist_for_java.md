@@ -1,6 +1,7 @@
 ---
 author: "Sarthak Makhija"
 title: "Kotlin Wishlist for Java"
+description: "A look at powerful Kotlin features like data classes, null safety, and extension functions that Java developers wish were available in the Java ecosystem."
 pubDate: 2018-04-20
 tags: ["Kotlin", "Java"]
 heroImage: /wishlist.webp

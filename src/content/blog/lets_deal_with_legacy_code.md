@@ -1,6 +1,7 @@
 ---
 author: "Sarthak Makhija"
 title: "Let’s deal with Legacy code"
+description: "Practical strategies and engineering techniques for dealing with legacy codebases. Learn to refactor step-by-step, add tests, and gradually modernize your system."
 pubDate: 2018-04-12
 tags: ["Legacy code", "Broken Window Theory", "Refactoring", "Clean Code", "Boy Scout Rule"]
 heroImage: /legacy-code.webp

@@ -1,6 +1,7 @@
 ---
 author: "Sarthak Makhija"
 title: "Behind the Mic: My journey to delivering a conference talk"
+description: "A personal reflection on the journey to delivering a conference talk at GopherConIndia24, overcoming imposter syndrome, and sharing experiences with the community."
 pubDate: 2024-12-26
 tags: ["Public Speaking", "Conference Preparation", "Questioning Database Claims", "Design Patterns of Storage Engines"]
 heroImage: "/talk_title.webp"

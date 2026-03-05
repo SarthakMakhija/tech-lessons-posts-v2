@@ -1,6 +1,7 @@
 ---
 author: "Sarthak Makhija"
 title: "Bitcask - A Log-Structured Hash Table"
+description: "Discover Bitcask, an embeddable key-value storage engine designed as a log-structured hash table. Learn about its write-optimized architecture and fast performance."
 pubDate: 2023-05-04
 tags: ["Bitcask", "Storage engine", "Log Structured"]
 heroImage: /bitcask_title.webp

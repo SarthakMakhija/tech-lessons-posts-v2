@@ -1,6 +1,7 @@
 ---
 author: "Sarthak Makhija"
 title: "WiscKey: Separating Keys from Values in SSD-Conscious Storage"
+description: "A deep dive into WiscKey, an SSD-conscious storage engine design that improves upon LSM-trees by separating keys from values to minimize read and write amplification."
 pubDate: 2023-03-10
 tags: ["Storage engine", "LSM-tree", "WiscKey", "SSD-conscious", "BadgerDb"]
 heroImage: /wisckey.webp

@@ -1,6 +1,7 @@
 ---
 author: "Sarthak Makhija"
 title: "Diving into Java Bytecode"
+description: "Demystifying Java Bytecode: A closer look at the Java Virtual Machine (JVM), execution models, and how Java source code is compiled into bytecode instructions."
 pubDate: 2021-04-04
 tags: ["Java", "JVM", "Bytecode"]
 heroImage: /diving-into-java-bytecode.png

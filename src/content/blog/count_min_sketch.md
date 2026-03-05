@@ -1,6 +1,7 @@
 ---
 author: "Sarthak Makhija"
 title: "Count-min sketch"
+description: "Explore the Count-Min Sketch, a probabilistic data structure for estimating item frequencies in data streams with sub-linear space complexity."
 pubDate: 2023-02-24
 tags: ["Count-min sketch", "Probabilistic data structure"]
 heroImage: /countminsketch-title.png

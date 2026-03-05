@@ -1,6 +1,7 @@
 ---
 author: "Sarthak Makhija"
 title: "Beginning Serverless Journey"
+description: "Begin your serverless journey with this step-by-step guide to building a serverless web application using AWS Lambda, API Gateway, and DynamoDB."
 pubDate: 2020-03-10
 tags: ["AWS Lambda", "Serverless"]
 heroImage: /beginning-serverless.webp
@@ -614,3 +615,4 @@ I am sure you will be able to fill these gaps and at this stage, I will move for
 Code is available [here](https://github.com/aws-articles/serverless-order-service).
 
 Let's move on to our [next](/en/blog/testing_serverless_journey) article that explores integration testing using Localstack for our serverless application.
+---

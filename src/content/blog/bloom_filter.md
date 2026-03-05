@@ -1,6 +1,7 @@
 ---
 author: "Sarthak Makhija"
 title: "Bloom filter"
+description: "An in-depth guide to Bloom Filters, a space-efficient probabilistic data structure. Learn how to implement Bloom filters in Go for rapid membership testing."
 pubDate: 2023-02-25
 tags: ["Bloom filter", "Storage engine", "Probabilistic data structure"]
 heroImage: /bloomfilter_title.webp

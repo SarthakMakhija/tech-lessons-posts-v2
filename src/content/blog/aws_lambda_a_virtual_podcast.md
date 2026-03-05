@@ -1,6 +1,7 @@
 ---
 author: "Sarthak Makhija"
 title: "AWS Lambda - A Virtual Podcast"
+description: "Join our virtual podcast exploring AWS Lambda, serverless architecture, pricing models, and how to build scalable event-driven applications on Amazon Web Services."
 pubDate: 2020-04-19
 tags: ["AWS Lambda", "Serverless"]
 heroImage: /aws-lambda-virtual-podcast.webp

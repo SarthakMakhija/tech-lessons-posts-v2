@@ -1,6 +1,7 @@
 ---
 author: "Sarthak Makhija"
 title: "Inside a Query Engine (Part 2): Thinking in Grammar"
+description: "A foundational guide to thinking in grammar and designing the syntax rules for building a custom query language parser, as part of the Query Engine series."
 pubDate: "2026-03-04"
 weight: 3
 tags: ["Query", "Grammar", "EBNF", "AST", "Parsing", "Rust"]

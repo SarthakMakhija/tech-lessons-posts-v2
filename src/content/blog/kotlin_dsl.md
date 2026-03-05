@@ -1,6 +1,7 @@
 ---
 author: "Sarthak Makhija"
 title: "Kotlin DSL"
+description: "Explore the power of Kotlin for creating Domain Specific Languages (DSLs). Learn the language features that make Kotlin an excellent choice for expressive builders."
 pubDate: 2018-05-27
 tags: ["Domain specific language", "DSL", "Kotlin"]
 heroImage: /kotlin-dsl.png

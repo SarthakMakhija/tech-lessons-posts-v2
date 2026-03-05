@@ -1,6 +1,7 @@
 ---
 author: "Sarthak Makhija"
 title: "Persistent memory - Introduction"
+description: "An introduction to Persistent Memory (PMEM), understanding its impact on the memory hierarchy, and how it bridges the gap between fast RAM and persistent storage."
 pubDate: 2022-04-28
 tags: ["Persistent memory", "Storage engine"]
 heroImage: /persistent-memory-introduction.webp

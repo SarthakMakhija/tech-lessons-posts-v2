@@ -1,6 +1,7 @@
 ---
 author: "Sarthak Makhija"
 title: "Dissecting Go’s Benchmarking Framework"
+description: "Deep dive into the internals of the Go benchmarking framework. Understand how testing.B works under the hood to write more accurate and reliable benchmarks in Go."
 pubDate: 2026-02-04
 tags: ["Go", "Benchmark"]
 heroImage: "/dissecting-go-benchmarking-framework.webp"

@@ -1,6 +1,7 @@
 ---
 author: "Sarthak Makhija"
 title: "Invest In Blogging"
+description: "A persuasive case for software engineers to invest their time in blogging, sharing knowledge, and the compounding career benefits of writing technically."
 pubDate: 2019-06-07
 tags: ["Blogging"]
 heroImage: /book-blog.webp

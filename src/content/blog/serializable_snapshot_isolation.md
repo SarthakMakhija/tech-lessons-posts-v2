@@ -1,6 +1,7 @@
 ---
 author: "Sarthak Makhija"
 title: "A guide to Serializable Snapshot Isolation in Key/Value storage engine"
+description: "A comprehensive guide to Serializable Snapshot Isolation (SSI). Discover how to achieve strong data consistency without sacrificing performance in key-value storage engines."
 pubDate: 2024-03-22
 tags: ["Golang", "Transaction", "Isolation", "Serializable Snapshot Isolation", "BadgerDb"]
 heroImage: /serializable-snapshot-isolation.webp

@@ -1,6 +1,7 @@
 ---
 author: "Sarthak Makhija"
 title: "Refactoring in the age of AI"
+description: "How AI tools are changing software refactoring. Discover how LLMs can assist in understanding, testing, and safely modernizing legacy codebases."
 pubDate: 2026-02-01
 tags: ["Refactoring", "AI", "Clean Code"]
 heroImage: "/refactoring-in-the-age-of-ai.webp"

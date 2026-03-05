@@ -1,6 +1,7 @@
 ---
 author: "Sarthak Makhija"
 title: "Inside a Query Engine: Introduction"
+description: "Part 1 of Dissecting a Query Engine: A comprehensive introduction to database query engines, from lexing and parsing to optimization and execution."
 pubDate: "2026-03-03"
 heroImage: "/inside_a_query_engine-title.webp"
 caption: "Image by Gemini"
