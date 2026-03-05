@@ -4,7 +4,7 @@ title: "Inside a Query Engine (Part 5): From Syntax to Algebra"
 description: "Part 5 of Dissecting a Query Engine: Learn how the Abstract Syntax Tree (AST) is transformed into a logical plan that starts to define data retrieval strategies."
 pubDate: "2026-03-07"
 weight: 2
-tags: ["Query", "Logical Plan", "Relational Algebra", "Database Internals", "Rust"]
+tags: ["Query Engine", "Query", "Logical Plan", "Relational Algebra", "Database Internals", "Rust"]
 draft: true
 ---
 

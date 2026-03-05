@@ -4,7 +4,7 @@ title: "Inside a Query Engine (Part 7): Execution"
 description: "Part 7 of Dissecting a Query Engine: Explore the execution phase where the logical plan takes action, processing data through various operators to produce final results."
 pubDate: "2026-03-09"
 weight: 1
-tags: ["Query", "Execution", "Volcano Model", "Database Internals", "Rust"]
+tags: ["Query Engine", "Query", "Execution", "Volcano Model", "Database Internals", "Rust"]
 draft: true
 ---
 

@@ -5,7 +5,7 @@ description: "Part 1 of Dissecting a Query Engine: A comprehensive introduction 
 pubDate: "2026-03-03"
 heroImage: "/inside_a_query_engine-title.webp"
 caption: "Image by Gemini"
-tags: ["Query", "Parsing", "Databases", "Rust"]
+tags: ["Query Engine", "Query", "Parsing", "Databases", "Rust"]
 weight: 2
 draft: false
 ---

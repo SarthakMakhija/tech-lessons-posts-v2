@@ -4,7 +4,7 @@ title: "Inside a Query Engine (Part 3): Handwritten Parser"
 description: "Part 4 of Dissecting a Query Engine: Step-by-step guide to building a handwritten recursive descent parser for a SQL-like query language from scratch."
 pubDate: "2026-03-05"
 weight: 2
-tags: ["Query", "Parser", "Recursive Descent", "Rust"]
+tags: ["Query Engine", "Query", "Parser", "Recursive Descent", "Rust"]
 draft: false
 ---
 

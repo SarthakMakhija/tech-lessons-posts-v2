@@ -4,7 +4,7 @@ title: "Inside a Query Engine (Part 2): Thinking in Grammar"
 description: "A foundational guide to thinking in grammar and designing the syntax rules for building a custom query language parser, as part of the Query Engine series."
 pubDate: "2026-03-05"
 weight: 3
-tags: ["Query", "Grammar", "EBNF", "AST", "Parsing", "Rust"]
+tags: ["Query Engine", "Query", "Grammar", "EBNF", "AST", "Parsing", "Rust"]
 draft: false
 ---
 

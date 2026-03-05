@@ -4,7 +4,7 @@ title: "Inside a Query Engine (Part 4): Expressions and Precedence"
 description: "Part 3 of Dissecting a Query Engine: Understand expression parsing, operator precedence, and how a handwritten Pratt parser handles complex SQL expressions."
 pubDate: "2026-03-06"
 weight: 1
-tags: ["Query", "Expressions", "Precedence", "Parsing", "AST", "Rust"]
+tags: ["Query Engine", "Query", "Expressions", "Precedence", "Parsing", "AST", "Rust"]
 draft: true
 ---
 
