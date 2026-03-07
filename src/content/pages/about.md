@@ -21,9 +21,22 @@ type: page
     <p><img class="self-image" alt="Sarthak Makhija" src="/self.png"></p>
 </div>
 
-Hi, I'm Sarthak Makhija.
-I’m a software engineer focused on storage engines, query engines, and search systems.
-In addition to my professional work, I enjoy building educational systems from scratch to demystify how databases and distributed systems work under the hood.
+Hi, I'm Sarthak Makhija, Principal Architect at [Caizin](https://caizin.com/).
+I write long-form essays on refactoring, storage engines, databases, and engineering trade-offs.
+
+Prior to joining Caizin, I was with [Thoughtworks](https://www.thoughtworks.com/en-in) where I led a team that developed a **strongly consistent, distributed key/value storage engine** in Go.
+This system was built with a focus on high availability and strict correctness, featuring:
+
+- **Core Storage & Coordination:** Badger as the underlying local key/value engine, with etcd managing cluster metadata.
+- **Distribution & Sharding:** Hash partitioning for data distribution across the cluster, using consistent hashing for the assignment of partitions/shards.
+- **Consistency & Consensus:** Raft/Multi-Raft for consensus, paired with two-phase commit ensuring a serial isolation level.
+- **Networking:** Persistent TCP connections for efficient, low-latency node-to-node communication.
+
+I also enjoy sharing my knowledge and contributing to the broader engineering community:
+- **Authoring:** I contributed to the validation of distributed system patterns in the book [*Patterns of Distributed Systems*](https://learning.oreilly.com/library/view/-/9780138222246/) by Unmesh Joshi. I authored articles on persistent memory for Marcin Moskala.
+- **Workshops:** I design and facilitate hands-on, deep-dive [workshops](https://tech-lessons.in/workshops/) focused on mastering software craftsmanship and storage internals.
+
+Additionally, I spend time building educational systems from scratch to demystify how databases and distributed systems work under the hood.
 
 ---
 
