@@ -21,24 +21,72 @@ type: page
     <p><img class="self-image" alt="Sarthak Makhija" src="/self.png"></p>
 </div>
 
-I’m Sarthak Makhija, Principal Architect at Caizin. I write long-form essays on refactoring, storage engines, databases, and engineering trade-offs.
+Hi, I'm Sarthak Makhija.
+I’m a software engineer focused on storage engines, query engines, and search systems.
+In addition to my professional work, I enjoy building educational systems from scratch to demystify how databases and distributed systems work under the hood.
 
-Prior to joining Caizin, I was with Thoughtworks where I led a team that developed a **strongly consistent**, **distributed** **key/value storage** engine in Go.
+---
 
-The technical ideas of our distributed key/value storage engine included:
-- [golang](https://go.dev/) as the programming language
-- [etcd](https://etcd.io/) as the metadata store
-- [badger](https://github.com/dgraph-io/badger) as the key/value storage engine
-- [raft (/multi-raft)](https://raft.github.io/) as the consensus algorithm and
-- [two-phase commit](https://martinfowler.com/articles/patterns-of-distributed-systems/two-phase-commit.html) with serial isolation level
+### Currently exploring
 
-Beyond my professional work, I’m passionate about sharing my knowledge and getting feedback from the community:
+- Building a query engine ([Relop](https://github.com/SarthakMakhija/relop)) in Rust + writing a series on internals of query engine
+- Reading the book [Performance Analysis and Tuning on Modern CPUs](https://github.com/dendibakh/perf-book/releases/tag/2.0_release)
+- Writing technical essays on [tech-lessons.in](https://tech-lessons.in/)
 
-- **Workshops**: I design and facilitate [hands-on, deep-dive workshops](/workshops) focused on mastering software craftsmanship and storage internals.
+---
 
-- **Authoring**: I contributed to the validation of distributed system patterns in the book [Patterns of Distributed Systems](https://learning.oreilly.com/library/view/-/9780138222246/) by Unmesh Joshi. I authored articles on [persistent memory](https://kt.academy/article/pmem-intro) for Marcin Moskala.
+### Talks / Workshops
 
-- **Open Source**: I contribute to [open source projects](https://github.com/SarthakMakhija) aligned with my interests, exploring innovative solutions for data management and caching.
+**[Questioning database claim: Design patterns of storage engines](https://github.com/SarthakMakhija/questioning-database-claims-gocon24)**
 
+I gave a talk on "Questioning database claims: Design patterns of storage engines” at GoConIndia24 on 2nd December. [Link to the talk](https://www.youtube.com/watch?v=_55OM23zhUo&list=PLbgP71NCXCqG4xkCmsn5wSpW7bhypnqHI&index=11).
 
+The idea of the talk was to understand various patterns of storage engines (/key-value storage engines) like persistence (WAL, fsync), efficient retrieval (B+tree, bloom filters, data layouts), efficient ingestion (Sequential IO, LSM, Wisckey) and then question variety of database claims like durability, read optimization, write optimization and pick the right database(s) for our use case.
 
+---
+
+### [Some Projects](/projects)
+
+🔹 **[Relop](https://github.com/SarthakMakhija/relop)**
+Relop is a minimal, in-memory implementation of relational operators built to explore query processing. It covers the entire pipeline from lexical analysis and parsing to logical planning and execution.
+
+*Key Features*
+* **SQL Support**: Supports basic selection, filtering (WHERE), ordering, and joins.
+* **Educational Focus**: Built with a focus on understanding the internals of a query engine, inspired by Crafting Interpreters and Database Design and Implementation.
+* **End-to-End Pipeline**: Implements the query parsing flow including tokenization, AST generation, logical plans, and physical execution via iterators.
+
+🔹 **[Go-LSM](https://github.com/SarthakMakhija/go-lsm)**
+LSM-based key-value store in Go for educational purpose, inspired by LSM in a Week. It is a rewrite of the existing workshop code.
+
+*Exploring LSM with go-lsm*
+* **Learn LSM from the ground up**: Dive deep into the core concepts of Log-Structured Merge-Trees (LSM) through a practical, well-documented implementation.
+* **Benefit from clean code**: Analyze a meticulously crafted codebase that prioritizes simplicity and readability.
+* **Gain confidence with robust tests**: Verify the correctness and reliability of the storage engine through comprehensive tests.
+* **Experiment and extend**: Customize the code to explore different LSM variations or integrate it into your own projects.
+
+🔹 **[clearcheck](https://github.com/SarthakMakhija/clearcheck)**
+Write expressive and elegant assertions with ease!
+clearcheck is designed to make assertion statements in Rust as clear and concise as possible.
+It allows chaining multiple assertions together for a fluent and intuitive syntax, leading to more self-documenting test cases.
+
+```rust
+let pass_phrase = "P@@sw0rd1 zebra alpha";
+pass_phrase.should_not_be_empty()
+    .should_have_at_least_length(10)
+    .should_contain_all_characters(vec!['@', ' '])
+    .should_contain_a_digit()
+    .should_not_contain_ignoring_case("pass")
+    .should_not_contain_ignoring_case("word");
+```
+
+---
+
+### Links
+- [GitHub](https://github.com/SarthakMakhija/)
+- [LinkedIn](https://www.linkedin.com/in/sarthak-makhija/)
+
+---
+
+### Resume
+
+[Download my Resume (PDF)](/resume.pdf)
