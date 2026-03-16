@@ -2,10 +2,9 @@
 author: "Sarthak Makhija"
 title: "Inside a Query Engine (Part 5): From Syntax to Algebra"
 description: "Part 5 of Dissecting a Query Engine: Learn how the Abstract Syntax Tree (AST) is transformed into a logical plan that starts to define data retrieval strategies."
-pubDate: "2026-03-07"
-weight: 2
+pubDate: "2026-03-16"
+weight: 1
 tags: ["Query Engine", "Query", "Logical Plan", "Relational Algebra", "Database Internals", "Rust"]
-draft: true
 ---
 
 In the previous parts of this series, we've focused on the **syntax** of a query, how to break a string into tokens and how to validate those tokens against a grammar to build an Abstract Syntax Tree (AST).
@@ -222,7 +221,7 @@ graph LR
 
 _(Note: Relop does not implement a physical planning phase.)._
 
-We've crossed the bridge from language into the world of relational operators. With a Logical Plan in hand, we have a clear recipe for what we want. But before we actually execute it, we can make that recipe cheaper. In the next part of this series, we will look at [Query Optimization](/en/blog/inside_a_query_engine_query_optimization) to see how Relop transforms this naive plan into an efficient one.
+We've crossed the bridge from language into the world of relational operators. With a Logical Plan in hand, we have a clear recipe for what we want. But before we actually execute it, we can make that recipe cheaper. In the next part of this series, we will look at Query Optimization (Coming Soon) to see how Relop transforms this naive plan into an efficient one.
 
 ### References
 

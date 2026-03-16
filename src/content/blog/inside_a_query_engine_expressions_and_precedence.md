@@ -1,11 +1,10 @@
 ---
 author: "Sarthak Makhija"
 title: "Inside a Query Engine (Part 4): Expressions and Precedence"
-description: "Part 3 of Dissecting a Query Engine: Understand expression parsing, operator precedence, and how a handwritten Pratt parser handles complex SQL expressions."
-pubDate: "2026-03-06"
-weight: 1
+description: "Part 4 of Dissecting a Query Engine: Understand expression parsing, operator precedence, and how a handwritten Pratt parser handles complex SQL expressions."
+pubDate: "2026-03-16"
+weight: 2
 tags: ["Query Engine", "Query", "Expressions", "Precedence", "Parsing", "AST", "Rust"]
-draft: true
 ---
 
 In the previous parts of this series, we built a [Handwritten Parser](/en/blog/inside_a_query_engine_handwritten_parser/) capable of understanding basic `SELECT` statements. But real-world queries are rarely that simple. Users want to filter data using complex logic: `WHERE (age > 25 OR salary > 50000) AND status = 'active'`.

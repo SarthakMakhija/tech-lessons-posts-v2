@@ -185,7 +185,7 @@ The complete `Parser` is available [here](https://github.com/SarthakMakhija/relo
 
 A handwritten parser provides precise control over error handling, structure, and performance. By mapping our EBNF rules to simple, predictable Rust methods, we've transformed the stream of tokens into a structured syntactic model (the AST) that our engine can understand.
 
-In the next part, we'll tackle the most challenging part of parsing: Expressions and Precedence. (Coming Soon)
+In the next part, we'll tackle the most challenging part of parsing: [Expressions and Precedence](/en/blog/inside_a_query_engine_expressions_and_precedence).
 
 ### References
 
