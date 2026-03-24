@@ -76,7 +76,7 @@ Here is what is planned for the upcoming essays:
 3.  [Handwritten Parser](/en/blog/inside_a_query_engine_handwritten_parser): Mapping the Grammar to Recursive Descent Code.
 4.  [Expressions and Precedence](/en/blog/inside_a_query_engine_expressions_and_precedence): Solving the logic puzzle of `AND`, `OR`, and parentheses.
 5.  [The Logical Plan](/en/blog/inside_a_query_engine_logical_plan): Converting the AST to a tree of relational operators.
-6.  Query Optimization: Applying heuristics to transform a naive logical plan into an efficient one. (Coming Soon)
-7.  Execution: Turning the Optimized Logical Plan into executable code. (Coming Soon)
+6.  [Query Optimization](/en/blog/inside_a_query_engine_query_optimization): Applying heuristics to transform a naive logical plan into an efficient one.
+7.  [Execution](/en/blog/inside_a_query_engine_execution): Turning the Optimized Logical Plan into executable code.
 
 Let's start with Part 1: [Lexical Analysis](/en/blog/inside_a_query_engine_lexical_analysis/).
