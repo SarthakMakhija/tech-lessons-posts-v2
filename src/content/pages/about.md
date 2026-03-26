@@ -50,7 +50,7 @@ Additionally, I spend time building educational systems from scratch to demystif
 
 ### Talks
 
-**[Questioning database claim: Design patterns of storage engines](https://github.com/SarthakMakhija/questioning-database-claims-gocon24)**
+**[Questioning database claims: Design patterns of storage engines](https://github.com/SarthakMakhija/questioning-database-claims-gocon24)**
 
 I gave a talk on "Questioning database claims: Design patterns of storage engines” at GoConIndia24 on 2nd December. [Link to the talk](https://www.youtube.com/watch?v=_55OM23zhUo&list=PLbgP71NCXCqG4xkCmsn5wSpW7bhypnqHI&index=11).
 
