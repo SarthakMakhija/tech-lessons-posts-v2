@@ -43,7 +43,7 @@ Additionally, I spend time building educational systems from scratch to demystif
 ### Currently exploring
 
 - Finished building a query engine ([Relop](https://github.com/SarthakMakhija/relop)) in Rust + launched a [7-part series](https://tech-lessons.in/en/blog/inside_a_query_engine_introduction/) on its internals
-- Building my programming language Nilo (repository is private currently)
+- Designing and building **Nilo**, my own programming language (private repository for now)
 - Writing technical essays on [tech-lessons.in](https://tech-lessons.in/)
 
 ---
@@ -60,14 +60,15 @@ The idea of the talk was to understand various patterns of storage engines (/key
 
 ### [Some Projects](/projects)
 
-[Relop](https://github.com/SarthakMakhija/relop) is a minimal, in-memory implementation of relational operators built to explore query processing. It covers the entire pipeline from lexical analysis and parsing to logical planning and execution.
+🔹 **[Relop](https://github.com/SarthakMakhija/relop)**
+Relop is a minimal, in-memory implementation of relational operators built to explore query processing. It covers the pipeline from lexical analysis and parsing to logical planning, optimization and execution.
 
 *I have documented the building of Relop in a [7-part series](https://tech-lessons.in/en/blog/inside_a_query_engine_introduction/) that explains its internal architecture.*
 
 *Key Features*
 * **SQL Support**: Supports basic selection, filtering (WHERE), ordering, and joins.
 * **Educational Focus**: Built with a focus on understanding the internals of a query engine, inspired by Crafting Interpreters and Database Design and Implementation.
-* **End-to-End Pipeline**: Implements the query parsing flow including tokenization, AST generation, logical plans, and physical execution via iterators.
+* **End-to-End Pipeline**: Implements the query parsing flow including tokenization, AST generation, logical plans, optimizations and physical execution via iterators.
 
 🔹 **[Go-LSM](https://github.com/SarthakMakhija/go-lsm)**
 LSM-based key-value store in Go for educational purpose, inspired by LSM in a Week. It is a rewrite of the existing workshop code.
