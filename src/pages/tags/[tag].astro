@@ -6,14 +6,21 @@ export async function getStaticPaths() {
     const posts = await getCollection("blog", ({ data }) => {
         return data.draft !== true;
     });
+
     const uniqueTags = [
         ...new Set(posts.map((post) => post.data.tags || []).flat()),
     ];
 
     return uniqueTags.map((tag) => {
-        const filteredPosts = posts.filter((post) =>
-            post.data.tags?.includes(tag),
-        );
+        const filteredPosts = posts
+            .filter((post) => post.data.tags?.includes(tag))
+            .sort((a, b) => {
+                const dateDiff =
+                    b.data.pubDate.getTime() - a.data.pubDate.getTime();
+                if (dateDiff !== 0) return dateDiff;
+
+                return (a.data.weight ?? 0) - (b.data.weight ?? 0);
+            });
         return {
             params: { tag },
             props: { posts: filteredPosts },

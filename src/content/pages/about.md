@@ -42,8 +42,8 @@ Additionally, I spend time building educational systems from scratch to demystif
 
 ### Currently exploring
 
-- Building a query engine ([Relop](https://github.com/SarthakMakhija/relop)) in Rust + writing a series on internals of query engine
-- Reading the book [Performance Analysis and Tuning on Modern CPUs](https://github.com/dendibakh/perf-book/releases/tag/2.0_release)
+- Finished building a query engine ([Relop](https://github.com/SarthakMakhija/relop)) in Rust + launched a [7-part series](https://tech-lessons.in/en/blog/inside_a_query_engine_introduction/) on its internals
+- Building my programming language Nilo (repository is private currently)
 - Writing technical essays on [tech-lessons.in](https://tech-lessons.in/)
 
 ---
@@ -54,14 +54,15 @@ Additionally, I spend time building educational systems from scratch to demystif
 
 I gave a talk on "Questioning database claims: Design patterns of storage engines” at GoConIndia24 on 2nd December. [Link to the talk](https://www.youtube.com/watch?v=_55OM23zhUo&list=PLbgP71NCXCqG4xkCmsn5wSpW7bhypnqHI&index=11).
 
-The idea of the talk was to understand various patterns of storage engines (/key-value storage engines) like persistence (WAL, fsync), efficient retrieval (B+tree, bloom filters, data layouts), efficient ingestion (Sequential IO, LSM, Wisckey) and then question variety of database claims like durability, read optimization, write optimization and pick the right database(s) for our use case.
+The idea of the talk was to understand various patterns of storage engines (/key-value storage engines) like persistence (WAL, fsync), efficient retrieval (B+tree, bloom filters, data layouts), efficient ingestion (Sequential IO, LSM, Wisckey) and then **explore a variety of database claims** like durability, read optimization, write optimization and pick the right database(s) for our use case.
 
 ---
 
 ### [Some Projects](/projects)
 
-🔹 **[Relop](https://github.com/SarthakMakhija/relop)**
-Relop is a minimal, in-memory implementation of relational operators built to explore query processing. It covers the entire pipeline from lexical analysis and parsing to logical planning and execution.
+[Relop](https://github.com/SarthakMakhija/relop) is a minimal, in-memory implementation of relational operators built to explore query processing. It covers the entire pipeline from lexical analysis and parsing to logical planning and execution.
+
+*I have documented the building of Relop in a [7-part series](https://tech-lessons.in/en/blog/inside_a_query_engine_introduction/) that explains its internal architecture.*
 
 *Key Features*
 * **SQL Support**: Supports basic selection, filtering (WHERE), ordering, and joins.
