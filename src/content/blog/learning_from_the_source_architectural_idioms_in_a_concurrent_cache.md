@@ -61,8 +61,6 @@ By Stage 2, we introduced **NewTypes** to create intentional boundaries. We wrap
 ```rust
 #[derive(Hash, PartialEq, Eq)]
 struct CacheKey(String);
-
-#[derive(Hash, PartialEq, Eq)]
 struct CacheValue(String);
 
 struct Cache {
