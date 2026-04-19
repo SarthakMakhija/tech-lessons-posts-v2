@@ -11,7 +11,7 @@ caption: "Architectural blueprints for Rust - Image by Gemini"
 
 On April 17th, 2026, I had the pleasure of delivering a workshop at the **Rust India Conference** titled *"Build a concurrent cache in Rust"*. You can find the [workshop content here](https://tech-lessons.in/rust-workshop-2026/) and the [accompanying labs on GitHub](https://github.com/SarthakMakhija/rust-workshop-labs/). We moved through multiple stages of evolution, starting from a simple `HashMap<String, String>` and ending with a sharded, concurrent cache with background expiration and graceful shutdown.
 
-Throughout the workshop, a recurring theme emerged: **Rust is a language of idioms.** The Standard Library isn't just a collection of tools; it's a blueprint for architectural excellence. When we look at how `Arc`, `RwLock`, or `JoinHandle` are implemented, we aren't just looking at "internal magic", we are looking at patterns that we can (and should) adopt in our own application code.
+Throughout the workshop, a recurring theme emerged: **Rust is a language of idioms.** The Standard Library isn't just a collection of tools; it's a **mentor** and a blueprint for architectural excellence. When we look at how `Arc`, `RwLock`, or `JoinHandle` are implemented, we aren't just looking at "internal magic", we are looking at patterns that we can adopt in our own application code.
 
 In this article, we'll revisit six architectural idioms from the workshop, mirroring them against the Rust source code to see how "Learning from the Source" can elevate our engineering craftsmanship.
 
@@ -529,6 +529,6 @@ By mirroring the `Arc/ArcInner` architecture, we built a system that is easy to 
 
 ### Conclusion
 
-Building a tiny concurrent cache is a journey of countless design choices. But when you base those decisions on the idioms of the Standard Library, you are adopting the collective engineering wisdom of the Rust community.
+Building a tiny concurrent cache is a journey of countless design choices. But when you treat the **Standard Library as a mentor** and base those decisions on its idioms, you are adopting the collective engineering wisdom of the Rust community. 
 
 The next time you’re stuck on an architectural problem in Rust, don't just reach for a crate. **Look at the source.** The blueprints for your solution are likely already sitting in your `std` library, waiting to be adopted.
