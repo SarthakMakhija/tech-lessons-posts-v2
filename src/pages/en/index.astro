@@ -37,10 +37,135 @@ const years = Object.keys(postsByYear)
                 I'm <strong>Sarthak Makhija</strong>, a <strong
                     >Principal Architect</strong
                 > at <strong>Caizin</strong>. I write long-form essays on
-                refactoring, storage engines, databases, and engineering
-                trade-offs.
+                storage engines, databases, refactoring, and engineering
+                trade-offs, for engineers who want to understand how things
+                actually work.
             </p>
             <p class="intent">Writing for future-me.</p>
+            <div class="flex flex-wrap gap-4 mt-6">
+                <a
+                    href="/top-essays"
+                    class="font-mono text-sm text-white bg-zinc-900 px-4 py-2 rounded-md hover:bg-zinc-700 transition-all"
+                >
+                    Top Essays →
+                </a>
+                <a
+                    href="/trainings"
+                    class="font-mono text-sm text-zinc-900 border border-zinc-900 px-4 py-2 rounded-md hover:bg-zinc-100 transition-all"
+                >
+                    Trainings →
+                </a>
+                <a
+                    href="/talks"
+                    class="font-mono text-sm text-zinc-900 border border-zinc-900 px-4 py-2 rounded-md hover:bg-zinc-100 transition-all"
+                >
+                    Talks →
+                </a>
+            </div>
+        </section>
+
+        <!-- Start Here Section -->
+        <section class="mb-16">
+            <h2
+                class="font-mono text-sm uppercase tracking-wider text-zinc-900 mb-6 font-bold"
+            >
+                Start Here
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="border border-zinc-100 rounded-lg p-5">
+                    <h3 class="font-mono font-bold text-sm text-zinc-900 mb-3">
+                        Storage Engines
+                    </h3>
+                    <ul class="flex flex-col gap-2">
+                        <li>
+                            <a
+                                href="/en/blog/bitcask/"
+                                class="font-mono text-sm text-zinc-600 hover:text-black transition-colors"
+                            >
+                                Bitcask: A Log-Structured Hash Table
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                href="/en/blog/wisckey_ssd_conscious_key_value_store/"
+                                class="font-mono text-sm text-zinc-600 hover:text-black transition-colors"
+                            >
+                                WiscKey: SSD-Conscious Key-Value Store
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                href="/en/blog/bloom_filter/"
+                                class="font-mono text-sm text-zinc-600 hover:text-black transition-colors"
+                            >
+                                Bloom Filters
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="border border-zinc-100 rounded-lg p-5">
+                    <h3 class="font-mono font-bold text-sm text-zinc-900 mb-3">
+                        Query Engines
+                    </h3>
+                    <ul class="flex flex-col gap-2">
+                        <li>
+                            <a
+                                href="/en/blog/inside_a_query_engine_introduction/"
+                                class="font-mono text-sm text-zinc-600 hover:text-black transition-colors"
+                            >
+                                Introduction
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                href="/en/blog/inside_a_query_engine_lexical_analysis/"
+                                class="font-mono text-sm text-zinc-600 hover:text-black transition-colors"
+                            >
+                                Lexical Analysis
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                href="/en/blog/inside_a_query_engine_logical_plan/"
+                                class="font-mono text-sm text-zinc-600 hover:text-black transition-colors"
+                            >
+                                Logical Plans
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="border border-zinc-100 rounded-lg p-5">
+                    <h3 class="font-mono font-bold text-sm text-zinc-900 mb-3">
+                        Refactoring
+                    </h3>
+                    <ul class="flex flex-col gap-2">
+                        <li>
+                            <a
+                                href="/en/blog/refactoring_mindset/"
+                                class="font-mono text-sm text-zinc-600 hover:text-black transition-colors"
+                            >
+                                Refactoring Mindset
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                href="/en/blog/refactoring_in_the_age_of_ai/"
+                                class="font-mono text-sm text-zinc-600 hover:text-black transition-colors"
+                            >
+                                Refactoring in the Age of AI
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                href="/en/blog/lets_define_legacy_code/"
+                                class="font-mono text-sm text-zinc-600 hover:text-black transition-colors"
+                            >
+                                Defining Legacy Code
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </section>
 
         <!-- Essay List -->

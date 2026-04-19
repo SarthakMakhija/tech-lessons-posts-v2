@@ -166,7 +166,7 @@ const relatedPosts = allPosts
                         <div class="mt-12 pt-8 border-t border-zinc-100">
                             <div class="flex flex-wrap gap-3">
                                 {post.data.tags.map((tag) => (
-                                    <div class="flex items-center gap-2 px-3 py-1.5 border border-accent-600 rounded-lg text-accent-600 text-sm font-medium bg-white hover:bg-indigo-50 transition-colors cursor-default">
+                                    <a href={`/tags/${tag}/`} class="flex items-center gap-2 px-3 py-1.5 border border-accent-600 rounded-lg text-accent-600 text-sm font-medium bg-white hover:bg-indigo-50 transition-colors">
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
                                             width="14"
@@ -182,7 +182,7 @@ const relatedPosts = allPosts
                                             <path d="M7 7h.01" />
                                         </svg>
                                         {tag}
-                                    </div>
+                                    </a>
                                 ))}
                             </div>
                         </div>

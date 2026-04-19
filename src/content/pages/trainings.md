@@ -9,13 +9,18 @@ type: page
 
 I design and facilitate hands-on, deep-dive trainings focused on mastering software craftsmanship and storage internals.
 
-<div class="mb-10">
+Interested in running a training for your team? Email [sarthak.makhija@gmail.com](mailto:sarthak.makhija@gmail.com) or reach out on [LinkedIn](https://www.linkedin.com/in/sarthak-makhija/).
+
+<div class="mb-10 mt-12">
 <a href="https://gamifying-refactoring.github.io/" class="block group">
 <h2 class="text-3xl font-sans font-bold mb-3 text-zinc-900 group-hover:text-blue-700 transition-colors">Gamifying Refactoring</h2>
 </a>
-<div class="flex flex-wrap gap-4 mb-3 text-sm">
+<div class="flex flex-wrap gap-4 mb-6 text-sm">
 <span class="px-3 py-0.5 bg-white border border-blue-100 rounded-full text-blue-800 font-medium">
 Format: Instructor-led training
+</span>
+<span class="px-3 py-0.5 bg-white border border-blue-100 rounded-full text-blue-800 font-medium">
+Duration: 5 hours
 </span>
 <span class="px-3 py-0.5 bg-white border border-blue-100 rounded-full text-blue-800 font-medium">
 Availability: On request
@@ -24,8 +29,7 @@ Availability: On request
 <p class="text-lg text-zinc-700 leading-relaxed mb-6">
 Turn the art of refactoring into a measurable science. This training turns code cleanup into a challenge: can you justify a code smell <em>without</em> using vague terms like "readability" or "maintainability"?
 </p>
-<div class="bg-blue-50/50 border border-blue-100 rounded-xl p-6">
-
+<div class="bg-blue-50/50 border border-blue-100 rounded-xl p-6 mb-6">
 
 <h4 class="font-bold text-blue-900 mb-2">The Game Rules</h4>
 <ul class="space-y-2 text-zinc-700">
@@ -43,8 +47,26 @@ Turn the art of refactoring into a measurable science. This training turns code 
 </li>
 </ul>
 <p class="mt-4 text-sm text-blue-800 italic">
-"Don’t state ‘Long method is a smell because it is not readable’. Consider this an opportunity to find reasoning that is measurable."
+"Don't state 'Long method is a smell because it is not readable'. Consider this an opportunity to find reasoning that is measurable."
 </p>
+</div>
+
+<div class="bg-blue-50/50 border border-blue-100 rounded-xl p-6">
+<h4 class="font-bold text-zinc-900 mb-3">After this training, you will be able to</h4>
+<ul class="space-y-2 text-zinc-700">
+<li class="flex items-start gap-2">
+<span class="text-blue-600 font-bold">1.</span>
+<span>Recognize code smells with precision, using evidence rather than intuition</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="text-blue-600 font-bold">2.</span>
+<span>Justify refactoring decisions without leaning on vague terms like "readability" or "maintainability"</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="text-blue-600 font-bold">3.</span>
+<span>Make small, safe, incremental changes that improve code without breaking behavior</span>
+</li>
+</ul>
 </div>
 </div>
 
@@ -52,19 +74,22 @@ Turn the art of refactoring into a measurable science. This training turns code 
 <a href="https://github.com/SarthakMakhija/go-lsm" class="block group">
 <h2 class="text-3xl font-sans font-bold mb-3 text-zinc-900 group-hover:text-blue-700 transition-colors">Internals of key-value storage engines: LSM-trees and beyond</h2>
 </a>
-<div class="flex flex-wrap gap-4 mb-3 text-sm">
+<div class="flex flex-wrap gap-4 mb-6 text-sm">
 <span class="px-3 py-0.5 bg-white border border-blue-100 rounded-full text-blue-800 font-medium">
 Format: Instructor-led training
+</span>
+<span class="px-3 py-0.5 bg-white border border-blue-100 rounded-full text-blue-800 font-medium">
+Duration: 2 days
 </span>
 <span class="px-3 py-0.5 bg-white border border-blue-100 rounded-full text-blue-800 font-medium">
 Availability: On request
 </span>
 </div>
-<p class="text-lg text-zinc-700 leading-relaxed mb-6">Participants build an LSM-based storage engine to understand the core components of a key–value store.</p>
+<p class="text-lg text-zinc-700 leading-relaxed mb-6">Participants build an LSM-based storage engine to understand the core components of a key-value store.</p>
 
 </div>
 
-<div class="not-prose mt-12">
+<div class="not-prose mt-6">
 <div class="mb-8">
 <h3 class="font-sans font-bold text-xl text-zinc-900 mb-2">Day 1: Foundations & Core Structures</h3>
 <p class="text-zinc-600">Building the theoretical ground and starting the engine.</p>
@@ -162,7 +187,7 @@ Understanding WAL implementation patterns
 <p class="text-zinc-600">Moving to disk, optimization, and ACID properties.</p>
 </div>
 
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
 
 <!-- Section 4 -->
 <div class="rounded-2xl border border-zinc-200 p-6 bg-white shadow-sm hover:shadow-md transition-shadow">
@@ -289,4 +314,23 @@ Concurrency + Compaction Revision
 </div>
 
 </div>
+
+<div class="bg-blue-50/50 border border-blue-100 rounded-xl p-6 mt-4">
+<h4 class="font-bold text-zinc-900 mb-3">After this training, you will be able to</h4>
+<ul class="space-y-2 text-zinc-700">
+<li class="flex items-start gap-2">
+<span class="text-blue-600 font-bold">1.</span>
+<span>Understand the fundamentals of storage engines and how data actually moves from memory to disk</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="text-blue-600 font-bold">2.</span>
+<span>Understand how LSM-trees achieve write optimization, from memtable flushes to compaction strategies</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="text-blue-600 font-bold">3.</span>
+<span>Understand why write-optimized databases make the trade-offs they do, and when those trade-offs are worth it</span>
+</li>
+</ul>
+</div>
+
 </div>
