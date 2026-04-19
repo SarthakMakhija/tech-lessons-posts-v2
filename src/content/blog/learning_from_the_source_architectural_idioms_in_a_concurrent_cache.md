@@ -5,8 +5,6 @@ description: "Discover how the architectural patterns used in the Rust Standard 
 pubDate: 2026-04-20
 tags: ["Rust", "Concurrency", "Idioms", "Arc", "RAII"]
 caption: "Architectural blueprints for Rust - Image by Gemini"
-workshopUrl: "https://tech-lessons.in/rust-workshop-2026/"
-labsUrl: "https://github.com/SarthakMakhija/rust-workshop-labs/"
 ---
 
 ### Introduction
