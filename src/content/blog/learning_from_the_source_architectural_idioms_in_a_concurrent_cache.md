@@ -9,9 +9,9 @@ caption: "Architectural blueprints for Rust - Image by Gemini"
 
 ### Introduction
 
-On April 17th, 2026, I had the pleasure of delivering a workshop at the **Rust India Conference** titled *"Build a concurrent cache in Rust"*. You can find the [workshop content here](https://tech-lessons.in/rust-workshop-2026/) and the [accompanying labs on GitHub](https://github.com/SarthakMakhija/rust-workshop-labs/). We moved through multiple stages of evolution, starting from a simple `HashMap` and ending with a sharded, concurrent cache with background expiration and graceful shutdown.
+On April 17th, 2026, I had the pleasure of delivering a workshop at the **Rust India Conference** titled *"Build a concurrent cache in Rust"*. You can find the [workshop content here](https://tech-lessons.in/rust-workshop-2026/) and the [accompanying labs on GitHub](https://github.com/SarthakMakhija/rust-workshop-labs/). We moved through multiple stages of evolution, starting from a simple `HashMap<String, String>` and ending with a sharded, concurrent cache with background expiration and graceful shutdown.
 
-Throughout the workshop, a recurring theme emerged: **Rust is a language of idioms.** The Standard Library isn't just a collection of tools; it's a blueprint for architectural excellence. When we look at how `Arc`, `RwLock`, or `JoinHandle` are implemented, we aren't just looking at "internal magic",we are looking at patterns that we can (and should) adopt in our own application code.
+Throughout the workshop, a recurring theme emerged: **Rust is a language of idioms.** The Standard Library isn't just a collection of tools; it's a blueprint for architectural excellence. When we look at how `Arc`, `RwLock`, or `JoinHandle` are implemented, we aren't just looking at "internal magic", we are looking at patterns that we can (and should) adopt in our own application code.
 
 In this article, we'll revisit six architectural idioms from the workshop, mirroring them against the Rust source code to see how "Learning from the Source" can elevate our engineering craftsmanship.
 
@@ -34,11 +34,11 @@ pub struct NonZero<T: ZeroablePrimitive>(T::NonZeroInner);
 ```
 
 This works because of two critical attributes:
-1.  **`#[repr(transparent)]`**: This guarantees that the wrapper has the exact same memory layout and ABI as the inner type.
+1.  **`#[repr(transparent)]`**: This guarantees that the wrapper has the exact same memory layout and ABI (Application Binary Interface) as the inner type. The **ABI** is the low-level contract defining how data is passed between functions (e.g., which CPU registers are used).
 2.  **`#[rustc_nonnull_optimization_guaranteed]`**: Since `0` is an invalid bit pattern for `NonZero<u32>`, the compiler is allowed to use that "niche" to represent `None` in an `Option`. This means an `Option<NonZero<u32>>` takes up zero extra space compared to a raw `u32`.
 
 #### Our Adoption: From Ambiguity to Type-Safety
-In our workshop, we started (Stage 1) with a minimal cache that accepted `String` for keys and `String` for values. While functional, this API was dangerously generic. Since both were raw strings, the compiler couldn't protect us if we accidentally swapped a key for a value in a method call.
+In our workshop, we started (Stage 1) with a minimal cache that accepted `String` for keys and `String` for values. While functional, `put` API was dangerously generic. Since both inputs were raw strings, the compiler couldn't protect us if we accidentally swapped a key for a value in a method call.
 
 **Stage 1: The Problem (Amorphous Strings)**
 ```rust
@@ -86,7 +86,7 @@ By adopting this idiom, we transformed a subtle logic bug (swapped parameters) i
 
 ### 2. Ergonomic APIs: The `From` Trait
 
-A hallmark of a "Library-Grade" API is how it feels to use. While our NewTypes provided safety, they initially introduced a lot of syntactic noise. By Stage 2, our test cases were becoming difficult to read.
+A hallmark of a "Library-Grade" API is how it feels to use. While our NewTypes provided safety, they initially introduced a lot of syntactic noise. By Stage 2, our test cases were a bit verbose.
 
 #### The Problem: Syntactic Noise
 When we first introduced `CacheKey` and `CacheValue`, every insertion required manual wrapping.
@@ -120,7 +120,7 @@ impl From<&str> for String {
 This is why you can call `"rust".into()` to create a `String`.
 
 #### Our Adoption: The `.into()` Pattern
-We adopted this pattern by implementing `From<&str>` for our `CacheKey`.
+We adopted this pattern by implementing `From<&str>` for our `CacheKey` and `CacheValue`.
 
 ```rust
 impl From<&str> for CacheKey {
