@@ -4,7 +4,6 @@ title: "Learning from the Source: Architectural Idioms in a Concurrent Cache"
 description: "Discover how the architectural patterns used in the Rust Standard Library can be adopted in your own projects. Lessons from a concurrent cache workshop at Rust India Conference 2026."
 pubDate: 2026-04-20
 tags: ["Rust", "Concurrency", "Idioms", "Arc", "RAII"]
-caption: "Architectural blueprints for Rust - Image by Gemini"
 ---
 
 ### Introduction
