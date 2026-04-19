@@ -1,13 +1,13 @@
 ---
 author: Sarthak Makhija
-title: Workshops
+title: Trainings
 date: 2023-02-24
-description: Workshops I conduct
+description: Trainings I conduct
 keywords: ["Workshop", "Training"]
 type: page
 ---
 
-I design and facilitate hands-on, deep-dive workshops focused on mastering software craftsmanship and storage internals.
+I design and facilitate hands-on, deep-dive trainings focused on mastering software craftsmanship and storage internals.
 
 <div class="mb-10">
 <a href="https://gamifying-refactoring.github.io/" class="block group">
@@ -15,14 +15,14 @@ I design and facilitate hands-on, deep-dive workshops focused on mastering softw
 </a>
 <div class="flex flex-wrap gap-4 mb-3 text-sm">
 <span class="px-3 py-0.5 bg-white border border-blue-100 rounded-full text-blue-800 font-medium">
-Format: Instructor-led workshop
+Format: Instructor-led training
 </span>
 <span class="px-3 py-0.5 bg-white border border-blue-100 rounded-full text-blue-800 font-medium">
 Availability: On request
 </span>
 </div>
 <p class="text-lg text-zinc-700 leading-relaxed mb-6">
-Turn the art of refactoring into a measurable science. This workshop turns code cleanup into a challenge: can you justify a code smell <em>without</em> using vague terms like "readability" or "maintainability"?
+Turn the art of refactoring into a measurable science. This training turns code cleanup into a challenge: can you justify a code smell <em>without</em> using vague terms like "readability" or "maintainability"?
 </p>
 <div class="bg-blue-50/50 border border-blue-100 rounded-xl p-6">
 
@@ -54,7 +54,7 @@ Turn the art of refactoring into a measurable science. This workshop turns code 
 </a>
 <div class="flex flex-wrap gap-4 mb-3 text-sm">
 <span class="px-3 py-0.5 bg-white border border-blue-100 rounded-full text-blue-800 font-medium">
-Format: Instructor-led workshop
+Format: Instructor-led training
 </span>
 <span class="px-3 py-0.5 bg-white border border-blue-100 rounded-full text-blue-800 font-medium">
 Availability: On request

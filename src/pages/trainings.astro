@@ -2,16 +2,16 @@
 import { getEntry } from "astro:content";
 import Layout from "../layouts/Layout.astro";
 
-const page = await getEntry("pages", "workshops");
+const page = await getEntry("pages", "trainings");
 if (!page) {
-    throw new Error("Workshops page not found");
+    throw new Error("Trainings page not found");
 }
 const { Content } = await page.render();
 ---
 
 <Layout
     title={page.data.title}
-    description={page.data.description || "Workshops"}
+    description={page.data.description || "Trainings"}
 >
     <div class="max-w-[800px] mx-auto">
         <h1 class="text-3xl font-sans font-bold mb-8">{page.data.title}</h1>

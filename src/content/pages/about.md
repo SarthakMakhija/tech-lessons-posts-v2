@@ -34,7 +34,7 @@ This system was built with a focus on high availability and strict correctness, 
 
 I also enjoy sharing my knowledge and contributing to the broader engineering community:
 - **Authoring:** I contributed to the validation of distributed system patterns in the book [*Patterns of Distributed Systems*](https://learning.oreilly.com/library/view/-/9780138222246/) by Unmesh Joshi. I authored articles on persistent memory for Marcin Moskala.
-- **Workshops:** I design and facilitate hands-on, deep-dive [workshops](https://tech-lessons.in/workshops/) focused on mastering software craftsmanship and storage internals.
+- **Trainings:** I design and facilitate hands-on, deep-dive [trainings](https://tech-lessons.in/trainings/) focused on mastering software craftsmanship and storage internals.
 
 Additionally, I spend time building educational systems from scratch to demystify how databases and distributed systems work under the hood.
 
@@ -47,14 +47,6 @@ Additionally, I spend time building educational systems from scratch to demystif
 - Writing technical essays on [tech-lessons.in](https://tech-lessons.in/)
 
 ---
-
-### Talks
-
-**[Questioning database claims: Design patterns of storage engines](https://github.com/SarthakMakhija/questioning-database-claims-gocon24)**
-
-I gave a talk on "Questioning database claims: Design patterns of storage engines” at GoConIndia24 on 2nd December. [Link to the talk](https://www.youtube.com/watch?v=_55OM23zhUo&list=PLbgP71NCXCqG4xkCmsn5wSpW7bhypnqHI&index=11).
-
-The idea of the talk was to understand various patterns of storage engines (/key-value storage engines) like persistence (WAL, fsync), efficient retrieval (B+tree, bloom filters, data layouts), efficient ingestion (Sequential IO, LSM, Wisckey) and then **explore a variety of database claims** like durability, read optimization, write optimization and pick the right database(s) for our use case.
 
 ---
 
