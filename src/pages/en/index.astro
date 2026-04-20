@@ -72,7 +72,7 @@ const years = Object.keys(postsByYear)
                 Start Here
             </h2>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div class="border border-zinc-100 rounded-lg p-5">
+                <div class="border border-zinc-100 rounded-lg p-5 hover:border-zinc-300 hover:shadow-sm hover:-translate-y-0.5 transition-all duration-300 group/card">
                     <h3 class="font-mono font-bold text-sm text-zinc-900 mb-3">
                         Storage Engines
                     </h3>
@@ -80,7 +80,7 @@ const years = Object.keys(postsByYear)
                         <li>
                             <a
                                 href="/en/blog/bitcask/"
-                                class="font-mono text-sm text-zinc-600 hover:text-black transition-colors"
+                                class="font-mono font-medium text-base text-zinc-700 hover:text-black hover:translate-x-1 inline-block transition-all"
                             >
                                 Bitcask: A Log-Structured Hash Table
                             </a>
@@ -88,7 +88,7 @@ const years = Object.keys(postsByYear)
                         <li>
                             <a
                                 href="/en/blog/wisckey_ssd_conscious_key_value_store/"
-                                class="font-mono text-sm text-zinc-600 hover:text-black transition-colors"
+                                class="font-mono font-medium text-base text-zinc-700 hover:text-black hover:translate-x-1 inline-block transition-all"
                             >
                                 WiscKey: SSD-Conscious Key-Value Store
                             </a>
@@ -96,14 +96,14 @@ const years = Object.keys(postsByYear)
                         <li>
                             <a
                                 href="/en/blog/bloom_filter/"
-                                class="font-mono text-sm text-zinc-600 hover:text-black transition-colors"
+                                class="font-mono font-medium text-base text-zinc-700 hover:text-black hover:translate-x-1 inline-block transition-all"
                             >
                                 Bloom Filters
                             </a>
                         </li>
                     </ul>
                 </div>
-                <div class="border border-zinc-100 rounded-lg p-5">
+                <div class="border border-zinc-100 rounded-lg p-5 hover:border-zinc-300 hover:shadow-sm hover:-translate-y-0.5 transition-all duration-300 group/card">
                     <h3 class="font-mono font-bold text-sm text-zinc-900 mb-3">
                         Query Engines
                     </h3>
@@ -111,7 +111,7 @@ const years = Object.keys(postsByYear)
                         <li>
                             <a
                                 href="/en/blog/inside_a_query_engine_introduction/"
-                                class="font-mono text-sm text-zinc-600 hover:text-black transition-colors"
+                                class="font-mono font-medium text-base text-zinc-700 hover:text-black hover:translate-x-1 inline-block transition-all"
                             >
                                 Introduction
                             </a>
@@ -119,7 +119,7 @@ const years = Object.keys(postsByYear)
                         <li>
                             <a
                                 href="/en/blog/inside_a_query_engine_lexical_analysis/"
-                                class="font-mono text-sm text-zinc-600 hover:text-black transition-colors"
+                                class="font-mono font-medium text-base text-zinc-700 hover:text-black hover:translate-x-1 inline-block transition-all"
                             >
                                 Lexical Analysis
                             </a>
@@ -127,14 +127,14 @@ const years = Object.keys(postsByYear)
                         <li>
                             <a
                                 href="/en/blog/inside_a_query_engine_logical_plan/"
-                                class="font-mono text-sm text-zinc-600 hover:text-black transition-colors"
+                                class="font-mono font-medium text-base text-zinc-700 hover:text-black hover:translate-x-1 inline-block transition-all"
                             >
                                 Logical Plans
                             </a>
                         </li>
                     </ul>
                 </div>
-                <div class="border border-zinc-100 rounded-lg p-5">
+                <div class="border border-zinc-100 rounded-lg p-5 hover:border-zinc-300 hover:shadow-sm hover:-translate-y-0.5 transition-all duration-300 group/card">
                     <h3 class="font-mono font-bold text-sm text-zinc-900 mb-3">
                         Refactoring
                     </h3>
@@ -142,7 +142,7 @@ const years = Object.keys(postsByYear)
                         <li>
                             <a
                                 href="/en/blog/refactoring_mindset/"
-                                class="font-mono text-sm text-zinc-600 hover:text-black transition-colors"
+                                class="font-mono font-medium text-base text-zinc-700 hover:text-black hover:translate-x-1 inline-block transition-all"
                             >
                                 Refactoring Mindset
                             </a>
@@ -150,7 +150,7 @@ const years = Object.keys(postsByYear)
                         <li>
                             <a
                                 href="/en/blog/refactoring_in_the_age_of_ai/"
-                                class="font-mono text-sm text-zinc-600 hover:text-black transition-colors"
+                                class="font-mono font-medium text-base text-zinc-700 hover:text-black hover:translate-x-1 inline-block transition-all"
                             >
                                 Refactoring in the Age of AI
                             </a>
@@ -158,7 +158,7 @@ const years = Object.keys(postsByYear)
                         <li>
                             <a
                                 href="/en/blog/lets_define_legacy_code/"
-                                class="font-mono text-sm text-zinc-600 hover:text-black transition-colors"
+                                class="font-mono font-medium text-base text-zinc-700 hover:text-black hover:translate-x-1 inline-block transition-all"
                             >
                                 Defining Legacy Code
                             </a>
@@ -201,7 +201,7 @@ const years = Object.keys(postsByYear)
                                     {/* Title Column */}
                                     <a
                                         href={`/en/blog/${post.slug}/`}
-                                        class="font-mono font-medium text-zinc-700 hover:text-black hover:translate-x-1 transition-all"
+                                        class="font-mono font-medium text-base text-zinc-700 hover:text-black hover:translate-x-1 transition-all"
                                     >
                                         {post.data.title}
                                     </a>
