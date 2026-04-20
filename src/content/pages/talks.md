@@ -26,7 +26,7 @@ I share my deep dives into systems programming and storage internals through tec
 - Core storage engine patterns: **WAL**, **fsync**, **B+tree**, **bloom filters**, **LSM trees**, **WiscKey**
 
 #### Key takeaway
-Every database makes claims—*"Durable writes"*, *"Fast reads"*, *"Horizontal scale"*. But do you know what's actually happening underneath? This talk gives you the vocabulary and the patterns to stop taking those claims on faith and start evaluating them yourself.
+Every database makes claims, *"Durable writes"*, *"Fast reads"*, *"Horizontal scale"*. But do you know what's actually happening underneath? This talk gives you the vocabulary and the patterns to stop taking those claims on faith and start evaluating them yourself.
 
 </details>
 

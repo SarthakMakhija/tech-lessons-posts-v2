@@ -117,7 +117,7 @@ isPositive(10) returns true
 isPositive(-1) returns false
 ```
 In the above code, the variable `isPositive` a function that takes an `Int` as an argument and returns a `Boolean`. The value of this variable is a function definition or a lambda defined in braces, which checks that the passed argument is greater than zero.
-Whereas, as seen in Java below, `Predicate` is a functional interface containing an abstract method `test()` — which takes an argument of type `T` and returns a `boolean`.
+Whereas, as seen in Java below, `Predicate` is a functional interface containing an abstract method `test()`, which takes an argument of type `T` and returns a `boolean`.
 So, `isPositive` takes an argument of type `Integer` and checks that it is greater than zero. In order to use it, we need to invoke the `test()` method on the `isPositive` method.
 
 ```java

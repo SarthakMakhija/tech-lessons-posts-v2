@@ -46,7 +46,7 @@ This keeps the architecture simple. The optimizer simply rewrites the logical tr
 
 ---
 
-### Section A — Predicate Pushdown
+### Section A, Predicate Pushdown
 
 Perhaps the most fundamental heuristic in any query optimizer is **Predicate Pushdown**. The goal is simple: filter rows as early as possible.
 
@@ -69,7 +69,7 @@ Projection
 
 By pushing the `Filter` down into the `Scan` itself, we reduce the number of rows that are yielded to the parent operators. Less data flowing up the tree means less work for everything above the scan.
 
-At first glance, this might seem like a minor change—after all, whether the `Filter` is a separate node or inside the `Scan`, the row still gets removed before reaching operators higher up the tree. However, pushing the predicate tightly into the `Scan` operator provides distinct advantages:
+At first glance, this might seem like a minor change, after all, whether the `Filter` is a separate node or inside the `Scan`, the row still gets removed before reaching operators higher up the tree. However, pushing the predicate tightly into the `Scan` operator provides distinct advantages:
 
 1.  **Iterator Overhead (CPU):** In a Volcano execution model, passing a row from a child node to a parent node incurs function call overhead (the `next()` call). Fusing the filter with the scan prevents the engine from yielding irrelevant rows entirely.
 2.  **I/O and Storage Cost:** While Relop currently operates largely in memory, in a traditional database, giving the scan operator knowledge of the filter allows the storage layer to use indexes or skip data blocks entirely (e.g., using Parquet row group statistics). The row doesn't just get filtered; it never gets read from disk.
