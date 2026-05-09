@@ -1,0 +1,32 @@
+/* tech-lessons.in Theme Global Configuration */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap');
+
+html, body, #app, #slide-container {
+  font-family: 'Inter', sans-serif !important;
+  background-color: #0f172a !important; /* The outer window is dark navy */
+}
+
+/* Slidev Navigation Drawer / TOC Nuke */
+.slidev-drawer,
+#slidev-menu,
+.slidev-menu,
+[class*="slidev-drawer"],
+.slidev-sidebar,
+.slidev-nav-menu,
+.slidev-toc-overlay,
+nav {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* Code blocks match the website's dark code blocks */
+.shiki {
+  background-color: #111827 !important;
+  border: 1px solid #374151 !important;
+  border-radius: 0.375rem !important;
+}

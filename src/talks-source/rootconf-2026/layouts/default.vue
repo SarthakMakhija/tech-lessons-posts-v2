@@ -1,0 +1,30 @@
+<template>
+  <div class="slidev-layout default w-full h-full bg-[#fafafa] text-[#374151]">
+    <!-- Website Sidebar Accent -->
+    <div class="absolute left-0 top-0 bottom-0 w-[12px] bg-[#0f172a]"></div>
+    
+    <div class="h-full pl-12 pr-8 py-8 flex flex-col">
+      <slot />
+    </div>
+  </div>
+</template>
+
+<style>
+/* Enforce Website Fonts and Colors */
+.slidev-layout h1 {
+  color: #111827 !important;
+  font-weight: 800 !important;
+  margin-bottom: 1.5rem;
+}
+.slidev-layout h2, .slidev-layout h3 {
+  color: #1f2937 !important;
+  font-weight: 700 !important;
+}
+.slidev-layout p, .slidev-layout li {
+  color: #4b5563 !important;
+}
+.slidev-layout strong {
+  color: #111827 !important;
+  font-weight: 700 !important;
+}
+</style>

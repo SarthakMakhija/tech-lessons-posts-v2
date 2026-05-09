@@ -4,7 +4,8 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build:slides": "cd src/talks-source && npm run build:all",
+    "build": "npm run build:slides && astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
