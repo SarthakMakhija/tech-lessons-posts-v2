@@ -77,7 +77,7 @@ We built a distributed Key-Value engine from scratch in Go.
 <div class="grid grid-cols-2 gap-x-12 gap-y-10 mt-12">
 
   <div class="flex items-start gap-4">
-    <carbon:data-1 class="text-4xl text-[#111827] mt-1 opacity-80" />
+    <carbon:data-1 class="text-4xl text-blue-500 mt-1 opacity-80" />
     <div>
       <h3 class="!text-xl !font-bold !mb-1 !text-[#111827]">Pure Key-Value</h3>
       <p class="!text-slate-500 !text-sm !m-0">No SQL overhead (parsers, ASTs).</p>
@@ -85,7 +85,7 @@ We built a distributed Key-Value engine from scratch in Go.
   </div>
 
   <div class="flex items-start gap-4">
-    <carbon:flash class="text-4xl text-[#111827] mt-1 opacity-80" />
+    <carbon:flash class="text-4xl text-yellow-500 mt-1 opacity-80" />
     <div>
       <h3 class="!text-xl !font-bold !mb-1 !text-[#111827]">Write-Optimized</h3>
       <p class="!text-slate-500 !text-sm !m-0">Targeting strict linearizability.</p>
@@ -93,7 +93,7 @@ We built a distributed Key-Value engine from scratch in Go.
   </div>
 
   <div class="flex items-start gap-4">
-    <carbon:chart-evaluation class="text-4xl text-[#111827] mt-1 opacity-80" />
+    <carbon:chart-evaluation class="text-4xl text-red-500 mt-1 opacity-80" />
     <div>
       <h3 class="!text-xl !font-bold !mb-1 !text-[#111827]">Existing Tech Shortfalls</h3>
       <p class="!text-slate-500 !text-sm !m-0">JunoDB, TiKV, FoundationDB didn't fit perfectly.</p>
@@ -101,7 +101,7 @@ We built a distributed Key-Value engine from scratch in Go.
   </div>
 
   <div class="flex items-start gap-4">
-    <carbon:unlocked class="text-4xl text-[#111827] mt-1 opacity-80" />
+    <carbon:unlocked class="text-4xl text-green-500 mt-1 opacity-80" />
     <div>
       <h3 class="!text-xl !font-bold !mb-1 !text-[#111827]">Vendor Independence</h3>
       <p class="!text-slate-500 !text-sm !m-0">Zero external vendor lock-in.</p>
@@ -135,28 +135,28 @@ Building a custom high-performance engine required specific design choices:
 
 <v-click>
 <div class="bg-white px-3 py-2 rounded border border-slate-200 shadow-sm flex items-center gap-3">
-  <carbon-layers class="text-lg text-slate-600" />
+  <carbon-layers class="text-lg text-orange-500" />
   <span class="font-medium text-slate-800 text-sm">Batching as a First-Class Citizen</span>
 </div>
 </v-click>
 
 <v-click>
 <div class="bg-white px-3 py-2 rounded border border-slate-200 shadow-sm flex items-center gap-3">
-  <carbon-network-4 class="text-lg text-slate-600" />
+  <carbon-network-4 class="text-lg text-blue-500" />
   <span class="font-medium text-slate-800 text-sm">Persistent TCP Connections</span>
 </div>
 </v-click>
 
 <v-click>
 <div class="bg-white px-3 py-2 rounded border border-slate-200 shadow-sm flex items-center gap-3">
-  <carbon-edge-node class="text-lg text-slate-600" />
+  <carbon-edge-node class="text-lg text-purple-500" />
   <span class="font-medium text-slate-800 text-sm">Multiple Outbound Connectors</span>
 </div>
 </v-click>
 
 <v-click>
 <div class="bg-white px-3 py-2 rounded border border-slate-200 shadow-sm flex items-center gap-3">
-  <carbon-data-base class="text-lg text-slate-600" />
+  <carbon-data-base class="text-lg text-green-500" />
   <span class="font-medium text-slate-800 text-sm">Multi-Raft Storage</span>
 </div>
 </v-click>
@@ -726,45 +726,52 @@ While our storage was fast, our **Outbound Connectors** in the API Server became
 
 # Lesson 4: The Bottleneck
 
-### "One Worker is Not Enough"
+### The Original Design
 
-At high volumes, the sequential nature of a single worker per partition caused system-wide stalls.
+<div class="mt-12 flex justify-center">
+  <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm max-w-xl w-full">
+    <h4 class="text-sm font-black text-slate-500 uppercase tracking-[0.2em] mb-6 text-shadow-none">1 Connector : 1 Partition</h4>
+    <p class="text-sm text-slate-600 leading-relaxed mb-6">
+      Simple, easy to reason about and guarantees strict message ordering.
+    </p>
+    <ul class="text-sm text-slate-500 space-y-4 list-disc pl-6">
+      <li>Single goroutine per partition handling outbound traffic for that partition.</li>
+      <li>One persistent TCP connection per partition.</li>
+    </ul>
+  </div>
+</div>
 
-<div class="mt-2 grid grid-cols-2 gap-6 items-stretch">
-  <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col">
-    <h4 class="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-4 text-shadow-none">The Original Design</h4>
+---
+
+# Lesson 4: The Bottleneck
+
+### Two Critical Choking Points
+
+<div class="mt-8 grid grid-cols-2 gap-8 items-stretch h-[320px]">
+  <div class="bg-red-50/30 p-6 rounded-xl border border-red-100 shadow-sm flex flex-col h-full">
+    <h4 class="text-[12px] font-black text-red-500 uppercase tracking-[0.2em] mb-4 text-shadow-none">1. Channel Saturation</h4>
     <div class="flex-grow">
-      <p class="text-xs text-slate-600 leading-relaxed mb-4">
-        <b>1 Connector : 1 Partition</b>
+      <p class="text-sm text-slate-600 leading-relaxed mb-4">
+        A burst of 50k batches filled the <b>buffered channel</b> instantly.
       </p>
-      <ul class="text-[11px] text-slate-500 space-y-3">
-        <li>A single goroutine handling all traffic for a destination leader.</li>
-        <li>Designed for simplicity and strict message ordering.</li>
-      </ul>
+      <div class="bg-white p-4 rounded border border-red-100 text-xs text-red-600 italic leading-relaxed">
+        "Upstream goroutines blocked on send, causing massive memory spikes."
+      </div>
     </div>
   </div>
 
-  <div class="bg-red-50/30 p-6 rounded-xl border border-red-100 shadow-sm flex flex-col">
-    <h4 class="text-[10px] font-black text-red-500 uppercase tracking-[0.2em] mb-4 text-shadow-none">The Channel Saturation</h4>
+  <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col h-full">
+    <h4 class="text-[12px] font-black text-slate-500 uppercase tracking-[0.2em] mb-4 text-shadow-none">2. The Serialization Tax</h4>
     <div class="flex-grow">
-      <p class="text-xs text-slate-600 leading-relaxed mb-4">
-        When a burst of 50k batches arrived for one partition, the <b>buffered channel</b> filled up instantly.
+      <p class="text-sm text-slate-600 leading-relaxed mb-4">
+        The single worker per partition became a bottleneck due to <b>CPU-bound Protobuf Marshalling</b>.
       </p>
-      <div class="bg-white p-3 rounded border border-red-100 text-[10px] text-red-600 italic">
-        "Upstream request goroutines would block on channel send, causing a massive memory spike and latency ripple."
+      <div class="bg-white p-4 rounded border border-slate-200 text-xs text-slate-600 italic leading-relaxed">
+        "Significant delays occurred before the data could even reach the network."
       </div>
     </div>
   </div>
 </div>
-
-<v-click>
-<div class="mt-2 bg-slate-50 p-4 rounded-xl border border-slate-200 shadow-sm">
-  <h4 class="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 text-shadow-none text-center">The "Serialization Tax"</h4>
-  <p class="text-[11px] text-slate-600 text-center">
-    The worker spent <b>70% of its time on CPU-bound Protobuf Marshalling</b> before it could even touch the network.
-  </p>
-</div>
-</v-click>
 
 ---
 
