@@ -496,29 +496,194 @@ By bypassing the distributed coordinator for single-partition batches, we unlock
 
 # Lesson 3: Range Read Amplification
 
-**The Problem:** Unbounded range reads over distributed storage engines.
+### The Hidden Complexity of Hash Partitioning
 
-<v-click>
+While hash partitioning is perfect for point queries, range queries (`[A-Z]`) present a fundamental challenge: **Every partition must be consulted.**
 
-**The Reality:**
-A simple range query would pull massive amounts of data into memory, causing "stop-the-world" GC pauses and latency spikes for other operations.
+<div class="mt-12 max-w-2xl mx-auto bg-white p-8 rounded-xl border border-slate-200 shadow-sm flex items-center gap-8">
+  <carbon-network-4 class="text-6xl text-[#b97a95] shrink-0" />
+  <div>
+    <h3 class="text-lg font-bold text-slate-800 m-0">The "Scatter" Problem</h3>
+    <p class="text-sm text-slate-600 mt-3 leading-relaxed">
+      In a hash-partitioned system, keys are distributed <b>nearly uniformly</b>. A lexicographical range scan (e.g., <code>"apple"</code> to <code>"zebra"</code>) cannot be routed to a single node.
+    </p>
+    <div class="mt-4 flex items-center gap-2 text-[11px] text-slate-400 font-bold uppercase tracking-widest">
+      Result: Every Range Query = Total Cluster Scan
+    </div>
+  </div>
+</div>
 
-</v-click>
+---
 
-<br>
+# Lesson 3: The Disaster (V1)
 
-<v-click>
+### "Collect it all in the API Server"
 
-**The Fix: Defensive Storage Design**
-Implemented strict storage-layer pagination and batched `SyncRead` operations to aggregate distributed IO predictably.
+Our first attempt was a simple scatter-gather that worked in dev but crashed in production.
 
-</v-click>
+<div class="grid grid-cols-2 gap-8 mt-8">
+  <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+    <h4 class="text-[10px] font-black text-red-500 uppercase tracking-[0.2em] mb-4">The Payload Crisis</h4>
+    <div class="space-y-4">
+      <div class="flex items-center gap-3">
+        <carbon-data-base class="text-2xl text-slate-300" />
+        <div class="text-xs text-slate-600"><b>0.1M keys * 1KB</b> ≈ 100MB per range request.</div>
+      </div>
+      <div class="flex items-center gap-3">
+        <carbon-flash class="text-2xl text-slate-300" />
+        <div class="text-xs text-slate-600"><b>GC Pressure</b>: Constant "Stop-The-World" pauses.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
+    <h4 class="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-4">The Result</h4>
+    <p class="text-xs text-slate-600 leading-relaxed italic">
+      "One heavy range query was enough to saturate the network and stall every point-query in the cluster."
+    </p>
+    <div class="mt-6 p-2 bg-red-100 text-red-700 rounded border border-red-200 text-center font-black text-[10px] uppercase tracking-widest animate-pulse">
+      API Server: Memory Exhaustion (OOM)
+    </div>
+  </div>
+</div>
+
+---
+
+# Lesson 3: The Failed Attempt
+
+### Design 1: Global Pagination
+
+To solve the OOM, we tried to implement pagination by having the API Server merge results. The client then identifies the next key from the data to initiate the subsequent request.
+
+<div class="mt-4 grid grid-cols-2 gap-8">
+  <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 shadow-sm">
+    <h3 class="text-sm font-bold text-slate-800 m-0 flex items-center gap-2">
+      <carbon-list class="text-slate-400" /> The Flow
+    </h3>
+    <ul class="text-[11px] text-slate-600 mt-3 space-y-2">
+      <li>API fetches 10 results from <b>all leaders</b>.</li>
+      <li>API merges and sorts all results.</li>
+      <li>API sends the <b>top 10</b> to the Client SDK.</li>
+      <li>Client starts next batch with <b>last seen key</b>.</li>
+    </ul>
+  </div>
+
+  <v-click>
+  <div class="relative bg-red-50/50 p-5 rounded-xl border border-red-200 shadow-sm">
+    <div class="absolute top-0 right-0 bg-red-200 px-3 py-1 text-[10px] font-bold text-red-800 rounded-bl-lg uppercase">The Bug</div>
+    <h3 class="text-sm font-bold text-red-800 m-0 text-shadow-none">Why Duplication Happens</h3>
+    <p class="text-[11px] text-slate-600 mt-3 leading-relaxed">
+      A single <b>last_seen_key</b> cannot track <b>N</b> independent cursors. 
+      <br><br>
+      If the 10th key is <code>"M"</code>, the next request starts at <code>"M"</code>. But Partition B might have already sent <code>"M"</code> in batch 1, causing a duplicate in batch 2.
+    </p>
+  </div>
+  </v-click>
+</div>
+
+---
+
+# Lesson 3: The Solution
+
+### Design 2: Per-Partition Iterators
+
+We shifted the coordinating responsibility to the **Client SDK**. The API Server became a thin, stateless proxy for chunked per-partition data.
+
+<div class="mt-4 grid grid-cols-2 gap-8">
+  <div class="bg-white p-5 rounded-xl border-2 border-[#d1e5cd] shadow-sm">
+    <h3 class="text-sm font-bold text-slate-800 m-0 flex items-center gap-2">
+      <carbon-delivery class="text-[#d1e5cd]" /> API Server (Stateless)
+    </h3>
+    <p class="text-[11px] text-slate-600 mt-3 leading-relaxed">
+      Queries all partitions in parallel but <b>does NOT merge</b>. Returns a map:
+      <code class="block bg-slate-50 p-2 mt-2 rounded text-[10px] text-slate-500">
+        partition_id → [(key, value), ...]
+      </code>
+    </p>
+  </div>
+
+  <div class="bg-white p-5 rounded-xl border-2 border-[#d0c8df] shadow-sm">
+    <h3 class="text-sm font-bold text-slate-800 m-0 flex items-center gap-2">
+      <carbon-user-identification class="text-[#d0c8df]" /> Client SDK (Coordinator)
+    </h3>
+    <p class="text-[11px] text-slate-600 mt-3 leading-relaxed">
+      Tracks progress <b>per partition</b>. Subsequent requests send the <b>next key per partition</b> back to the API.
+      <code class="block bg-slate-50 p-2 mt-2 rounded text-[10px] text-slate-500">
+        last_seen_map = { P1: "k9", P5: "z2", ... }
+      </code>
+    </p>
+  </div>
+</div>
+
+---
+
+# Lesson 3: Why it Works
+
+### Embracing Statelessness
+
+By moving from a "global iteration" to "per-partition iteration," we solved both the OOM and the consistency bugs.
+
+<div class="mt-8 grid grid-cols-3 gap-4">
+  <v-click>
+  <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm text-center flex flex-col items-center h-full">
+    <carbon-flash class="text-3xl text-green-500 mb-4" />
+    <h4 class="font-bold text-slate-800 text-sm mb-2 leading-tight">No OOM (Memory Safety)</h4>
+    <p class="text-[10px] text-slate-500 leading-relaxed">Data is never buffered in aggregate. Chunks pass through instantly.</p>
+  </div>
+  </v-click>
+
+  <v-click>
+  <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm text-center flex flex-col items-center h-full">
+    <carbon-delivery class="text-3xl text-blue-500 mb-4" />
+    <h4 class="font-bold text-slate-800 text-sm mb-2 leading-tight">Stateless API (Scalability)</h4>
+    <p class="text-[10px] text-slate-500 leading-relaxed">No cursor state. Any API server can handle subsequent calls.</p>
+  </div>
+  </v-click>
+
+  <v-click>
+  <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm text-center flex flex-col items-center h-full">
+    <carbon-checkmark-filled class="text-3xl text-purple-500 mb-4" />
+    <h4 class="font-bold text-slate-800 text-sm mb-2 leading-tight">No Duplication (Correctness)</h4>
+    <p class="text-[10px] text-slate-500 leading-relaxed">Independent partition tracking ensures zero key overlap.</p>
+  </div>
+  </v-click>
+</div>
+
+---
+
+# Lesson 3: The Trade-offs
+
+### Trading IO for Stability
+
+By dividing the range into multiple client-to-API calls, we prioritized system availability and correctness over raw performance.
+
+<div class="mt-4 grid grid-cols-2 gap-8">
+  <div class="bg-slate-50 p-4 rounded border border-slate-200">
+    <h4 class="font-bold text-slate-700 text-xs mb-3 uppercase tracking-widest">The "IO Tax"</h4>
+    <p class="text-[11px] text-slate-600 leading-relaxed">
+      A single range query is now <b>divided into N calls</b> from client to API. This significantly increased the total network round-trips and processing overhead per request.
+    </p>
+  </div>
+
+  <v-click>
+  <div class="bg-slate-50 p-4 rounded border border-slate-200">
+    <h4 class="font-bold text-slate-700 text-xs mb-3 uppercase tracking-widest">Phantom Reads</h4>
+    <p class="text-[11px] text-slate-600 leading-relaxed">
+      Since the iteration is non-atomic across calls, any keys inserted <b>during the duration of the range calls</b> (e.g., between A-C) will be returned.
+    </p>
+  </div>
+  </v-click>
+</div>
+
+<div class="mt-8 p-3 bg-red-50/30 border border-red-100 rounded text-center">
+  <p class="text-[11px] text-slate-500 m-0 italic">"Correctness and availability are non-negotiable. We accepted higher IO to prevent system-wide OOM."</p>
+</div>
 
 ---
 
 # Key Takeaways
 
-<div class="grid grid-cols-2 gap-6 mt-8">
+<div class="grid grid-cols-2 gap-6 mt-4">
 
 <div class="bg-white p-6 rounded border border-gray-200 shadow-sm">
   <div class="text-[#111827] text-sm font-['IBM_Plex_Mono'] font-semibold mb-3 tracking-widest uppercase">Protocol Fast-Paths</div>
