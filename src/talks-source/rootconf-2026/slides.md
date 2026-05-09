@@ -15,6 +15,18 @@ transition: slide-up
 title: Fast on Paper, Slow in Reality
 ---
 
+<script setup>
+import { onMounted } from 'vue'
+
+onMounted(() => {
+  window.addEventListener('keydown', (e) => {
+    if (e.key.toLowerCase() === 'm') {
+      document.body.classList.toggle('show-menu')
+    }
+  })
+})
+</script>
+
 <!-- Title Slide: Mirrors the Website Sidebar (Deep Navy) -->
 <div class="absolute inset-0 bg-[#0f172a] z-[-1]"></div>
 
@@ -719,16 +731,5 @@ class: text-center
   <a href="https://tech-lessons.in" class="text-4xl font-extrabold text-[#111827]">tech-lessons.in</a>
 </div>
 
----
 
-<script setup>
-import { onMounted } from 'vue'
 
-onMounted(() => {
-  window.addEventListener('keydown', (e) => {
-    if (e.key.toLowerCase() === 'm') {
-      document.body.classList.toggle('show-menu')
-    }
-  })
-})
-</script>
