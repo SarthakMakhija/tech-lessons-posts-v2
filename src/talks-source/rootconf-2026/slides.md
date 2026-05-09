@@ -693,28 +693,218 @@ By dividing the range into multiple client-to-API calls, we prioritized system a
 
 ---
 
+# Lesson 4: Outbound Serialization Bottleneck
+
+### The Inter-Node Communication Layer
+
+While our storage was fast, our **Outbound Connectors** in the API Server became a hidden bottleneck during write-heavy bursts.
+
+<div class="mt-4 max-w-3xl mx-auto">
+  <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm text-center">
+    <h4 class="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-4 text-shadow-none">The Abstraction</h4>
+    <p class="text-sm text-slate-600 leading-relaxed mb-6">
+      Each <code>OutboundConnector</code> is a dedicated worker responsible for moving data from the API Server to a specific Partition Leader.
+    </p>
+    <div class="flex justify-center gap-8">
+      <div class="flex flex-col items-center">
+        <carbon-chip class="text-3xl text-blue-400 mb-2" />
+        <span class="text-[10px] text-slate-400 font-mono">Goroutine</span>
+      </div>
+      <div class="flex flex-col items-center">
+        <carbon-layers class="text-3xl text-blue-400 mb-2" />
+        <span class="text-[10px] text-slate-400 font-mono">Buffered Channel</span>
+      </div>
+      <div class="flex flex-col items-center">
+        <carbon-network-2 class="text-3xl text-blue-400 mb-2" />
+        <span class="text-[10px] text-slate-400 font-mono">TCP Socket</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+---
+
+# Lesson 4: The Bottleneck
+
+### "One Worker is Not Enough"
+
+At high volumes, the sequential nature of a single worker per partition caused system-wide stalls.
+
+<div class="mt-2 grid grid-cols-2 gap-6 items-stretch">
+  <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col">
+    <h4 class="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-4 text-shadow-none">The Original Design</h4>
+    <div class="flex-grow">
+      <p class="text-xs text-slate-600 leading-relaxed mb-4">
+        <b>1 Connector : 1 Partition</b>
+      </p>
+      <ul class="text-[11px] text-slate-500 space-y-3">
+        <li>A single goroutine handling all traffic for a destination leader.</li>
+        <li>Designed for simplicity and strict message ordering.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="bg-red-50/30 p-6 rounded-xl border border-red-100 shadow-sm flex flex-col">
+    <h4 class="text-[10px] font-black text-red-500 uppercase tracking-[0.2em] mb-4 text-shadow-none">The Channel Saturation</h4>
+    <div class="flex-grow">
+      <p class="text-xs text-slate-600 leading-relaxed mb-4">
+        When a burst of 50k batches arrived for one partition, the <b>buffered channel</b> filled up instantly.
+      </p>
+      <div class="bg-white p-3 rounded border border-red-100 text-[10px] text-red-600 italic">
+        "Upstream request goroutines would block on channel send, causing a massive memory spike and latency ripple."
+      </div>
+    </div>
+  </div>
+</div>
+
+<v-click>
+<div class="mt-2 bg-slate-50 p-4 rounded-xl border border-slate-200 shadow-sm">
+  <h4 class="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 text-shadow-none text-center">The "Serialization Tax"</h4>
+  <p class="text-[11px] text-slate-600 text-center">
+    The worker spent <b>70% of its time on CPU-bound Protobuf Marshalling</b> before it could even touch the network.
+  </p>
+</div>
+</v-click>
+
+---
+
+# Lesson 4: The Solution
+
+### Parallelizing the Serialization Tax
+
+We moved to **N Outbound Connectors** per partition to distribute both the CPU and IO load.
+
+<div class="mt-4 grid grid-cols-3 gap-4">
+  <v-click>
+  <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm text-center flex flex-col items-center h-full">
+    <carbon-split class="text-3xl text-blue-500 mb-4" />
+    <h4 class="font-bold text-slate-800 text-sm mb-2 leading-tight">Parallel Serialization</h4>
+    <p class="text-[10px] text-slate-500 leading-relaxed">N Workers share one channel, offloading CPU-heavy Protobuf work to multiple cores.</p>
+  </div>
+  </v-click>
+
+  <v-click>
+  <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm text-center flex flex-col items-center h-full">
+    <carbon-connection-receive class="text-3xl text-green-500 mb-4" />
+    <h4 class="font-bold text-slate-800 text-sm mb-2 leading-tight">Socket Multiplexing</h4>
+    <p class="text-[10px] text-slate-500 leading-relaxed">Multiple physical TCP connections per partition distribute the socket-write overhead.</p>
+  </div>
+  </v-click>
+
+  <v-click>
+  <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm text-center flex flex-col items-center h-full">
+    <carbon-security class="text-3xl text-purple-500 mb-4" />
+    <h4 class="font-bold text-slate-800 text-sm mb-2 leading-tight">Backpressure Resiliency</h4>
+    <p class="text-[10px] text-slate-500 leading-relaxed">Channel clears N times faster, preventing upstream request blocking.</p>
+  </div>
+  </v-click>
+</div>
+
+<div class="mt-8 flex justify-center">
+  <div class="bg-[#d1e5cd]/10 px-6 py-3 rounded-full border border-[#d1e5cd]/30 text-xs text-slate-600 font-semibold flex items-center gap-2">
+    <carbon-checkmark-filled class="text-[#d1e5cd]" />
+    Tail Latency (p99) dropped by ~15% via parallel serialization
+  </div>
+</div>
+
+---
+
+# Lesson 4: The Trade-off
+
+### Throughput vs. Sequential Ordering
+
+In a distributed system, every performance win comes with a cost. We made an intentional choice here.
+
+<div class="mt-4 grid grid-cols-2 gap-8">
+  <div class="bg-red-50/20 p-6 rounded-xl border border-red-100/50">
+    <h4 class="text-[10px] font-black text-red-500 uppercase tracking-[0.2em] mb-4 text-shadow-none">THE RISK: OUT-OF-ORDERING</h4>
+    <p class="text-xs text-slate-600 leading-relaxed">
+      With multiple parallel workers, a <code>DeleteBatch</code> could technically overtake a <code>PutBatch</code> for the same key.
+    </p>
+  </div>
+
+  <v-click>
+  <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
+    <h4 class="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-4 text-shadow-none">The Justification</h4>
+    <ul class="text-[11px] text-slate-600 space-y-4">
+      <li class="flex items-start gap-3">
+        <carbon-checkmark class="text-green-500 mt-1 shrink-0" />
+        <div>
+          <div class="font-bold text-slate-700 mb-0.5">Client SDK Design</div>
+          <div class="text-slate-500 leading-relaxed">The SDK is strictly request-response, naturally serializing writes for the same key.</div>
+        </div>
+      </li>
+      <li class="flex items-start gap-3">
+        <carbon-checkmark class="text-green-500 mt-1 shrink-0" />
+        <div>
+          <div class="font-bold text-slate-700 mb-0.5">Safe Parallelization</div>
+          <div class="text-slate-500 leading-relaxed">We removed the serialization bottleneck while maintaining strict ordering for sequential client logic.</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+  </v-click>
+</div>
+
+---
+
+# The Final Benchmarks
+
+### Putting it all together
+
+<div class="mt-20 flex flex-col items-center justify-center text-center">
+  <carbon-chart-line class="text-6xl text-slate-200 mb-6" />
+  <p class="text-slate-400 italic">Benchmarks and final numbers to be inserted here.</p>
+</div>
+
+---
+
 # Key Takeaways
 
 <div class="grid grid-cols-2 gap-6 mt-4">
 
-<div class="bg-white p-6 rounded border border-gray-200 shadow-sm">
-  <div class="text-[#111827] text-sm font-['IBM_Plex_Mono'] font-semibold mb-3 tracking-widest uppercase">Protocol Fast-Paths</div>
-  <div class="text-slate-600">Identify "safe paths" in distributed transactions to bypass the 2PC tax.</div>
+<div class="bg-white p-5 rounded border border-gray-200 shadow-sm flex flex-col h-full">
+  <div class="flex items-center gap-3 mb-3">
+    <carbon-locked class="text-blue-500 text-xl" />
+    <div class="text-[#111827] text-[11px] font-['IBM_Plex_Mono'] font-bold tracking-widest uppercase">Lock Partitioning</div>
+  </div>
+  <div class="text-slate-500 text-[10px] leading-relaxed mb-4 flex-grow">Move from global locks to partitioned groups (<code>xsync</code>) to isolate contention.</div>
+  <div class="mt-auto pt-2 border-t border-slate-50 flex items-center justify-between">
+    <span class="text-[9px] font-bold text-blue-600 uppercase tracking-tighter bg-blue-50 px-2 py-0.5 rounded">5.6ms p99 Write</span>
+  </div>
 </div>
 
-<div class="bg-white p-6 rounded border border-gray-200 shadow-sm">
-  <div class="text-[#111827] text-sm font-['IBM_Plex_Mono'] font-semibold mb-3 tracking-widest uppercase">Lock Partitioning</div>
-  <div class="text-slate-600">Move from global locks to partitioned lock groups (`xsync`) to isolate contention.</div>
+<div class="bg-white p-5 rounded border border-gray-200 shadow-sm flex flex-col h-full">
+  <div class="flex items-center gap-3 mb-3">
+    <carbon-flash class="text-yellow-500 text-xl" />
+    <div class="text-[#111827] text-[11px] font-['IBM_Plex_Mono'] font-bold tracking-widest uppercase">Protocol Fast-Paths</div>
+  </div>
+  <div class="text-slate-500 text-[10px] leading-relaxed mb-4 flex-grow">Identify "safe paths" in distributed transactions to bypass the 2PC tax.</div>
+  <div class="mt-auto pt-2 border-t border-slate-50 flex items-center justify-between">
+    <span class="text-[9px] font-bold text-yellow-600 uppercase tracking-tighter bg-yellow-50 px-2 py-0.5 rounded">Bypass 2PC</span>
+  </div>
 </div>
 
-<div class="bg-white p-6 rounded border border-gray-200 shadow-sm">
-  <div class="text-[#111827] text-sm font-['IBM_Plex_Mono'] font-semibold mb-3 tracking-widest uppercase">Defensive Storage</div>
-  <div class="text-slate-600">Storage-layer pagination and I/O batching are critical for preventing OOM.</div>
+<div class="bg-white p-5 rounded border border-gray-200 shadow-sm flex flex-col h-full">
+  <div class="flex items-center gap-3 mb-3">
+    <carbon-data-base class="text-green-500 text-xl" />
+    <div class="text-[#111827] text-[11px] font-['IBM_Plex_Mono'] font-bold tracking-widest uppercase">Defensive Storage</div>
+  </div>
+  <div class="text-slate-500 text-[10px] leading-relaxed mb-4 flex-grow">Storage-layer pagination and I/O batching to prevent OOM during range reads.</div>
+  <div class="mt-auto pt-2 border-t border-slate-50 flex items-center justify-between">
+    <span class="text-[9px] font-bold text-green-600 uppercase tracking-tighter bg-green-50 px-2 py-0.5 rounded">Zero OOM Events</span>
+  </div>
 </div>
 
-<div class="bg-white p-6 rounded border border-gray-200 shadow-sm">
-  <div class="text-[#111827] text-sm font-['IBM_Plex_Mono'] font-semibold mb-3 tracking-widest uppercase">Scaling Inter-Node IO</div>
-  <div class="text-slate-600">Move from single to multiple persistent outbound connectors to increase throughput.</div>
+<div class="bg-white p-5 rounded border border-gray-200 shadow-sm flex flex-col h-full">
+  <div class="flex items-center gap-3 mb-3">
+    <carbon-network-2 class="text-purple-500 text-xl" />
+    <div class="text-[#111827] text-[11px] font-['IBM_Plex_Mono'] font-bold tracking-widest uppercase">Scaling Inter-Node IO</div>
+  </div>
+  <div class="text-slate-500 text-[10px] leading-relaxed mb-4 flex-grow">Move to multiple persistent outbound connectors to scale serialization load.</div>
+  <div class="mt-auto pt-2 border-t border-slate-50 flex items-center justify-between">
+    <span class="text-[9px] font-bold text-purple-600 uppercase tracking-tighter bg-purple-50 px-2 py-0.5 rounded">~15% p99 Drop</span>
+  </div>
 </div>
 
 </div>
@@ -724,11 +914,14 @@ layout: center
 class: text-center
 ---
 
-# Thank You!
+<h1 class="mt-20">Thank You!</h1>
 
-<div class="mt-8 bg-white p-8 rounded border border-gray-200 inline-block shadow-sm">
-  <p class="text-slate-500 mb-4 font-['IBM_Plex_Mono'] text-sm tracking-widest uppercase">Read the full deep-dive</p>
-  <a href="https://tech-lessons.in" class="text-4xl font-extrabold text-[#111827]">tech-lessons.in</a>
+<div class="mt-40 border-t border-slate-200 pt-8 flex items-center justify-center gap-12">
+  <div class="text-xl italic text-slate-500 font-medium">By Sarthak Makhija</div>
+  
+  <div class="h-10 w-[1px] bg-slate-200"></div>
+  
+  <img src="/caizin-logo.png" class="h-12 object-contain" alt="Caizin Logo" />
 </div>
 
 
