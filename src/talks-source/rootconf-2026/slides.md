@@ -58,8 +58,9 @@ transition: fade-out
 We built a distributed Key-Value engine from scratch in Go. 
 
 - **Strongly Consistent**: Built on Multi-Raft.
-- **Performant**: Target was single-digit millisecond latency.
-- **The Outcome**: 5.6ms p99 write latency (after optimizations).
+- **Hash Partitioned**: Scalable data distribution.
+- **Performant**: Single-digit read and write latency.
+- **The Outcome**: TODO
 
 <br>
 <br>
@@ -178,7 +179,7 @@ Building a custom high-performance engine required specific design choices:
 <v-click>
 <div class="bg-white px-3 py-2 rounded border border-slate-200 shadow-sm flex items-center gap-3">
   <carbon-copy-file class="text-lg text-slate-600" />
-  <span class="font-medium text-slate-800 text-sm">Configurable Replication Factor</span>
+  <span class="font-medium text-slate-800 text-sm">Configurable Replication Factor per partition</span>
 </div>
 </v-click>
 
@@ -226,8 +227,13 @@ API and Storage servers communicate via a **message passing paradigm**. To track
       <p class="text-[0.95rem] text-slate-600 mt-2 m-0 leading-relaxed">
         A mechanism used to track sent requests. The node stores the request state in a list and removes it only when the corresponding response arrives or a timeout occurs.
       </p>
-      <div class="mt-4 flex items-center gap-2 text-[10px] text-slate-400 font-mono uppercase tracking-widest">
-        <carbon-logo-github /> Proven in Production: <a href="https://github.com/etcd-io/etcd/blob/main/pkg/wait/wait.go" target="_blank" class="hover:text-[#b97a95] underline decoration-dotted">etcd (pkg/wait)</a>
+      <div class="mt-4 flex items-center gap-6 text-[10px] text-slate-400 font-mono uppercase tracking-widest">
+        <div class="flex items-center gap-2">
+          <carbon-logo-github /> Proven in Production: <a href="https://github.com/etcd-io/etcd/blob/main/pkg/wait/wait.go" target="_blank" class="hover:text-[#b97a95] border-b border-dotted border-slate-300 pb-px">etcd (pkg/wait)</a>
+        </div>
+        <div class="flex items-center gap-2">
+          <carbon-link /> Pattern Reference: <a href="https://martinfowler.com/articles/patterns-of-distributed-systems/request-waiting-list.html" target="_blank" class="hover:text-[#b97a95] border-b border-dotted border-slate-300 pb-px">Martin Fowler</a>
+        </div>
       </div>
     </div>
   </div>
@@ -319,12 +325,12 @@ By eliminating the global mutex bottleneck, our API servers could instantly proc
 <div class="mt-6 flex justify-center gap-8">
   <div class="text-center">
     <div class="text-5xl font-black text-slate-300 line-through">115ms</div>
-    <div class="text-xs font-medium text-slate-400 mt-1 uppercase tracking-wide">Old Latency</div>
+    <div class="text-xs font-medium text-slate-400 mt-1 uppercase tracking-wide">Old Read Latency</div>
   </div>
   <div class="flex items-center text-2xl text-[#d1e5cd]"><carbon-arrow-right /></div>
   <div class="text-center">
     <div class="text-6xl font-black text-[#d1e5cd]">< 10ms</div>
-    <div class="text-xs font-bold text-slate-700 mt-1 uppercase tracking-wide">New Latency</div>
+    <div class="text-xs font-bold text-slate-700 mt-1 uppercase tracking-wide">New Read Latency</div>
   </div>
 </div>
 
