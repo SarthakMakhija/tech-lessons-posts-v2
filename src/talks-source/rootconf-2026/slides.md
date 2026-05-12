@@ -391,7 +391,78 @@ A single batch split across partitions (e.g., P1, P5, P9) triggered a complex se
 </div>
 
 <div class="mt-6 text-center text-[10px] text-slate-400 font-mono uppercase tracking-widest">
-  Total IO Roundtrips: 4 per batch | WaitingList Load: High
+  Total IO Roundtrips: 3/4 per batch | WaitingList Load: High
+</div>
+
+---
+
+# Lesson 2: The Distributed Dance
+
+<div class="mt-8 flex items-center justify-between px-10">
+<div class="flex flex-col items-center">
+<div class="w-20 h-20 bg-blue-50 border-2 border-blue-200 rounded-2xl flex items-center justify-center shadow-sm">
+<carbon-api class="text-3xl text-blue-500" />
+</div>
+<span class="mt-3 font-bold text-slate-700 uppercase tracking-widest text-[10px]">API Server</span>
+<span class="text-[9px] text-slate-400 uppercase tracking-tighter">(Orchestrator)</span>
+</div>
+<div class="flex-grow flex flex-col justify-center h-[300px] relative px-4">
+<div v-click class="absolute top-[15%] left-0 w-full flex items-center gap-2">
+<div class="flex-grow h-0.5 bg-[#b97a95] relative">
+<div class="absolute right-0 top-1/2 -translate-y-1/2 border-t-[4px] border-t-transparent border-b-[4px] border-b-transparent border-l-[6px] border-l-[#b97a95]"></div>
+</div>
+<span class="text-[9px] font-bold text-[#b97a95] uppercase bg-white px-1">1. Begin</span>
+</div>
+<div v-click class="absolute top-[20%] left-0 w-full h-[60%] flex flex-col justify-between border-l-2 border-dashed border-blue-300">
+<div class="w-full flex items-center gap-2">
+<div class="flex-grow h-0.5 bg-blue-300 relative">
+<div class="absolute right-0 top-1/2 -translate-y-1/2 border-t-[4px] border-t-transparent border-b-[4px] border-b-transparent border-l-[6px] border-l-blue-300"></div>
+</div>
+</div>
+<div class="w-full flex items-center gap-2">
+<div class="flex-grow h-0.5 bg-blue-300 relative">
+<div class="absolute right-0 top-1/2 -translate-y-1/2 border-t-[4px] border-t-transparent border-b-[4px] border-b-transparent border-l-[6px] border-l-blue-300"></div>
+</div>
+</div>
+<div class="w-full flex items-center gap-2">
+<div class="flex-grow h-0.5 bg-blue-300 relative">
+<div class="absolute right-0 top-1/2 -translate-y-1/2 border-t-[4px] border-t-transparent border-b-[4px] border-b-transparent border-l-[6px] border-l-blue-300"></div>
+</div>
+</div>
+<div class="absolute top-1/2 left-4 -translate-y-1/2">
+<span class="text-[9px] font-bold text-blue-500 uppercase bg-white px-1 whitespace-nowrap">2. Add Intent (Parallel)</span>
+</div>
+</div>
+<div v-click class="absolute top-[10%] left-0 w-full flex items-center gap-2">
+<div class="flex-grow h-0.5 bg-green-500 relative">
+<div class="absolute right-0 top-1/2 -translate-y-1/2 border-t-[4px] border-t-transparent border-b-[4px] border-b-transparent border-l-[6px] border-l-green-500"></div>
+</div>
+<span class="text-[9px] font-bold text-green-600 uppercase bg-white px-1">3. Async Commit</span>
+</div>
+</div>
+<div class="flex flex-col gap-6">
+<div class="flex items-center gap-3">
+<div class="w-16 h-16 bg-slate-50 border-2 border-[#b97a95] rounded-xl flex items-center justify-center shadow-sm">
+<carbon-data-base class="text-2xl text-slate-500" />
+</div>
+<div class="flex flex-col">
+<span class="font-bold text-slate-700 uppercase tracking-widest text-[10px]">P1</span>
+<span class="text-[8px] text-[#b97a95] font-black uppercase">(Coordinator)</span>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-16 h-16 bg-slate-50 border-2 border-slate-200 rounded-xl flex items-center justify-center shadow-sm opacity-60">
+<carbon-data-base class="text-2xl text-slate-500" />
+</div>
+<span class="font-bold text-slate-400 uppercase tracking-widest text-[10px]">P5</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-16 h-16 bg-slate-50 border-2 border-slate-200 rounded-xl flex items-center justify-center shadow-sm opacity-60">
+<carbon-data-base class="text-2xl text-slate-500" />
+</div>
+<span class="font-bold text-slate-400 uppercase tracking-widest text-[10px]">P9</span>
+</div>
+</div>
 </div>
 
 ---
@@ -452,7 +523,7 @@ We introduced an optimized execution path that collapses the entire 2PC lifecycl
         <div class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Commit</div>
       </div>
     </div>
-    <div class="mt-8 text-center text-xs font-black text-slate-400 uppercase tracking-widest">4 RPC Roundtrips</div>
+    <div class="mt-8 text-center text-xs font-black text-slate-400 uppercase tracking-widest">3/4 RPC Roundtrips</div>
   </div>
 
   <div class="relative bg-white p-4 rounded-xl border-2 border-[#d1e5cd] shadow-lg overflow-hidden">
@@ -483,8 +554,8 @@ By bypassing the distributed coordinator for single-partition batches, we unlock
   <v-click>
   <div class="bg-white p-4 rounded border border-slate-200 text-center">
     <carbon-network-4 class="text-3xl text-[#b97a95] mx-auto mb-3" />
-    <h4 class="font-bold text-slate-800 text-sm mb-1">75% Fewer IO Calls</h4>
-    <p class="text-[10px] text-slate-500 leading-tight">Reduced network round-trips from 4 down to 1.</p>
+    <h4 class="font-bold text-slate-800 text-sm mb-1">~66% Fewer IO Calls</h4>
+    <p class="text-[10px] text-slate-500 leading-tight">Reduced network round-trips from 3/4 down to 1.</p>
   </div>
   </v-click>
 
@@ -529,6 +600,88 @@ While hash partitioning is perfect for point queries, range queries (`[A-Z]`) pr
       Result: Every Range Query = Total Cluster Scan
     </div>
   </div>
+</div>
+
+---
+
+# Lesson 3: The Scatter-Gather Disaster
+
+<div class="mt-8 flex items-center justify-between px-10">
+<div class="flex flex-col items-center shrink-0">
+<div class="relative w-24 h-24 bg-blue-50 border-2 border-blue-200 rounded-2xl flex flex-col items-center justify-center shadow-sm overflow-hidden">
+<div v-click="2" class="absolute bottom-0 left-0 w-full h-[90%] bg-red-400 opacity-20 animate-pulse"></div>
+<carbon-api class="text-3xl text-blue-500 z-10" />
+<span v-after class="text-[8px] font-black text-red-600 uppercase tracking-tighter mt-1 z-10">OOM RISK</span>
+</div>
+<span class="mt-3 font-bold text-slate-700 uppercase tracking-widest text-[10px]">API Server</span>
+</div>
+<div class="flex-grow h-[300px] relative mx-4">
+<div v-click="1" class="absolute inset-0 flex flex-col justify-around">
+<div class="w-full flex items-center gap-2">
+<div class="flex-grow h-0.5 bg-red-300 relative">
+<div class="absolute right-0 top-1/2 -translate-y-1/2 border-t-[4px] border-t-transparent border-b-[4px] border-b-transparent border-l-[6px] border-l-red-400"></div>
+</div>
+</div>
+<div class="w-full flex items-center gap-2">
+<div class="flex-grow h-0.5 bg-red-300 relative">
+<div class="absolute right-0 top-1/2 -translate-y-1/2 border-t-[4px] border-t-transparent border-b-[4px] border-b-transparent border-l-[6px] border-l-red-400"></div>
+</div>
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-2 py-1 border border-red-100 rounded shadow-sm z-10">
+<span class="text-[9px] font-black text-red-500 uppercase tracking-widest whitespace-nowrap">1. Parallel Scatter Scan</span>
+</div>
+</div>
+<div class="w-full flex items-center gap-2">
+<div class="flex-grow h-0.5 bg-red-300 relative">
+<div class="absolute right-0 top-1/2 -translate-y-1/2 border-t-[4px] border-t-transparent border-b-[4px] border-b-transparent border-l-[6px] border-l-red-400"></div>
+</div>
+</div>
+</div>
+<div v-click="2" class="absolute inset-0 flex flex-col justify-around">
+<div class="w-full flex items-center gap-2">
+<div class="flex-grow h-2 bg-red-50 relative rounded-full overflow-hidden border border-red-100">
+<div class="absolute left-0 top-1/2 -translate-y-1/2 border-t-[4px] border-t-transparent border-b-[4px] border-b-transparent border-r-[6px] border-r-red-400"></div>
+<span class="absolute right-2 text-[6px] font-mono text-red-400 uppercase">2. Gather Batch Data</span>
+</div>
+</div>
+<div class="w-full flex items-center gap-2">
+<div class="flex-grow h-2 bg-red-50 relative rounded-full overflow-hidden border border-red-100">
+<div class="absolute left-0 top-1/2 -translate-y-1/2 border-t-[4px] border-t-transparent border-b-[4px] border-b-transparent border-r-[6px] border-r-red-400"></div>
+<span class="absolute right-2 text-[6px] font-mono text-red-400 uppercase">Gather Batch Data</span>
+</div>
+</div>
+<div class="w-full flex items-center gap-2">
+<div class="flex-grow h-2 bg-red-50 relative rounded-full overflow-hidden border border-red-100">
+<div class="absolute left-0 top-1/2 -translate-y-1/2 border-t-[4px] border-t-transparent border-b-[4px] border-b-transparent border-r-[6px] border-r-red-400"></div>
+<span class="absolute right-2 text-[6px] font-mono text-red-400 uppercase">Gather Batch Data</span>
+</div>
+</div>
+</div>
+</div>
+<div class="flex flex-col justify-around h-[300px] shrink-0">
+<div class="flex items-center gap-3">
+<div class="w-14 h-14 bg-slate-50 border-2 border-slate-200 rounded-xl flex items-center justify-center shadow-sm">
+<carbon-data-base class="text-xl text-slate-500" />
+</div>
+<span class="font-bold text-slate-400 uppercase tracking-widest text-[9px]">P1</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-14 h-14 bg-slate-50 border-2 border-slate-200 rounded-xl flex items-center justify-center shadow-sm">
+<carbon-data-base class="text-xl text-slate-500" />
+</div>
+<span class="font-bold text-slate-400 uppercase tracking-widest text-[9px]">P5</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-14 h-14 bg-slate-50 border-2 border-slate-200 rounded-xl flex items-center justify-center shadow-sm">
+<carbon-data-base class="text-xl text-slate-500" />
+</div>
+<span class="font-bold text-slate-400 uppercase tracking-widest text-[9px]">P9</span>
+</div>
+</div>
+</div>
+<div v-click="3" class="mt-2 text-center">
+<div class="inline-block px-4 py-1 bg-red-600 text-white font-black uppercase tracking-[0.2em] rounded text-xs animate-bounce shadow-lg">
+OOM Incoming
+</div>
 </div>
 
 ---
@@ -745,6 +898,106 @@ While our storage was fast, our **Outbound Connectors** in the API Server became
       <li>One persistent TCP connection per partition.</li>
     </ul>
   </div>
+</div>
+
+---
+
+# Lesson 4: Visualizing the Connector
+
+<div class="mt-8 flex items-center justify-between px-10">
+<div class="flex flex-col items-center shrink-0">
+<div class="relative p-6 bg-blue-50 border-2 border-blue-200 rounded-3xl shadow-sm w-[280px]">
+<div class="absolute -top-3 left-6 px-3 bg-blue-500 text-white text-[8px] font-black uppercase tracking-widest rounded-full">API Server</div>
+<div class="flex flex-col gap-4">
+<div class="text-[9px] font-bold text-blue-800 uppercase tracking-widest mb-1 border-b border-blue-100 pb-1">Outbound Connector</div>
+<div v-click class="flex items-center gap-2 p-2 bg-white rounded-xl border border-blue-100 shadow-sm">
+<carbon-process class="text-blue-400 text-lg shrink-0" />
+<div class="flex items-center gap-1">
+<div class="flex gap-0.5 px-1 py-0.5 bg-slate-100 rounded border border-slate-200">
+<div class="w-1 h-3 bg-blue-300 rounded-sm"></div>
+<div class="w-1 h-3 bg-blue-300 rounded-sm"></div>
+<div class="w-1 h-3 bg-slate-200 rounded-sm"></div>
+</div>
+<span class="text-[6px] font-mono text-slate-400">chan</span>
+</div>
+<div class="flex flex-col ml-1">
+<span class="text-[8px] font-black text-slate-700 uppercase">Worker (P1)</span>
+<span class="text-[6px] text-slate-400 font-mono italic">go handler(P1)</span>
+</div>
+</div>
+<div v-click class="flex items-center gap-3 p-2 bg-white rounded-xl border border-blue-100 shadow-sm opacity-80">
+<carbon-process class="text-blue-400 text-lg shrink-0" />
+<div class="flex items-center gap-1">
+<div class="flex gap-0.5 px-1 py-0.5 bg-slate-100 rounded border border-slate-200">
+<div class="w-1 h-3 bg-blue-300 rounded-sm"></div>
+<div class="w-1 h-3 bg-slate-200 rounded-sm"></div>
+<div class="w-1 h-3 bg-slate-200 rounded-sm"></div>
+</div>
+<span class="text-[6px] font-mono text-slate-400">chan</span>
+</div>
+<div class="flex flex-col ml-1">
+<span class="text-[8px] font-black text-slate-700 uppercase">Worker (P5)</span>
+<span class="text-[6px] text-slate-400 font-mono italic">go handler(P5)</span>
+</div>
+</div>
+<div v-click class="flex items-center gap-3 p-2 bg-white rounded-xl border border-blue-100 shadow-sm opacity-60">
+<carbon-process class="text-blue-400 text-lg shrink-0" />
+<div class="flex items-center gap-1">
+<div class="flex gap-0.5 px-1 py-0.5 bg-slate-100 rounded border border-slate-200">
+<div class="w-1 h-3 bg-slate-200 rounded-sm"></div>
+<div class="w-1 h-3 bg-slate-200 rounded-sm"></div>
+<div class="w-1 h-3 bg-slate-200 rounded-sm"></div>
+</div>
+<span class="text-[6px] font-mono text-slate-400">chan</span>
+</div>
+<div class="flex flex-col ml-1">
+<span class="text-[8px] font-black text-slate-700 uppercase">Worker (P9)</span>
+<span class="text-[6px] text-slate-400 font-mono italic">go handler(P9)</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex-grow h-[300px] relative mx-4">
+<div v-click class="absolute inset-0 flex flex-col justify-around">
+<div class="w-full flex items-center gap-2">
+<div class="flex-grow h-0.5 bg-blue-200 relative">
+<div class="absolute right-0 top-1/2 -translate-y-1/2 border-t-[4px] border-t-transparent border-b-[4px] border-b-transparent border-l-[6px] border-l-blue-300"></div>
+<span class="absolute top-1 left-1/2 -translate-x-1/2 text-[6px] font-mono text-blue-400 uppercase whitespace-nowrap">Single Persistent TCP</span>
+</div>
+</div>
+<div class="w-full flex items-center gap-2">
+<div class="flex-grow h-0.5 bg-blue-200 relative">
+<div class="absolute right-0 top-1/2 -translate-y-1/2 border-t-[4px] border-t-transparent border-b-[4px] border-b-transparent border-l-[6px] border-l-blue-300"></div>
+</div>
+</div>
+<div class="w-full flex items-center gap-2">
+<div class="flex-grow h-0.5 bg-blue-200 relative">
+<div class="absolute right-0 top-1/2 -translate-y-1/2 border-t-[4px] border-t-transparent border-b-[4px] border-b-transparent border-l-[6px] border-l-blue-300"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex flex-col justify-around h-[300px] shrink-0">
+<div class="flex items-center gap-3">
+<div class="w-14 h-14 bg-slate-50 border-2 border-slate-200 rounded-xl flex items-center justify-center shadow-sm">
+<carbon-data-base class="text-xl text-slate-500" />
+</div>
+<span class="font-bold text-slate-400 uppercase tracking-widest text-[9px]">P1</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-14 h-14 bg-slate-50 border-2 border-slate-200 rounded-xl flex items-center justify-center shadow-sm">
+<carbon-data-base class="text-xl text-slate-500" />
+</div>
+<span class="font-bold text-slate-400 uppercase tracking-widest text-[9px]">P5</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-14 h-14 bg-slate-50 border-2 border-slate-200 rounded-xl flex items-center justify-center shadow-sm">
+<carbon-data-base class="text-xl text-slate-500" />
+</div>
+<span class="font-bold text-slate-400 uppercase tracking-widest text-[9px]">P9</span>
+</div>
+</div>
 </div>
 
 ---
