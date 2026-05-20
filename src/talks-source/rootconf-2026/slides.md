@@ -128,7 +128,7 @@ We built a distributed Key-Value engine from scratch in Go.
 
 ---
 
-# Key Architectural Features
+# Key Architectural Features (Remove it?)
 
 Building a custom high-performance engine required specific design choices:
 

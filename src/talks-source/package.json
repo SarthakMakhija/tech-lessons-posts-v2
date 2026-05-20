@@ -3,10 +3,13 @@
   "scripts": {
     "dev:rootconf": "slidev rootconf-2026/slides.md",
     "build:rootconf": "slidev build rootconf-2026/slides.md --out ../../public/talks/rootconf-2026",
-    "build:all": "npm run build:rootconf" 
+    "build:all": "npm run build:rootconf"
   },
   "dependencies": {
     "@slidev/cli": "^0.48.0",
     "@slidev/theme-default": "latest"
+  },
+  "devDependencies": {
+    "playwright-chromium": "^1.60.0"
   }
 }
