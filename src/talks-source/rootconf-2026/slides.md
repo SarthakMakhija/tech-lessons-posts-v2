@@ -45,7 +45,7 @@ onMounted(() => {
 <div class="abs-br m-6 flex gap-2">
   <a href="https://tech-lessons.in" target="_blank" alt="Blog"
     class="text-xl slidev-icon-btn text-slate-500 !border-none !hover:text-white transition-colors">
-    <carbon:logo-github />
+    <carbon-logo-github></carbon-logo-github>
   </a>
 </div>
 
@@ -78,7 +78,7 @@ We built a distributed Key-Value engine from scratch in Go.
 <div class="grid grid-cols-2 gap-x-12 gap-y-10 mt-12">
 
   <div class="flex items-start gap-4">
-    <carbon:data-1 class="text-4xl text-blue-500 mt-1 opacity-80" />
+    <carbon-data-1 class="text-4xl text-blue-500 mt-1 opacity-80"></carbon-data-1>
     <div>
       <h3 class="!text-xl !font-bold !mb-1 !text-[#111827]">Pure Key-Value</h3>
       <p class="!text-slate-500 !text-sm !m-0">No SQL overhead (parsers, ASTs).</p>
@@ -86,7 +86,7 @@ We built a distributed Key-Value engine from scratch in Go.
   </div>
 
   <div class="flex items-start gap-4">
-    <carbon:flash class="text-4xl text-yellow-500 mt-1 opacity-80" />
+    <carbon-flash class="text-4xl text-yellow-500 mt-1 opacity-80"></carbon-flash>
     <div>
       <h3 class="!text-xl !font-bold !mb-1 !text-[#111827]">Write-Optimized</h3>
       <p class="!text-slate-500 !text-sm !m-0">Targeting strict linearizability.</p>
@@ -94,7 +94,7 @@ We built a distributed Key-Value engine from scratch in Go.
   </div>
 
   <div class="flex items-start gap-4">
-    <carbon:chart-evaluation class="text-4xl text-red-500 mt-1 opacity-80" />
+    <carbon-chart-evaluation class="text-4xl text-red-500 mt-1 opacity-80"></carbon-chart-evaluation>
     <div>
       <h3 class="!text-xl !font-bold !mb-1 !text-[#111827]">Existing Tech Shortfalls</h3>
       <p class="!text-slate-500 !text-sm !m-0">JunoDB, TiKV, FoundationDB didn't fit perfectly.</p>
@@ -102,7 +102,7 @@ We built a distributed Key-Value engine from scratch in Go.
   </div>
 
   <div class="flex items-start gap-4">
-    <carbon:unlocked class="text-4xl text-green-500 mt-1 opacity-80" />
+    <carbon-unlocked class="text-4xl text-green-500 mt-1 opacity-80"></carbon-unlocked>
     <div>
       <h3 class="!text-xl !font-bold !mb-1 !text-[#111827]">Vendor Independence</h3>
       <p class="!text-slate-500 !text-sm !m-0">Zero external vendor lock-in.</p>
@@ -113,7 +113,7 @@ We built a distributed Key-Value engine from scratch in Go.
 
 <v-click>
   <div class="mt-14 bg-white p-5 rounded border border-gray-200 shadow-sm flex items-center justify-center gap-4">
-    <carbon:idea class="text-2xl text-[#111827]" />
+    <carbon-idea class="text-2xl text-[#111827]"></carbon-idea>
     <span class="text-slate-700 font-medium text-lg">Solution: Built our own engine in <strong>Go</strong> on top of <strong>BadgerDB</strong>.</span>
   </div>
 </v-click>
@@ -205,7 +205,7 @@ How do you find performance bottlenecks in distributed systems?
     <v-click><div class="flex items-start"><span class="shrink-0 inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#d0c8df] text-slate-700 text-[10px] font-bold mr-3 mt-0.5">6</span> <div><b>Add Microbenchmark</b>: Establish a baseline.</div></div></v-click>
     <v-click><div class="flex items-start"><span class="shrink-0 inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#d0c8df] text-slate-700 text-[10px] font-bold mr-3 mt-0.5">7</span> <div><b>Implement Fix</b>: Alternate algorithm.</div></div></v-click>
     <v-click><div class="flex items-start"><span class="shrink-0 inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#d0c8df] text-slate-700 text-[10px] font-bold mr-3 mt-0.5">8</span> <div><b>Evaluate</b>: Verify against microbenchmark.</div></div></v-click>
-    <v-click><div class="flex items-start"><span class="shrink-0 inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#d0c8df] text-slate-700 text-[10px] font-bold mr-3 mt-0.5">9</span> <div><b>Branch & Blast</b>: Test branch isolation under global load.</div></div></v-click>
+    <v-click><div class="flex items-start"><span class="shrink-0 inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#d0c8df] text-slate-700 text-[10px] font-bold mr-3 mt-0.5">9</span> <div><b>Branch &amp; Blast</b>: Test branch isolation under global load.</div></div></v-click>
     <v-click><div class="flex items-start"><span class="shrink-0 inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#d1e5cd] text-slate-700 text-[10px] font-bold mr-3 mt-0.5">10</span> <div><b>Repeat Cycle</b>: Continuous tuning.</div></div></v-click>
   </div>
 
@@ -925,10 +925,10 @@ While our storage was fast, our **Outbound Connectors** in the API Server became
 
 <div class="mt-8 flex items-center justify-between px-10">
 <div class="flex flex-col items-center shrink-0">
-<div class="relative p-6 bg-blue-50 border-2 border-blue-200 rounded-3xl shadow-sm w-[280px]">
-<div class="absolute -top-3 left-6 px-3 bg-blue-500 text-white text-[8px] font-black uppercase tracking-widest rounded-full">API Server</div>
+<div style="width: 280px;" class="relative p-6 bg-blue-50 border-2 border-blue-200 rounded-3xl shadow-sm">
+<div style="font-size: 8px;" class="absolute -top-3 left-6 px-3 bg-blue-500 text-white font-black uppercase tracking-widest rounded-full">API Server</div>
 <div class="flex flex-col gap-4">
-<div class="text-[9px] font-bold text-blue-800 uppercase tracking-widest mb-1 border-b border-blue-100 pb-1">Outbound Connector</div>
+<div style="font-size: 9px;" class="font-bold text-blue-800 uppercase tracking-widest mb-1 border-b border-blue-100 pb-1">Outbound Connector</div>
 <div v-click class="flex items-center gap-2 p-2 bg-white rounded-xl border border-blue-100 shadow-sm">
 <carbon-process class="text-blue-400 text-lg shrink-0" />
 <div class="flex items-center gap-1">
@@ -937,11 +937,11 @@ While our storage was fast, our **Outbound Connectors** in the API Server became
 <div class="w-1 h-3 bg-blue-300 rounded-sm"></div>
 <div class="w-1 h-3 bg-slate-200 rounded-sm"></div>
 </div>
-<span class="text-[6px] font-mono text-slate-400">chan</span>
+<span style="font-size: 6px;" class="font-mono text-slate-400">chan</span>
 </div>
 <div class="flex flex-col ml-1">
-<span class="text-[8px] font-black text-slate-700 uppercase">Worker (P1)</span>
-<span class="text-[6px] text-slate-400 font-mono italic">go handler(P1)</span>
+<span style="font-size: 8px;" class="font-black text-slate-700 uppercase">Worker (P1)</span>
+<span style="font-size: 6px;" class="text-slate-400 font-mono italic">go handler(P1)</span>
 </div>
 </div>
 <div v-click class="flex items-center gap-3 p-2 bg-white rounded-xl border border-blue-100 shadow-sm opacity-80">
@@ -952,11 +952,11 @@ While our storage was fast, our **Outbound Connectors** in the API Server became
 <div class="w-1 h-3 bg-slate-200 rounded-sm"></div>
 <div class="w-1 h-3 bg-slate-200 rounded-sm"></div>
 </div>
-<span class="text-[6px] font-mono text-slate-400">chan</span>
+<span style="font-size: 6px;" class="font-mono text-slate-400">chan</span>
 </div>
 <div class="flex flex-col ml-1">
-<span class="text-[8px] font-black text-slate-700 uppercase">Worker (P5)</span>
-<span class="text-[6px] text-slate-400 font-mono italic">go handler(P5)</span>
+<span style="font-size: 8px;" class="font-black text-slate-700 uppercase">Worker (P5)</span>
+<span style="font-size: 6px;" class="text-slate-400 font-mono italic">go handler(P5)</span>
 </div>
 </div>
 <div v-click class="flex items-center gap-3 p-2 bg-white rounded-xl border border-blue-100 shadow-sm opacity-60">
@@ -967,54 +967,54 @@ While our storage was fast, our **Outbound Connectors** in the API Server became
 <div class="w-1 h-3 bg-slate-200 rounded-sm"></div>
 <div class="w-1 h-3 bg-slate-200 rounded-sm"></div>
 </div>
-<span class="text-[6px] font-mono text-slate-400">chan</span>
+<span style="font-size: 6px;" class="font-mono text-slate-400">chan</span>
 </div>
 <div class="flex flex-col ml-1">
-<span class="text-[8px] font-black text-slate-700 uppercase">Worker (P9)</span>
-<span class="text-[6px] text-slate-400 font-mono italic">go handler(P9)</span>
+<span style="font-size: 8px;" class="font-black text-slate-700 uppercase">Worker (P9)</span>
+<span style="font-size: 6px;" class="text-slate-400 font-mono italic">go handler(P9)</span>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="flex-grow h-[300px] relative mx-4">
+<div style="height: 300px;" class="flex-grow relative mx-4">
 <div v-click class="absolute inset-0 flex flex-col justify-around">
 <div class="w-full flex items-center gap-2">
 <div class="flex-grow h-0.5 bg-blue-200 relative">
-<div class="absolute right-0 top-1/2 -translate-y-1/2 border-t-[4px] border-t-transparent border-b-[4px] border-b-transparent border-l-[6px] border-l-blue-300"></div>
-<span class="absolute top-1 left-1/2 -translate-x-1/2 text-[6px] font-mono text-blue-400 uppercase whitespace-nowrap">Single Persistent TCP</span>
+<div style="border-top-width: 4px; border-bottom-width: 4px; border-left-width: 6px;" class="absolute right-0 top-1/2 -translate-y-1/2 border-t-transparent border-b-transparent border-l-blue-300"></div>
+<span style="font-size: 6px;" class="absolute top-1 left-1/2 -translate-x-1/2 font-mono text-blue-400 uppercase whitespace-nowrap">Single Persistent TCP</span>
 </div>
 </div>
 <div class="w-full flex items-center gap-2">
 <div class="flex-grow h-0.5 bg-blue-200 relative">
-<div class="absolute right-0 top-1/2 -translate-y-1/2 border-t-[4px] border-t-transparent border-b-[4px] border-b-transparent border-l-[6px] border-l-blue-300"></div>
+<div style="border-top-width: 4px; border-bottom-width: 4px; border-left-width: 6px;" class="absolute right-0 top-1/2 -translate-y-1/2 border-t-transparent border-b-transparent border-l-blue-300"></div>
 </div>
 </div>
 <div class="w-full flex items-center gap-2">
 <div class="flex-grow h-0.5 bg-blue-200 relative">
-<div class="absolute right-0 top-1/2 -translate-y-1/2 border-t-[4px] border-t-transparent border-b-[4px] border-b-transparent border-l-[6px] border-l-blue-300"></div>
+<div style="border-top-width: 4px; border-bottom-width: 4px; border-left-width: 6px;" class="absolute right-0 top-1/2 -translate-y-1/2 border-t-transparent border-b-transparent border-l-blue-300"></div>
 </div>
 </div>
 </div>
 </div>
-<div class="flex flex-col justify-around h-[300px] shrink-0">
+<div style="height: 300px;" class="flex flex-col justify-around shrink-0">
 <div class="flex items-center gap-3">
 <div class="w-14 h-14 bg-slate-50 border-2 border-slate-200 rounded-xl flex items-center justify-center shadow-sm">
 <carbon-data-base class="text-xl text-slate-500" />
 </div>
-<span class="font-bold text-slate-400 uppercase tracking-widest text-[9px]">P1</span>
-</div>
-<div class="flex items-center gap-3">
-<div class="w-14 h-14 bg-slate-50 border-2 border-slate-200 rounded-xl flex items-center justify-center shadow-sm">
-<carbon-data-base class="text-xl text-slate-500" />
-</div>
-<span class="font-bold text-slate-400 uppercase tracking-widest text-[9px]">P5</span>
+<span style="font-size: 9px;" class="font-bold text-slate-400 uppercase tracking-widest">P1</span>
 </div>
 <div class="flex items-center gap-3">
 <div class="w-14 h-14 bg-slate-50 border-2 border-slate-200 rounded-xl flex items-center justify-center shadow-sm">
 <carbon-data-base class="text-xl text-slate-500" />
 </div>
-<span class="font-bold text-slate-400 uppercase tracking-widest text-[9px]">P9</span>
+<span style="font-size: 9px;" class="font-bold text-slate-400 uppercase tracking-widest">P5</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-14 h-14 bg-slate-50 border-2 border-slate-200 rounded-xl flex items-center justify-center shadow-sm">
+<carbon-data-base class="text-xl text-slate-500" />
+</div>
+<span style="font-size: 9px;" class="font-bold text-slate-400 uppercase tracking-widest">P9</span>
 </div>
 </div>
 </div>
@@ -1025,9 +1025,9 @@ While our storage was fast, our **Outbound Connectors** in the API Server became
 
 ### Two Critical Choking Points
 
-<div class="mt-8 grid grid-cols-2 gap-8 items-stretch h-[320px]">
+<div style="height: 320px;" class="mt-8 grid grid-cols-2 gap-8 items-stretch">
   <div class="bg-red-50/30 p-6 rounded-xl border border-red-100 shadow-sm flex flex-col h-full">
-    <h4 class="text-[12px] font-black text-red-500 uppercase tracking-[0.2em] mb-4 text-shadow-none">1. Channel Saturation</h4>
+    <h4 style="font-size: 12px; letter-spacing: 0.2em;" class="font-black text-red-500 uppercase mb-4 text-shadow-none">1. Channel Saturation</h4>
     <div class="flex-grow">
       <p class="text-sm text-slate-600 leading-relaxed mb-4">
         A burst of 50k batches filled the <b>buffered channel</b> instantly.
@@ -1039,7 +1039,7 @@ While our storage was fast, our **Outbound Connectors** in the API Server became
   </div>
 
   <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col h-full">
-    <h4 class="text-[12px] font-black text-slate-500 uppercase tracking-[0.2em] mb-4 text-shadow-none">2. The Serialization Tax</h4>
+    <h4 style="font-size: 12px; letter-spacing: 0.2em;" class="font-black text-slate-500 uppercase mb-4 text-shadow-none">2. The Serialization Tax</h4>
     <div class="flex-grow">
       <p class="text-sm text-slate-600 leading-relaxed mb-4">
         The single worker per partition became a bottleneck due to <b>CPU-bound Protobuf Marshalling</b>.
@@ -1064,7 +1064,7 @@ We moved to **N Outbound Connectors** per partition to distribute both the CPU a
   <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm text-center flex flex-col items-center h-full">
     <carbon-split class="text-3xl text-blue-500 mb-4" />
     <h4 class="font-bold text-slate-800 text-sm mb-2 leading-tight">Parallel Serialization</h4>
-    <p class="text-[10px] text-slate-500 leading-relaxed">N Workers share one channel, offloading CPU-heavy Protobuf work to multiple cores.</p>
+    <p style="font-size: 10px;" class="text-slate-500 leading-relaxed">N Workers share one channel, offloading CPU-heavy Protobuf work to multiple cores.</p>
   </div>
   </v-click>
 
@@ -1072,7 +1072,7 @@ We moved to **N Outbound Connectors** per partition to distribute both the CPU a
   <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm text-center flex flex-col items-center h-full">
     <carbon-connection-receive class="text-3xl text-green-500 mb-4" />
     <h4 class="font-bold text-slate-800 text-sm mb-2 leading-tight">Socket Multiplexing</h4>
-    <p class="text-[10px] text-slate-500 leading-relaxed">Multiple physical TCP connections per partition distribute the socket-write overhead.</p>
+    <p style="font-size: 10px;" class="text-slate-500 leading-relaxed">Multiple physical TCP connections per partition distribute the socket-write overhead.</p>
   </div>
   </v-click>
 
@@ -1080,14 +1080,14 @@ We moved to **N Outbound Connectors** per partition to distribute both the CPU a
   <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm text-center flex flex-col items-center h-full">
     <carbon-security class="text-3xl text-purple-500 mb-4" />
     <h4 class="font-bold text-slate-800 text-sm mb-2 leading-tight">Backpressure Resiliency</h4>
-    <p class="text-[10px] text-slate-500 leading-relaxed">Channel clears N times faster, preventing upstream request blocking.</p>
+    <p style="font-size: 10px;" class="text-slate-500 leading-relaxed">Channel clears N times faster, preventing upstream request blocking.</p>
   </div>
   </v-click>
 </div>
 
 <div class="mt-8 flex justify-center">
-  <div class="bg-[#d1e5cd]/10 px-6 py-3 rounded-full border border-[#d1e5cd]/30 text-xs text-slate-600 font-semibold flex items-center gap-2">
-    <carbon-checkmark-filled class="text-[#d1e5cd]" />
+  <div style="background-color: rgba(209, 229, 205, 0.1); border-color: rgba(209, 229, 205, 0.3);" class="px-6 py-3 rounded-full border text-xs text-slate-600 font-semibold flex items-center gap-2">
+    <carbon-checkmark-filled style="color: #d1e5cd;" />
     Tail Latency (p99) dropped by ~15% via parallel serialization
   </div>
 </div>
@@ -1137,90 +1137,116 @@ In a distributed system, every performance win comes with a cost. We made an int
 
 ### Workload & System Configuration
 
-<div class="mt-4 grid grid-cols-2 gap-4 items-stretch">
-  <!-- Left Side: Workload Parameters -->
-  <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+<div class="mt-2 grid grid-cols-2 gap-3 items-stretch">
+  <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
     <div>
       <div class="flex items-center gap-2 mb-2">
         <carbon-activity class="text-blue-500 text-sm"></carbon-activity>
-        <h4 class="text-[10px] font-black text-slate-700 uppercase tracking-[0.2em] text-shadow-none m-0">Workload Parameters</h4>
+        <h4 style="font-size: 10px;" class="font-black text-slate-700 uppercase tracking-wider text-shadow-none m-0">Workload Parameters</h4>
       </div>
-      <div class="grid grid-cols-2 gap-2">
+      <div class="grid grid-cols-2 gap-1.5">
         <div class="flex flex-col">
-          <span class="text-[10px] text-slate-400">Total Throughput</span>
-          <div class="flex items-baseline gap-0.5">
-            <span class="text-lg font-extrabold text-slate-800">10,000</span>
-            <span class="text-[10px] font-semibold text-slate-500">tx/s</span>
+          <span style="font-size: 9px;" class="text-slate-400 font-semibold uppercase tracking-wider">Throughput</span>
+          <div class="flex items-baseline gap-0.5 mt-0.5">
+            <span class="text-base font-extrabold text-slate-800 leading-none">10,000</span>
+            <span style="font-size: 8px;" class="font-semibold text-slate-500">tx/s</span>
           </div>
         </div>
         <div class="flex flex-col">
-          <span class="text-[10px] text-slate-400">Range Queries</span>
-          <div class="flex items-baseline gap-0.5">
-            <span class="text-sm font-bold text-slate-700">5</span>
-            <span class="text-[9px] text-slate-400 font-normal">every 10 min</span>
+          <span style="font-size: 9px;" class="text-slate-400 font-semibold uppercase tracking-wider">Range Queries</span>
+          <div class="flex items-baseline gap-0.5 mt-0.5">
+            <span class="text-xs font-extrabold text-slate-700 leading-none">5</span>
+            <span style="font-size: 8px;" class="text-slate-500">every 10 min</span>
           </div>
         </div>
       </div>
-      <div class="h-[1px] bg-slate-200 my-2"></div>
-      <div class="space-y-1.5">
-        <div class="flex justify-between items-center text-[11px]">
-          <span class="text-slate-600 font-medium">50% Reads</span>
-          <span class="text-slate-500">Single Key / 1 Msg</span>
+      <div class="h-px bg-slate-200 my-2"></div>
+      <div style="font-size: 10px;" class="space-y-1.5">
+        <div class="flex justify-between items-center">
+          <span class="text-slate-600 font-medium">Read Workload</span>
+          <span class="text-slate-700 font-semibold">50% Reads (Point Get)</span>
         </div>
-        <div class="flex justify-between items-start text-[11px]">
-          <span class="text-slate-600 font-medium">50% Writes</span>
+        <div class="flex justify-between items-start">
+          <span class="text-slate-600 font-medium">Write Workload</span>
           <div class="text-right">
-            <div class="text-slate-700 font-semibold leading-tight">5 msgs / batch</div>
-            <div class="text-[8px] text-slate-400">Approx. 1KB per batch</div>
+            <div class="text-slate-700 font-semibold">50% Writes (Batched)</div>
+          </div>
+        </div>
+      </div>
+      <div class="h-px bg-slate-200 my-2"></div>
+      <div>
+        <div class="flex items-center gap-1.5 mb-1.5">
+          <carbon-fork class="text-blue-500 text-xs shrink-0"></carbon-fork>
+          <span style="font-size: 8px;" class="font-black text-slate-400 uppercase tracking-widest leading-none">Access Patterns and Routing</span>
+        </div>
+        <div class="space-y-1.5">
+          <div style="font-size: 9px;" class="bg-white px-2 py-1 rounded border border-slate-100 shadow-sm flex items-center justify-between">
+            <div>
+              <span class="font-bold text-slate-700">Point Reads (50%)</span>
+              <p style="font-size: 8px;" class="text-slate-400 m-0 leading-tight">1 Msg → Single partition lookup</p>
+            </div>
+            <span style="font-size: 7.5px;" class="bg-emerald-50 text-emerald-600 font-mono font-black px-1.5 py-0.5 rounded uppercase leading-none">1-PC Read</span>
+          </div>
+          <div style="font-size: 9px;" class="bg-white px-2 py-1 rounded border border-slate-100 shadow-sm flex items-center justify-between">
+            <div>
+              <span class="font-bold text-slate-700">Batched Writes (50%)</span>
+              <p style="font-size: 8px;" class="text-slate-400 m-0 leading-tight">5 Msg / 1KB batch → Hashed keys</p>
+            </div>
+            <span style="font-size: 7.5px;" class="bg-blue-50 text-blue-600 font-mono font-black px-1.5 py-0.5 rounded uppercase leading-none">Multi-Raft 2-PC</span>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <!-- Right Side: System Params & Machine Config TODO -->
-  <div class="flex flex-col gap-3">
-    <!-- System parameters card -->
-    <div class="bg-blue-50/20 p-3 rounded-xl border border-blue-100/50 shadow-sm flex-grow">
-      <div class="flex items-center gap-2 mb-2">
+  <div class="flex flex-col gap-2">
+    <div class="bg-blue-50/20 p-2.5 rounded-xl border border-blue-100/50 shadow-sm flex-grow">
+      <div class="flex items-center gap-2 mb-1">
         <carbon-settings class="text-blue-500 text-sm"></carbon-settings>
-        <h4 class="text-[10px] font-black text-blue-700 uppercase tracking-[0.2em] text-shadow-none m-0">Topology & Replication</h4>
+        <h4 style="font-size: 10px;" class="font-black text-blue-700 uppercase tracking-wider text-shadow-none m-0">Topology and Replication</h4>
       </div>
-      <div class="grid grid-cols-2 gap-3">
-        <div class="bg-white p-2.5 rounded-lg border border-slate-100 shadow-sm flex flex-col justify-center">
-          <span class="text-[9px] text-slate-400 uppercase tracking-wider font-semibold">Partitions</span>
-          <span class="text-md font-bold text-slate-700 leading-none mt-1">32</span>
+      <div class="grid grid-cols-2 gap-2">
+        <div class="bg-white p-1.5 rounded-lg border border-slate-100 shadow-sm flex flex-col justify-center">
+          <span style="font-size: 8px;" class="text-slate-400 uppercase tracking-wider font-semibold leading-none">Partitions</span>
+          <span class="text-sm font-bold text-slate-700 leading-none mt-1">32</span>
         </div>
-        <div class="bg-white p-2.5 rounded-lg border border-slate-100 shadow-sm flex flex-col justify-center">
-          <span class="text-[9px] text-slate-400 uppercase tracking-wider font-semibold">Replication</span>
+        <div class="bg-white p-1.5 rounded-lg border border-slate-100 shadow-sm flex flex-col justify-center">
+          <span style="font-size: 8px;" class="text-slate-400 uppercase tracking-wider font-semibold leading-none">Replication</span>
           <div class="flex items-baseline gap-0.5 mt-1">
-            <span class="text-md font-bold text-slate-700 leading-none">3x</span>
-            <span class="text-[8px] text-slate-400 font-normal">Factor</span>
+            <span class="text-sm font-bold text-slate-700 leading-none">3x</span>
+            <span style="font-size: 7px;" class="text-slate-400 font-normal">Factor</span>
           </div>
+        </div>
+        <div class="bg-white p-1.5 rounded-lg border border-slate-100 shadow-sm flex flex-col justify-center">
+          <span style="font-size: 8px;" class="text-slate-400 uppercase tracking-wider font-semibold leading-none">API Layer</span>
+          <span class="text-sm font-bold text-blue-600 leading-none mt-1">1 Server</span>
+        </div>
+        <div class="bg-white p-1.5 rounded-lg border border-slate-100 shadow-sm flex flex-col justify-center">
+          <span style="font-size: 8px;" class="text-slate-400 uppercase tracking-wider font-semibold leading-none">Storage Layer</span>
+          <span class="text-sm font-bold text-blue-600 leading-none mt-1">5 Servers</span>
         </div>
       </div>
     </div>
-    <!-- Machine Specs -->
-    <div class="bg-slate-800 p-3 rounded-xl border border-slate-700 shadow-sm flex flex-col justify-between">
-      <div class="flex items-center gap-2 mb-1.5">
-        <carbon-chip class="text-emerald-400 text-sm"></carbon-chip>
-        <h4 class="text-[10px] font-black text-slate-200 uppercase tracking-[0.2em] text-shadow-none m-0">Machine Specs (Per Node)</h4>
+    <div class="bg-slate-800 p-2.5 rounded-xl border border-slate-700 shadow-sm flex flex-col justify-between">
+      <div class="flex items-center gap-2 mb-1 flex-shrink-0">
+        <carbon-chip class="text-emerald-400 text-xs"></carbon-chip>
+        <h4 style="font-size: 10px;" class="font-black text-slate-200 uppercase tracking-wider text-shadow-none m-0">Machine Specs (Per Node)</h4>
       </div>
-      <div class="grid grid-cols-2 gap-2 text-[10px]">
-        <div class="bg-slate-900/50 px-2 py-1.5 rounded border border-slate-700/50 flex flex-col">
-          <span class="text-[8px] text-slate-500 uppercase tracking-wider leading-none">CPU Family</span>
-          <span class="font-bold text-slate-200 mt-1">E2 (32 vCPUs, x86_64)</span>
+      <div style="font-size: 10px;" class="grid grid-cols-2 gap-1.5">
+        <div class="bg-slate-900/50 px-2 py-1 rounded border border-slate-700/50 flex flex-col">
+          <span style="font-size: 7.5px;" class="text-slate-500 uppercase tracking-wider leading-none">CPU Family</span>
+          <span style="font-size: 9.5px;" class="font-bold text-slate-200 mt-0.5">E2 (32 vCPUs, x86_64)</span>
         </div>
-        <div class="bg-slate-900/50 px-2 py-1.5 rounded border border-slate-700/50 flex flex-col">
-          <span class="text-[8px] text-slate-500 uppercase tracking-wider leading-none">Memory</span>
-          <span class="font-bold text-slate-200 mt-1">64 GB RAM</span>
+        <div class="bg-slate-900/50 px-2 py-1 rounded border border-slate-700/50 flex flex-col">
+          <span style="font-size: 7.5px;" class="text-slate-500 uppercase tracking-wider leading-none">Memory</span>
+          <span style="font-size: 9.5px;" class="font-bold text-slate-200 mt-0.5">64 GB RAM</span>
         </div>
-        <div class="bg-slate-900/50 px-2 py-1.5 rounded border border-slate-700/50 flex flex-col">
-          <span class="text-[8px] text-slate-500 uppercase tracking-wider leading-none">Storage</span>
-          <span class="font-bold text-slate-200 mt-1">100 GB pd-standard</span>
+        <div class="bg-slate-900/50 px-2 py-1 rounded border border-slate-700/50 flex flex-col">
+          <span style="font-size: 7.5px;" class="text-slate-500 uppercase tracking-wider leading-none">Storage</span>
+          <span style="font-size: 9.5px;" class="font-bold text-slate-200 mt-0.5">100 GB pd-standard</span>
         </div>
-        <div class="bg-slate-900/50 px-2 py-1.5 rounded border border-slate-700/50 flex flex-col">
-          <span class="text-[8px] text-slate-500 uppercase tracking-wider leading-none">Instance Type</span>
-          <span class="font-bold text-emerald-400 mt-1 uppercase tracking-wider text-[8px]">Dedicated / Preemptible: No</span>
+        <div class="bg-slate-900/50 px-2 py-1 rounded border border-slate-700/50 flex flex-col">
+          <span style="font-size: 7.5px;" class="text-slate-500 uppercase tracking-wider leading-none">Instance Type</span>
+          <span style="font-size: 7.5px;" class="font-bold text-emerald-400 mt-0.5 uppercase tracking-wider">Dedicated / Preemptible: No</span>
         </div>
       </div>
     </div>
@@ -1235,45 +1261,45 @@ In a distributed system, every performance win comes with a cost. We made an int
 
 <div class="bg-white p-5 rounded border border-gray-200 shadow-sm flex flex-col h-full">
   <div class="flex items-center gap-3 mb-3">
-    <carbon-locked class="text-blue-500 text-xl" />
-    <div class="text-[#111827] text-[11px] font-['IBM_Plex_Mono'] font-bold tracking-widest uppercase">Lock Partitioning</div>
+    <carbon-locked class="text-blue-500 text-xl"></carbon-locked>
+    <div style="color: #111827; font-size: 11px; font-family: 'IBM Plex Mono', monospace;" class="font-bold tracking-widest uppercase">Lock Partitioning</div>
   </div>
-  <div class="text-slate-500 text-[10px] leading-relaxed mb-4 flex-grow">Move from global locks to partitioned groups (<code>xsync</code>) to isolate contention.</div>
+  <div style="font-size: 10px;" class="text-slate-500 leading-relaxed mb-4 flex-grow">Move from global locks to partitioned groups (<code>xsync</code>) to isolate contention.</div>
   <div class="mt-auto pt-2 border-t border-slate-50 flex items-center justify-between">
-    <span class="text-[9px] font-bold text-blue-600 uppercase tracking-tighter bg-blue-50 px-2 py-0.5 rounded">5.6ms p99 Write</span>
+    <span style="font-size: 9px;" class="font-bold text-blue-600 uppercase tracking-tighter bg-blue-50 px-2 py-0.5 rounded">5.6ms p99 Write</span>
   </div>
 </div>
 
 <div class="bg-white p-5 rounded border border-gray-200 shadow-sm flex flex-col h-full">
   <div class="flex items-center gap-3 mb-3">
-    <carbon-flash class="text-yellow-500 text-xl" />
-    <div class="text-[#111827] text-[11px] font-['IBM_Plex_Mono'] font-bold tracking-widest uppercase">Protocol Fast-Paths</div>
+    <carbon-flash class="text-yellow-500 text-xl"></carbon-flash>
+    <div style="color: #111827; font-size: 11px; font-family: 'IBM Plex Mono', monospace;" class="font-bold tracking-widest uppercase">Protocol Fast-Paths</div>
   </div>
-  <div class="text-slate-500 text-[10px] leading-relaxed mb-4 flex-grow">Identify "safe paths" in distributed transactions to bypass the 2PC tax.</div>
+  <div style="font-size: 10px;" class="text-slate-500 leading-relaxed mb-4 flex-grow">Identify "safe paths" in distributed transactions to bypass the 2PC tax.</div>
   <div class="mt-auto pt-2 border-t border-slate-50 flex items-center justify-between">
-    <span class="text-[9px] font-bold text-yellow-600 uppercase tracking-tighter bg-yellow-50 px-2 py-0.5 rounded">Bypass 2PC</span>
+    <span style="font-size: 9px;" class="font-bold text-yellow-600 uppercase tracking-tighter bg-yellow-50 px-2 py-0.5 rounded">Bypass 2PC</span>
   </div>
 </div>
 
 <div class="bg-white p-5 rounded border border-gray-200 shadow-sm flex flex-col h-full">
   <div class="flex items-center gap-3 mb-3">
-    <carbon-data-base class="text-green-500 text-xl" />
-    <div class="text-[#111827] text-[11px] font-['IBM_Plex_Mono'] font-bold tracking-widest uppercase">Defensive Storage</div>
+    <carbon-data-base class="text-green-500 text-xl"></carbon-data-base>
+    <div style="color: #111827; font-size: 11px; font-family: 'IBM Plex Mono', monospace;" class="font-bold tracking-widest uppercase">Defensive Storage</div>
   </div>
-  <div class="text-slate-500 text-[10px] leading-relaxed mb-4 flex-grow">Storage-layer pagination and I/O batching to prevent OOM during range reads.</div>
+  <div style="font-size: 10px;" class="text-slate-500 leading-relaxed mb-4 flex-grow">Storage-layer pagination and I/O batching to prevent OOM during range reads.</div>
   <div class="mt-auto pt-2 border-t border-slate-50 flex items-center justify-between">
-    <span class="text-[9px] font-bold text-green-600 uppercase tracking-tighter bg-green-50 px-2 py-0.5 rounded">Zero OOM Events</span>
+    <span style="font-size: 9px;" class="font-bold text-green-600 uppercase tracking-tighter bg-green-50 px-2 py-0.5 rounded">Zero OOM Events</span>
   </div>
 </div>
 
 <div class="bg-white p-5 rounded border border-gray-200 shadow-sm flex flex-col h-full">
   <div class="flex items-center gap-3 mb-3">
-    <carbon-network-2 class="text-purple-500 text-xl" />
-    <div class="text-[#111827] text-[11px] font-['IBM_Plex_Mono'] font-bold tracking-widest uppercase">Scaling Inter-Node IO</div>
+    <carbon-network-2 class="text-purple-500 text-xl"></carbon-network-2>
+    <div style="color: #111827; font-size: 11px; font-family: 'IBM Plex Mono', monospace;" class="font-bold tracking-widest uppercase">Scaling Inter-Node IO</div>
   </div>
-  <div class="text-slate-500 text-[10px] leading-relaxed mb-4 flex-grow">Move to multiple persistent outbound connectors to scale serialization load.</div>
+  <div style="font-size: 10px;" class="text-slate-500 leading-relaxed mb-4 flex-grow">Move to multiple persistent outbound connectors to scale serialization load.</div>
   <div class="mt-auto pt-2 border-t border-slate-50 flex items-center justify-between">
-    <span class="text-[9px] font-bold text-purple-600 uppercase tracking-tighter bg-purple-50 px-2 py-0.5 rounded">~15% p99 Drop</span>
+    <span style="font-size: 9px;" class="font-bold text-purple-600 uppercase tracking-tighter bg-purple-50 px-2 py-0.5 rounded">~15% p99 Drop</span>
   </div>
 </div>
 
