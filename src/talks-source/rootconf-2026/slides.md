@@ -60,7 +60,7 @@ We built a distributed Key-Value engine from scratch in Go.
 - **Strongly Consistent**: Built on Multi-Raft.
 - **Hash Partitioned**: Scalable data distribution.
 - **Performant**: Single-digit read and write latency.
-- **The Outcome**: TODO
+- **The Outcome**: ~5.6ms p99 write latency at 10,000 TPS (after optimizations).
 
 <br>
 <br>
@@ -128,7 +128,7 @@ We built a distributed Key-Value engine from scratch in Go.
 
 ---
 
-# Key Architectural Features (Remove it?)
+# Key Architectural Features
 
 Building a custom high-performance engine required specific design choices:
 
@@ -274,14 +274,34 @@ Initially, the `WaitingList` was designed as a wrapper over Go’s native `map` 
 
 The `sync.Mutex` proved to be a catastrophic bottleneck under load because too many goroutines were contending for the WaitingList.
 
-<div class="mt-2 flex flex-col gap-3 max-w-3xl mx-auto">
-  <div class="bg-white px-4 py-2 rounded-lg border-l-4 border-[#b97a95] shadow-sm">
-    <h3 class="font-bold text-slate-800 m-0 text-sm">Lock Contention</h3>
-    <p class="text-xs text-slate-600 mt-0.5 m-0">Thousands of goroutines were constantly blocking each other just to insert or remove their specific batch IDs.</p>
+<div class="mt-4 grid grid-cols-2 gap-6 items-stretch">
+  <!-- Left Side: The Symptoms -->
+  <div class="flex flex-col gap-3">
+    <div class="bg-white p-4 rounded-xl border border-red-100 flex-grow shadow-sm">
+      <h4 class="text-xs font-black text-red-500 uppercase tracking-widest mb-1.5 flex items-center gap-1.5">
+        <carbon-warning class="text-red-500 shrink-0"></carbon-warning>
+        Lock Contention & CPU Wastes
+      </h4>
+      <p class="text-[11px] text-slate-600 leading-relaxed m-0">
+        Thousands of parallel client goroutines blocked each other trying to insert or remove their transaction IDs. Flamegraphs revealed massive CPU time wasted on thread parking (<code>runtime.gopark</code>).
+      </p>
+    </div>
   </div>
-  <div class="bg-white px-4 py-2 rounded-lg border-l-4 border-[#d0c8df] shadow-sm">
-    <h3 class="font-bold text-slate-800 m-0 text-sm">Context Switching & Sequential Bottleneck</h3>
-    <p class="text-xs text-slate-600 mt-0.5 m-0">When goroutines fail to acquire the lock, they park. Flamegraphs revealed excessive <strong>park/unpark calls</strong>, confirming massive CPU cycles wasted on constant thread management.</p>
+
+  <!-- Right Side: Comparison with etcd -->
+  <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-col justify-between shadow-sm">
+    <div>
+      <h4 class="text-xs font-black text-slate-700 uppercase tracking-widest mb-1.5 flex items-center gap-1.5 font-mono">
+        <carbon-network-3 class="text-blue-500 shrink-0"></carbon-network-3>
+        Why etcd Gets Away With It
+      </h4>
+      <p class="text-[11px] text-slate-600 leading-relaxed m-0">
+        In <b>etcd</b>, updates to the wait list are driven by a single-threaded Raft main loop. Writes and deletes are naturally serialized.
+      </p>
+    </div>
+    <div class="bg-white p-2.5 rounded border border-slate-200 text-[10px] text-slate-500 font-medium leading-relaxed mt-2.5">
+      <b>Our Scenario:</b> We placed the wait list in our concurrent API Coordinator. Thousands of multi-core goroutines hammered the global lock in parallel, turning etcd's pattern into a contention nightmare.
+    </div>
   </div>
 </div>
 
@@ -335,9 +355,8 @@ By eliminating the global mutex bottleneck, our API servers could instantly proc
 </div>
 
 <div class="mt-4 bg-[#faebb3]/15 border border-[#faebb3] rounded p-2 text-center max-w-2xl mx-auto">
-  <p class="text-xs font-bold text-slate-800 m-0 leading-tight">Tested Under Load:</p>
+  <p class="text-xs font-bold text-slate-800 m-0 leading-tight">Tested Under Load (50% reads, 50% writes):</p>
   <p class="text-[11px] text-slate-600 mt-0.5 m-0 leading-tight">300 batches per second (10 messages per batch).</p>
-  <p class="text-[9px] text-[#b97a95] font-bold mt-1.5 m-0 uppercase tracking-widest">TODO: Confirm metrics before presentation</p>
 </div>
 
 ---
@@ -1116,11 +1135,96 @@ In a distributed system, every performance win comes with a cost. We made an int
 
 # The Final Benchmarks
 
-### Putting it all together
+### Workload & System Configuration
 
-<div class="mt-20 flex flex-col items-center justify-center text-center">
-  <carbon-chart-line class="text-6xl text-slate-200 mb-6" />
-  <p class="text-slate-400 italic">Benchmarks and final numbers to be inserted here.</p>
+<div class="mt-4 grid grid-cols-2 gap-4 items-stretch">
+  <!-- Left Side: Workload Parameters -->
+  <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+    <div>
+      <div class="flex items-center gap-2 mb-2">
+        <carbon-activity class="text-blue-500 text-sm"></carbon-activity>
+        <h4 class="text-[10px] font-black text-slate-700 uppercase tracking-[0.2em] text-shadow-none m-0">Workload Parameters</h4>
+      </div>
+      <div class="grid grid-cols-2 gap-2">
+        <div class="flex flex-col">
+          <span class="text-[10px] text-slate-400">Total Throughput</span>
+          <div class="flex items-baseline gap-0.5">
+            <span class="text-lg font-extrabold text-slate-800">10,000</span>
+            <span class="text-[10px] font-semibold text-slate-500">tx/s</span>
+          </div>
+        </div>
+        <div class="flex flex-col">
+          <span class="text-[10px] text-slate-400">Range Queries</span>
+          <div class="flex items-baseline gap-0.5">
+            <span class="text-sm font-bold text-slate-700">5</span>
+            <span class="text-[9px] text-slate-400 font-normal">every 10 min</span>
+          </div>
+        </div>
+      </div>
+      <div class="h-[1px] bg-slate-200 my-2"></div>
+      <div class="space-y-1.5">
+        <div class="flex justify-between items-center text-[11px]">
+          <span class="text-slate-600 font-medium">50% Reads</span>
+          <span class="text-slate-500">Single Key / 1 Msg</span>
+        </div>
+        <div class="flex justify-between items-start text-[11px]">
+          <span class="text-slate-600 font-medium">50% Writes</span>
+          <div class="text-right">
+            <div class="text-slate-700 font-semibold leading-tight">5 msgs / batch</div>
+            <div class="text-[8px] text-slate-400">Approx. 1KB per batch</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Right Side: System Params & Machine Config TODO -->
+  <div class="flex flex-col gap-3">
+    <!-- System parameters card -->
+    <div class="bg-blue-50/20 p-3 rounded-xl border border-blue-100/50 shadow-sm flex-grow">
+      <div class="flex items-center gap-2 mb-2">
+        <carbon-settings class="text-blue-500 text-sm"></carbon-settings>
+        <h4 class="text-[10px] font-black text-blue-700 uppercase tracking-[0.2em] text-shadow-none m-0">Topology & Replication</h4>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div class="bg-white p-2.5 rounded-lg border border-slate-100 shadow-sm flex flex-col justify-center">
+          <span class="text-[9px] text-slate-400 uppercase tracking-wider font-semibold">Partitions</span>
+          <span class="text-md font-bold text-slate-700 leading-none mt-1">32</span>
+        </div>
+        <div class="bg-white p-2.5 rounded-lg border border-slate-100 shadow-sm flex flex-col justify-center">
+          <span class="text-[9px] text-slate-400 uppercase tracking-wider font-semibold">Replication</span>
+          <div class="flex items-baseline gap-0.5 mt-1">
+            <span class="text-md font-bold text-slate-700 leading-none">3x</span>
+            <span class="text-[8px] text-slate-400 font-normal">Factor</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Machine Specs -->
+    <div class="bg-slate-800 p-3 rounded-xl border border-slate-700 shadow-sm flex flex-col justify-between">
+      <div class="flex items-center gap-2 mb-1.5">
+        <carbon-chip class="text-emerald-400 text-sm"></carbon-chip>
+        <h4 class="text-[10px] font-black text-slate-200 uppercase tracking-[0.2em] text-shadow-none m-0">Machine Specs (Per Node)</h4>
+      </div>
+      <div class="grid grid-cols-2 gap-2 text-[10px]">
+        <div class="bg-slate-900/50 px-2 py-1.5 rounded border border-slate-700/50 flex flex-col">
+          <span class="text-[8px] text-slate-500 uppercase tracking-wider leading-none">CPU Family</span>
+          <span class="font-bold text-slate-200 mt-1">E2 (32 vCPUs, x86_64)</span>
+        </div>
+        <div class="bg-slate-900/50 px-2 py-1.5 rounded border border-slate-700/50 flex flex-col">
+          <span class="text-[8px] text-slate-500 uppercase tracking-wider leading-none">Memory</span>
+          <span class="font-bold text-slate-200 mt-1">64 GB RAM</span>
+        </div>
+        <div class="bg-slate-900/50 px-2 py-1.5 rounded border border-slate-700/50 flex flex-col">
+          <span class="text-[8px] text-slate-500 uppercase tracking-wider leading-none">Storage</span>
+          <span class="font-bold text-slate-200 mt-1">100 GB pd-standard</span>
+        </div>
+        <div class="bg-slate-900/50 px-2 py-1.5 rounded border border-slate-700/50 flex flex-col">
+          <span class="text-[8px] text-slate-500 uppercase tracking-wider leading-none">Instance Type</span>
+          <span class="font-bold text-emerald-400 mt-1 uppercase tracking-wider text-[8px]">Dedicated / Preemptible: No</span>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 ---
