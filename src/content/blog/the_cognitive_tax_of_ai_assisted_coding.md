@@ -174,7 +174,7 @@ Delegating these decisions to an AI might speed up the typing, but the cost is h
 
 ### Finding the Right Boundary
 
-I want to be clear: I am not saying I will banish AI completely. That is not realistic, nor is it what I want. But creating the right boundary has become essential for my survival (and my Blood Pressure!).
+I want to be clear: I am not saying I will banish AI completely. That is not what I want. But creating the right boundary has become essential for my survival (and my Blood Pressure!).
 
 I cannot afford to lose my engineering instincts. I do not want to feel frustrated at the end of the day, having won a hollow victory by asking a machine to write my logic. The distance between myself and my code, and therefore my actual understanding of the systems I build, cannot increase. 
 
@@ -208,7 +208,7 @@ pub(crate) fn parse(&mut self) -> Result<Statement, ParseError> {
 }
 ```
 
-Every method, error, and test is a conscious choice. When the parser works, the victory is mine. The pace is slow, but **the satisfaction is huge**. I am not auditing a machine's messy code; I am building a system line by line.
+This "Slow Code" experiment made me realize that reclaiming the craft isn't just about the physical act of typing. It is about controlling the design, making the hard decisions, and being in absolute control of the system at every point in time. It means keeping the AI strictly in a supporting role, letting it handle only the truly monotonous, mechanical tasks under my guidance. Every design decision, every method, every compiler error, and every unit test becomes a conscious choice. When the system works, the victory is mine. The pace is slow, but **the satisfaction is huge**, because I am not auditing a machine's messy logic; I am actively crafting a system line by line.
 
 ---
 
