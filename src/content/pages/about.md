@@ -43,7 +43,7 @@ Additionally, I spend time building educational systems from scratch to demystif
 ### Currently exploring
 
 - Finished building a query engine ([Relop](https://github.com/SarthakMakhija/relop)) in Rust + launched a [7-part series](https://tech-lessons.in/en/blog/inside_a_query_engine_introduction/) on its internals
-- Designing and building **Nilo**, my own programming language (private repository for now)
+- Building an educational project [infer](https://github.com/SarthakMakhija/infer) for implementing Constraint-Based Type Inference in a toy programming language.
 - Writing technical essays on [tech-lessons.in](https://tech-lessons.in/)
 
 ---
