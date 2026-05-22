@@ -47,7 +47,30 @@ UniBasic has dynamic types, while Java is statically typed. To generate clean Ja
 
 Instead of helping me design a clean engine, the AI suggested massive, complicated changes across the whole project. To fix type bugs, the AI injected type logic everywhere, in the parser, AST nodes, and helper files. Instead of keeping type inference in one clean phase, the AI created a mess. 
 
-To save the project's design, I had to take back control. I ignored the AI's plans, designed the logic myself, and built it using small commits. I kept the type logic in one place. (Even though there were multiple passes at type-inference).
+To save the project's design, I had to take back control. I ignored the AI's plans, designed the logic myself, and built it using small commits. I kept the type logic in one place (even though there were multiple passes at type-inference). 
+
+But what makes this struggle particularly frustrating is that it didn't happen because I was reckless. In fact, I had done everything I could to avoid this exact kind of friction from the very start.
+
+---
+
+### Attempting to Reduce the Friction: The Illusion of Priming
+
+Before diving headfirst into this collaboration, I didn't just throw code at the AI and hope for the best. I was well aware of the friction that comes with AI-assisted development, and I tried to mitigate it. I set up the environment using what the industry refers to as **[Knowledge Priming](https://martinfowler.com/articles/reduce-friction-ai/knowledge-priming.html)**. 
+
+My preparation was decent:
+* **A Solid Foundation:** I had already designed and handcrafted the core transpiler pipeline (lexer, parser, AST, transformer, emitter). The AI had a concrete, working implementation to read and learn from before it was ever asked to write new features.
+* **Pre-defined Project Structure:** The codebase structure was clean, highly modular, and already defined. There was zero ambiguity about where new modules or files should go.
+* **Detailed Instructions (`claude.md`):** I wrote a comprehensive guidelines file (`claude.md`) for the AI. It contained explicit rules to govern its output: design naming patterns, strict bans on abbreviations in code, instructions to write clean unit tests with exactly one assertion per test, and architectural constraints.
+
+I had provided the AI with context, guidelines, and a decent foundation to build on. If you are interested in how to systematically reduce friction when working with AI, I highly recommend reading Rahul Garg's guide on **[Reducing Friction with AI](https://martinfowler.com/articles/reduce-friction-ai/)**.
+
+Yet, despite this careful preparation, the collaboration still fractured. 
+
+This realization left me with a humble, somewhat uncomfortable choice. Either:
+1. **I did not do well enough:** My instructions, rules, and context priming were still insufficient, and I need to improve how I instruct, guide, and collaborate with AI models.
+2. **I did enough, yet the tool failed:** Even with robust knowledge priming and crystal-clear boundaries, the cognitive tax of keeping an AI aligned with a complex, evolving codebase is simply an inherent limitation of current AI-assisted workflows.
+
+Whichever is true, the reality remained the same: the friction persisted, and the mental tax of keeping the AI on the rails became too heavy to ignore.
 
 ---
 
