@@ -1,5 +1,7 @@
 # build output
 dist/
+public/talks/
+src/public/
 
 # generated types
 .astro/

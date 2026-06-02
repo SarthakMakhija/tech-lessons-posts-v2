@@ -2,7 +2,7 @@
   "name": "tech-lessons-talks",
   "scripts": {
     "dev:rootconf": "slidev rootconf-2026/slides.md",
-    "build:rootconf": "slidev build rootconf-2026/slides.md --out ../../public/talks/rootconf-2026",
+    "build:rootconf": "slidev build rootconf-2026/slides.md --out ../../../public/talks/rootconf-2026 --base /talks/rootconf-2026/",
     "build:all": "npm run build:rootconf"
   },
   "dependencies": {
