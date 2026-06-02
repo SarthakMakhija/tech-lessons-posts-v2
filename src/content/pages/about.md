@@ -30,7 +30,7 @@ Beyond building software, I document low-level implementation details on my [blo
 ### Core Systems & Architecture
 
 **Principal Architect** | Caizin *(2024 - Present)*:
-Architecting and building a production-grade transpiler designed to automatically migrate legacy UniBasic codebases into concurrent, highly optimized Java ecosystems. The implementation covers the entire compiler pipeline: custom lexical analysis, parsing, semantic analysis, AST transformation, and code generation.
+Architecting and building a production-grade transpiler designed to automatically migrate legacy UniBasic codebases into Java ecosystem. The implementation covers the entire compiler pipeline: custom lexical analysis, parsing, semantic analysis, AST transformation, and code generation.
 
 **Lead Consultant** | Thoughtworks *(2016 - 2024)*:
 Led the engineering team that built a distributed, strongly consistent Key/Value database from scratch in Go. Designed to guarantee strict correctness and serializable isolation across failure domains, the system sustained **10,000 transactions per second across 32 partitions** with a replication factor of 3.
