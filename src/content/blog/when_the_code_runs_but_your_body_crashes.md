@@ -15,9 +15,7 @@ We paired all day, trying to maintain a high-intensity focus. Around 7\:50 PM, w
 
 I shut my laptop, feeling the familiar exhaustion of a day's work, but reassured by the fact that I was doing \"decent\" in life. I climb stairs, I do yoga daily, and I maintain my health. 
 
-But a single day's intense effort doesn't trigger a physiological crash on its own. What I didn't realize at the time was that this wasn't a one-day problem. It was the cumulative effect of weeks of sustained pressure, endless context-switching, and carrying the complex weight of transpiler architecture in my head day after day. You think you are successfully buffering the stress, but the physiological debt accumulates quietly in the background.
-
-And last night, my body decided it was time to collect.
+But my body had a different plan.
 
 ---
 
@@ -50,17 +48,21 @@ The doctor looked at the charts, looked at me, and delivered a simple diagnosis:
 Then, he gave me a piece of advice that felt completely counter-intuitive:
 > **\"Do cardio, and drop the yoga for now.\"**
 
+It was in that quiet moment in the hospital room that the pieces started coming together. A single day's intense effort doesn't trigger a physiological crash on its own. What I began to realize was that this wasn't a one-day problem. It was the cumulative effect of weeks of sustained pressure, endless context-switching, and carrying the complex weight of transpiler architecture in my head day after day. You think you are successfully buffering the stress, but the physiological debt accumulates quietly in the background.
+
+And that night, my body decided it was time to collect.
+
 ---
 
 ### The Paradox: Yoga vs. Cardio
 
 *(Disclaimer: I am not a doctor, and this is not medical advice. I am simply reflecting on the advice my doctor gave me for my specific physiological response to stress.)*
 
-Why would a doctor tell a stressed-out developer to stop doing yoga and start running on a treadmill?
+Why would a doctor tell a stressed-out developer to stop doing yoga and start running on a treadmill or walking for 5 KMs?
 
 In my case, it was about how my body was processing fight-or-flight hormones. When you work under intense, long-duration mental strain, your body gets flooded with cortisol and adrenaline. 
 
-Yoga is a quiet, introspective discipline. When I stepped onto a yoga mat with a nervous system saturated with stress hormones, the quietness forced me to sit silently with my thoughts and internal tension. Without a dynamic physical outlet, my mind began to loop, the chest felt tighter, and the anxiety spiraled (mostly). 
+Yoga is a quiet, introspective discipline. When I stepped onto a yoga mat with a nervous system saturated with stress hormones, the quietness forced me to sit silently with my thoughts and internal tension. Without a dynamic physical outlet, my mind began to loop, and the anxiety spiraled (mostly). 
 
 For my specific state of anxiety and higher HR, the doctor suggested cardio because it acted like a physical release valve. Running or cycling gives the body a mechanical reason to pump blood, sweat, and burn off that built-up adrenaline. For me, it was a reminder that wellness isn't a one-size-fits-all formula, and sometimes the body needs active movement rather than forced stillness to reset.
 
