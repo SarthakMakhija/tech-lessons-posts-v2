@@ -15,7 +15,9 @@ We paired all day, trying to maintain a high-intensity focus. Around 7\:50 PM, w
 
 I shut my laptop, feeling the familiar exhaustion of a day's work, but reassured by the fact that I was doing \"decent\" in life. I climb stairs, I do yoga daily, and I maintain my health. 
 
-But my body had a different plan.
+But a single day's intense effort doesn't trigger a physiological crash on its own. What I didn't realize at the time was that this wasn't a one-day problem. It was the cumulative effect of weeks of sustained pressure, endless context-switching, and carrying the complex weight of transpiler architecture in my head day after day. You think you are successfully buffering the stress, but the physiological debt accumulates quietly in the background.
+
+And last night, my body decided it was time to collect.
 
 ---
 
@@ -73,7 +75,7 @@ Here are the key takeaways from that night:
 #### 1. You cannot \"out-yoga\" a stressful work pace
 Many of us treat exercise or wellness routines as a shield. We think: *\"As long as I run, eat clean, or do my daily yoga, I can work 9-10 hour high-intensity days under crazy timelines.\"* 
 
-This is a dangerous illusion. Wellness habits are not a license to overwork. If your day-to-day work environment is too intense, a 1-hour yoga session cannot physically undo the physiological toll of a 9-10 hour high-pressure pairing session. You cannot out-exercise a lifestyle that is actively wearing you down.
+This is a dangerous illusion. Wellness habits are not a license to overwork. If your day-to-day work environment is too intense, a 1-hour yoga session cannot physically undo the physiological toll of a 9-10 hour high-pressure pairing session, especially when that toll is cumulative, compounding week after week. You cannot out-exercise a lifestyle that is actively wearing you down.
 
 #### 2. Quiet mindfulness isn't always the cure for high-adrenaline stress
 We are often told to sit quietly, meditate, and breathe when stressed. But I realized that when you are in the middle of a high-adrenaline project phase, forced stillness can sometimes leave you trapped with your own racing thoughts and internal physical tension. For some types of stress, especially the high-adrenaline, timeline-driven kind, the body might need a physical outlet (like active cardio) to burn off the stress response rather than just trying to sit through it. 
@@ -93,6 +95,6 @@ As developers, we pride ourselves on building robust, resilient architectures. W
 
 Yet, when it comes to our own lives, we run our systems at 100% capacity without a single safety valve, hoping that a daily wellness routine will prevent a crash.
 
-I love the thrill of pair programming. But this wake-up call made one thing clear: no transpiler, no integration flow, and no release deadline is worth compromising your physical health. 
+I love the thrill of pair programming. But this wake-up call made one thing clear: no transpiler, no integration flow, and no release deadline is worth compromising your physical and mental health. 
 
-It is time to re-architect my boundaries, prioritize active cardio, and remember that protecting the engineer is the single most important step in shipping good code.
+It is time to re-architect my boundaries, prioritize health, and remember that protecting the engineer is the single most important step in shipping good code (even in the age of AI !).
