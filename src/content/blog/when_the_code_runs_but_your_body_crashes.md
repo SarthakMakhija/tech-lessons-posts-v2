@@ -3,7 +3,7 @@ author: "Sarthak Makhija"
 title: "When the Code Runs but Your Body Crashes: Re-evaluating Boundaries Under Crazy Timelines"
 description: "A personal story of a long pairing day, a midnight hospital run, and why we must prioritize biological constraints over artificial deadlines."
 pubDate: 2026-06-09
-draft: false
+draft: true
 tags: ["Developer Health", "Software Craftsmanship", "Personal Reflection"]
 ---
 
@@ -58,15 +58,15 @@ Why would a doctor tell a stressed-out developer to stop doing yoga and start ru
 
 In my case, it was about how my body was processing fight-or-flight hormones. When you work under intense, long-duration mental strain, your body gets flooded with cortisol and adrenaline. 
 
-Yoga is a quiet, introspective discipline. When I stepped onto a yoga mat with a nervous system saturated with stress hormones, the quietness forced me to sit silently with my thoughts and internal tension. Without a dynamic physical outlet, my mind began to loop, the chest felt tighter, and the anxiety spiraled. 
+Yoga is a quiet, introspective discipline. When I stepped onto a yoga mat with a nervous system saturated with stress hormones, the quietness forced me to sit silently with my thoughts and internal tension. Without a dynamic physical outlet, my mind began to loop, the chest felt tighter, and the anxiety spiraled (mostly). 
 
-For my specific state of anxiety, the doctor suggested cardio because it acted like a physical release valve. Running or cycling gives the body a mechanical reason to pump blood, sweat, and burn off that built-up adrenaline. For me, it was a reminder that wellness isn't a one-size-fits-all formula, and sometimes the body needs active movement rather than forced stillness to reset.
+For my specific state of anxiety and higher HR, the doctor suggested cardio because it acted like a physical release valve. Running or cycling gives the body a mechanical reason to pump blood, sweat, and burn off that built-up adrenaline. For me, it was a reminder that wellness isn't a one-size-fits-all formula, and sometimes the body needs active movement rather than forced stillness to reset.
 
 ---
 
 ### Three Hard-Hitting Realities of Overwork
 
-This hospital visit was a loud wake-up call. It forced me to look at the boundaries I had set between my life and my work—and realize that my current mental model was fundamentally broken.
+This hospital visit was a loud wake-up call. It forced me to look at the boundaries I had set between my life and my work, and realize that my current mental model was fundamentally broken.
 
 Here are the key takeaways from that night:
 
@@ -76,12 +76,12 @@ Many of us treat exercise or wellness routines as a shield. We think: *\"As long
 This is a dangerous illusion. Wellness habits are not a license to overwork. If your day-to-day work environment is too intense, a 1-hour yoga session cannot physically undo the physiological toll of a 9-10 hour high-pressure pairing session. You cannot out-exercise a lifestyle that is actively wearing you down.
 
 #### 2. Quiet mindfulness isn't always the cure for high-adrenaline stress
-We are often told to sit quietly, meditate, and breathe when stressed. But I realized that when you are in the middle of a high-adrenaline project phase, forced stillness can sometimes leave you trapped with your own racing thoughts and internal physical tension. For some types of stress—especially the high-adrenaline, timeline-driven kind, the body might need a physical outlet (like active cardio) to burn off the stress response rather than just trying to sit through it. 
+We are often told to sit quietly, meditate, and breathe when stressed. But I realized that when you are in the middle of a high-adrenaline project phase, forced stillness can sometimes leave you trapped with your own racing thoughts and internal physical tension. For some types of stress, especially the high-adrenaline, timeline-driven kind, the body might need a physical outlet (like active cardio) to burn off the stress response rather than just trying to sit through it. 
 
 #### 3. If you don't schedule a break, your body will schedule it for you
 We treat project timelines as hard, unyielding constraints, and treat our health, sleep, and peace of mind as flexible variables we can compress. 
 
-It is the exact opposite. Timelines are artificial (and almost always stupid) constructs—lines on a Jira board, dates on a slide. Your body’s limits, however, are hard-coded biological laws. If you ignore the warning signs of chronic stress, your body will eventually take control of the execution loop and force a hard shutdown. In my case, it was a heavy arm and a trip to the ER at 10\:30 PM. 
+It is the exact opposite. Timelines are artificial (and almost always stupid) constructs, lanes on a Jira board, dates on a slide. Your body’s limits, however, are hard-coded biological laws. If you ignore the warning signs of chronic stress, your body will eventually take control of the execution loop and force a hard shutdown. In my case, it was a heavy arm and a trip to the ER at 10\:30 PM. 
 
 A crashed developer cannot write, review, or ship code anyway. 
 
