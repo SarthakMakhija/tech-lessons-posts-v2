@@ -11,7 +11,7 @@ Yesterday (June 8th 2026) began like any other intense day of pairing. My collea
 
 We were deep in the integration phase, trying to fit the newly generated Java code back into our end-to-end execution flow. When you are writing a transpiler, the problem space is incredibly dense. But the real complexity starts during integration: you are bridging two completely different worlds, the legacy UniBasic execution flow and the new Java execution flow. When an error occurs, tracking it down is incredibly difficult because you have to debug and cross-reference both environments to find the root cause. This debugging loop demands long, exhausting hours of continuous pairing. Because of the crazy project timelines, the pressure to make this end-to-end integration work was intense.
 
-We paired all day, trying to maintain a high-intensity focus. Around 7:50 PM, we finally decided to close our editors. The code compiled, the integration worked, and the day's sprint was technically a success. 
+We paired all day, trying to maintain a high-intensity focus. Around 7\:50 PM, we finally decided to close our editors. The code compiled, the integration worked, and the day's sprint was technically a success. 
 
 I shut my laptop, feeling the familiar exhaustion of a day's work, but reassured by the fact that I was doing \"decent\" in life. I climb stairs, I do yoga daily, and I maintain my health. 
 
