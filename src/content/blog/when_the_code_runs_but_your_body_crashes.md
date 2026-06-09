@@ -85,7 +85,7 @@ We are often told to sit quietly, meditate, and breathe when stressed. But I rea
 #### 3. If you don't schedule a break, your body will schedule it for you
 We treat project timelines as hard, unyielding constraints, and treat our health, sleep, and peace of mind as flexible variables we can compress. 
 
-It is the exact opposite. Timelines are artificial (and almost always stupid) constructs, lanes on a Jira board, dates on a slide. Your body’s limits, however, are hard-coded biological laws. If you ignore the warning signs of chronic stress, your body will eventually take control of the execution loop and force a hard shutdown. In my case, it was a heavy arm and a trip to the ER at 10\:30 PM. 
+It is the exact opposite. Timelines are artificial constructs, lanes on a Jira board, dates on a slide. Your body’s limits, however, are hard-coded biological laws. If you ignore the warning signs of chronic stress, your body will eventually take control of the execution loop and force a hard shutdown. In my case, it was a heavy arm and a trip to the hospital at 10\:30 PM. 
 
 A crashed developer cannot write, review, or ship code anyway. 
 
