@@ -55,7 +55,7 @@ And that night, my body decided it was time to collect.
 
 ### The 100% CPU Trap: Profiling the Developer
 
-In our industry, we take immense pride in our work. We celebrate the long hours, the late-night integrations, and the thrill of seeing a complex project delivered successfully. We wear our exhaustion like a badge of honor, bragging about our marathon pairing sessions. 
+In our industry, we take immense pride in our work. We often celebrate the long hours, the late-night integrations, and the thrill of seeing a complex project delivered successfully. We wear our exhaustion like a badge of honor, bragging about our marathon pairing sessions. 
 
 But at what cost?
 
