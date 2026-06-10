@@ -7,7 +7,7 @@ draft: true
 tags: ["Developer Health", "Software Craftsmanship", "Personal Reflection"]
 ---
 
-Yesterday (June 8th 2026) began like any other intense day of pairing. My colleague and I were in the trenches, working on a complex experiment: building a transpiler from **UniBasic** to structured, modern **Java**. 
+June 8th 2026 began like any other intense day of pairing. My colleague and I were in the trenches, working on a complex experiment: building a transpiler from **UniBasic** to structured, modern **Java**. 
 
 We were deep in the integration phase, trying to fit the newly generated Java code back into our end-to-end execution flow. When you are writing a transpiler, the problem space is incredibly dense. But the real complexity starts during integration: you are bridging two completely different worlds, the legacy UniBasic execution flow and the new Java execution flow. When an error occurs, tracking it down is incredibly difficult because you have to debug and cross-reference both environments to find the root cause. This debugging loop demands long, exhausting hours of continuous pairing. Because of the crazy project timelines, the pressure to make this end-to-end integration work was intense.
 
