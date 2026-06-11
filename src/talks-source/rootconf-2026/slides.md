@@ -170,8 +170,39 @@ We built a distributed Key-Value engine from scratch in Go.
 
 # Architecture Overview
 
-<div class="flex items-center justify-center w-full mt-4 bg-white p-6 rounded border border-gray-200 shadow-sm">
-  <img src="/architecture.png" class="w-full object-contain max-h-[400px]" alt="Architecture Diagram" />
+<div class="flex flex-col items-center justify-center w-full mt-0">
+  <div class="bg-white p-1.5 rounded border border-gray-200 shadow-sm w-full flex justify-center">
+    <img src="/architecture.png" class="object-contain max-h-[290px] w-auto mx-auto" alt="Architecture Diagram" />
+  </div>
+  <div class="grid grid-cols-3 gap-3 w-full mt-3 text-[9px] text-slate-500">
+    <v-click>
+      <div class="flex gap-2 bg-slate-50 p-2 rounded border border-slate-200/60 shadow-sm items-start">
+        <span class="shrink-0 flex items-center justify-center w-4 h-4 rounded-full bg-blue-100 text-blue-600 font-bold text-[9px]">1</span>
+        <div class="leading-relaxed">
+          <span class="font-bold text-slate-800 mr-1.5">Bootstrap Topology</span>
+          <span>Coordinator reads YAML and publishes layout to etcd.</span>
+        </div>
+      </div>
+    </v-click>
+    <v-click>
+      <div class="flex gap-2 bg-slate-50 p-2 rounded border border-slate-200/60 shadow-sm items-start">
+        <span class="shrink-0 flex items-center justify-center w-4 h-4 rounded-full bg-purple-100 text-purple-600 font-bold text-[9px]">2</span>
+        <div class="leading-relaxed">
+          <span class="font-bold text-slate-800 mr-1.5">Publish Leaders</span>
+          <span>Storage servers elect leaders and publish partition info in etcd.</span>
+        </div>
+      </div>
+    </v-click>
+    <v-click>
+      <div class="flex gap-2 bg-slate-50 p-2 rounded border border-slate-200/60 shadow-sm items-start">
+        <span class="shrink-0 flex items-center justify-center w-4 h-4 rounded-full bg-emerald-100 text-emerald-600 font-bold text-[9px]">3</span>
+        <div class="leading-relaxed">
+          <span class="font-bold text-slate-800 mr-1.5">Partition & Route</span>
+          <span>API reads leaders and routes writes over TCP.</span>
+        </div>
+      </div>
+    </v-click>
+  </div>
 </div>
 
 ---
