@@ -150,13 +150,6 @@ Building a custom high-performance engine required specific design choices:
 
 <v-click>
 <div class="bg-white px-3 py-2 rounded border border-slate-200 shadow-sm flex items-center gap-3">
-  <carbon-edge-node class="text-lg text-purple-500" />
-  <span class="font-medium text-slate-800 text-sm">Multiple Outbound Connectors</span>
-</div>
-</v-click>
-
-<v-click>
-<div class="bg-white px-3 py-2 rounded border border-slate-200 shadow-sm flex items-center gap-3">
   <carbon-data-base class="text-lg text-green-500" />
   <span class="font-medium text-slate-800 text-sm">Multi-Raft Storage</span>
 </div>
@@ -313,26 +306,37 @@ The `sync.Mutex` proved to be a catastrophic bottleneck under load because too m
 
 Because we have fixed kinds of batches, we redesigned it. We created a `WaitingListGroup`, which has a dedicated `WaitingList` for *each kind* of batch.
 
-<div class="grid grid-cols-5 gap-4 mt-8 items-center">
-  <div class="col-span-2 bg-white p-4 border border-slate-200 rounded text-center">
-    <div class="font-bold text-slate-700 text-sm mb-2">WaitingListGroup</div>
-    <div class="flex flex-col gap-2">
-      <div class="bg-slate-50 text-xs p-1 rounded border border-slate-200">List (Write)</div>
-      <div class="bg-slate-50 text-xs p-1 rounded border border-slate-200">List (Read)</div>
-      <div class="bg-slate-50 text-xs p-1 rounded border border-slate-200">List (Sync)</div>
+<div class="grid grid-cols-5 gap-4 mt-2 items-center">
+  <div class="col-span-2 bg-white p-3 border border-slate-200 rounded text-center animate-pulse">
+    <div class="font-bold text-slate-700 text-xs mb-1.5">WaitingListGroup</div>
+    <div class="flex flex-col gap-1.5">
+      <div class="bg-slate-50 text-[10px] p-1 rounded border border-slate-200">List (Write)</div>
+      <div class="bg-slate-50 text-[10px] p-1 rounded border border-slate-200">List (Read)</div>
+      <div class="bg-slate-50 text-[10px] p-1 rounded border border-slate-200">List (Sync)</div>
     </div>
   </div>
   
-  <div class="flex justify-center"><carbon-arrow-right class="text-2xl text-slate-400" /></div>
+  <div class="flex justify-center"><carbon-arrow-right class="text-xl text-slate-400" /></div>
   
-  <div class="col-span-2 bg-white p-4 border border-slate-200 rounded text-center">
-    <carbon-data-structured class="text-3xl text-[#d1e5cd] mx-auto mb-2" />
-    <h3 class="font-bold text-slate-800 text-sm m-0">Powered by <code>xsync</code></h3>
-    <p class="text-[10px] text-slate-500 mt-2 m-0 leading-tight">We built each list on top of Cache-Line Hash Tables for highly localized contention.</p>
+  <div class="col-span-2 bg-white p-3 border border-slate-200 rounded text-left">
+    <div class="text-center">
+      <carbon-data-structured class="text-2xl text-[#d1e5cd] mx-auto mb-1" />
+      <h3 class="font-bold text-slate-800 text-xs m-0 pb-1 border-b border-slate-100">Powered by <code>xsync</code></h3>
+    </div>
+    <div class="mt-2 space-y-1.5">
+      <div class="flex items-start gap-1.5">
+        <carbon-checkmark class="text-emerald-500 mt-0.5 shrink-0 text-xs"></carbon-checkmark>
+        <span class="text-[9.5px] text-slate-600 leading-snug">Built each list on top of <b>Cache-Line Hash Tables</b> for highly localized contention.</span>
+      </div>
+      <div class="flex items-start gap-1.5">
+        <carbon-checkmark class="text-emerald-500 mt-0.5 shrink-0 text-xs"></carbon-checkmark>
+        <span class="text-[9.5px] text-slate-600 leading-snug">Aligning buckets with CPU cache line sizes (64B) minimizes cache invalidations across cores.</span>
+      </div>
+    </div>
   </div>
 </div>
 
-<a href="https://tech-lessons.in/en/blog/cache_line_hashtable/" target="_blank" class="text-xs text-[#b97a95] underline mt-6 block text-center">Read our deep dive: Cache-Line Hash Table</a>
+<a href="https://tech-lessons.in/en/blog/cache_line_hashtable/" target="_blank" class="text-xs text-[#b97a95] underline mt-3 block text-center">Read our deep dive: Cache-Line Hash Table</a>
 
 ---
 
@@ -739,43 +743,9 @@ Our first attempt was a simple scatter-gather that worked in dev but crashed in 
 
 ---
 
-# Lesson 3: The Failed Attempt
-
-### Design 1: Global Pagination
-
-To solve the OOM, we tried to implement pagination by having the API Server merge results. The client then identifies the next key from the data to initiate the subsequent request.
-
-<div class="mt-4 grid grid-cols-2 gap-8">
-  <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 shadow-sm">
-    <h3 class="text-sm font-bold text-slate-800 m-0 flex items-center gap-2">
-      <carbon-list class="text-slate-400" /> The Flow
-    </h3>
-    <ul class="text-[11px] text-slate-600 mt-3 space-y-2">
-      <li>API fetches 10 results from <b>all leaders</b>.</li>
-      <li>API merges and sorts all results.</li>
-      <li>API sends the <b>top 10</b> to the Client SDK.</li>
-      <li>Client starts next batch with <b>last seen key</b>.</li>
-    </ul>
-  </div>
-
-  <v-click>
-  <div class="relative bg-red-50/50 p-5 rounded-xl border border-red-200 shadow-sm">
-    <div class="absolute top-0 right-0 bg-red-200 px-3 py-1 text-[10px] font-bold text-red-800 rounded-bl-lg uppercase">The Bug</div>
-    <h3 class="text-sm font-bold text-red-800 m-0 text-shadow-none">Why Duplication Happens</h3>
-    <p class="text-[11px] text-slate-600 mt-3 leading-relaxed">
-      A single <b>last_seen_key</b> cannot track <b>N</b> independent cursors. 
-      <br><br>
-      If the 10th key is <code>"M"</code>, the next request starts at <code>"M"</code>. But Partition B might have already sent <code>"M"</code> in batch 1, causing a duplicate in batch 2.
-    </p>
-  </div>
-  </v-click>
-</div>
-
----
-
 # Lesson 3: The Solution
 
-### Design 2: Per-Partition Iterators
+### Design: Per-Partition Iterators
 
 We shifted the coordinating responsibility to the **Client SDK**. The API Server became a thin, stateless proxy for chunked per-partition data.
 
@@ -1053,11 +1023,96 @@ While our storage was fast, our **Outbound Connectors** in the API Server became
 
 ---
 
-# Lesson 4: The Solution
+# Lesson 4: Visualizing the Solution
 
 ### Parallelizing the Serialization Tax
 
 We moved to **N Outbound Connectors** per partition to distribute both the CPU and IO load.
+
+<div class="mt-8 flex items-center justify-between px-10">
+<div class="flex flex-col items-center shrink-0">
+<div style="width: 290px;" class="relative p-6 bg-blue-50 border-2 border-blue-200 rounded-3xl shadow-sm">
+<div style="font-size: 8px;" class="absolute -top-3 left-6 px-3 bg-blue-500 text-white font-black uppercase tracking-widest rounded-full">API Server</div>
+<div class="flex flex-col gap-4">
+<div style="font-size: 9px;" class="font-bold text-blue-800 uppercase tracking-widest mb-1 border-b border-blue-100 pb-1">Outbound Connector (P1)</div>
+
+<div class="flex items-center gap-2 p-2 bg-white rounded-xl border border-blue-100 shadow-sm">
+<carbon-layers class="text-blue-500 text-lg shrink-0" />
+<div class="flex items-center gap-1">
+<div class="flex gap-0.5 px-1 py-0.5 bg-slate-100 rounded border border-slate-200">
+<div class="w-1 h-3 bg-blue-300 rounded-sm animate-pulse"></div>
+<div class="w-1 h-3 bg-blue-300 rounded-sm animate-pulse"></div>
+<div class="w-1 h-3 bg-blue-300 rounded-sm animate-pulse"></div>
+</div>
+<span style="font-size: 6px;" class="font-mono text-slate-400">chan</span>
+</div>
+<div class="flex flex-col ml-1">
+<span style="font-size: 8px;" class="font-black text-slate-700 uppercase">Shared Channel</span>
+<span style="font-size: 6px;" class="text-slate-400 font-mono">Shared by N workers</span>
+</div>
+</div>
+
+<div v-click class="grid grid-cols-3 gap-1.5 mt-1">
+<div class="flex flex-col items-center p-1.5 bg-blue-50/50 rounded-xl border border-blue-100 shadow-xs text-center">
+<carbon-process class="text-blue-500 text-base animate-pulse" />
+<span style="font-size: 7px;" class="font-bold text-slate-700 mt-1 uppercase leading-none">Worker 1</span>
+<span style="font-size: 5px;" class="text-slate-400 font-mono mt-1">go handler</span>
+</div>
+<div class="flex flex-col items-center p-1.5 bg-blue-50/50 rounded-xl border border-blue-100 shadow-xs text-center">
+<carbon-process class="text-blue-500 text-base animate-pulse" />
+<span style="font-size: 7px;" class="font-bold text-slate-700 mt-1 uppercase leading-none">Worker 2</span>
+<span style="font-size: 5px;" class="text-slate-400 font-mono mt-1">go handler</span>
+</div>
+<div class="flex flex-col items-center p-1.5 bg-blue-50/50 rounded-xl border border-blue-100 shadow-xs text-center">
+<carbon-process class="text-blue-500 text-base animate-pulse" />
+<span style="font-size: 7px;" class="font-bold text-slate-700 mt-1 uppercase leading-none">Worker 3</span>
+<span style="font-size: 5px;" class="text-slate-400 font-mono mt-1">go handler</span>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+
+<div style="height: 300px;" class="flex-grow relative mx-4">
+<div v-click class="absolute inset-0 flex flex-col justify-around py-4">
+<div class="w-full flex items-center gap-2">
+<div class="flex-grow h-0.5 bg-emerald-300 relative">
+<div style="border-top-width: 4px; border-bottom-width: 4px; border-left-width: 6px;" class="absolute right-0 top-1/2 -translate-y-1/2 border-t-transparent border-b-transparent border-l-emerald-400"></div>
+<span style="font-size: 6px;" class="absolute -top-3.5 left-1/2 -translate-x-1/2 font-mono text-emerald-500 uppercase whitespace-nowrap">TCP Connection 1</span>
+</div>
+</div>
+<div class="w-full flex items-center gap-2">
+<div class="flex-grow h-0.5 bg-emerald-300 relative">
+<div style="border-top-width: 4px; border-bottom-width: 4px; border-left-width: 6px;" class="absolute right-0 top-1/2 -translate-y-1/2 border-t-transparent border-b-transparent border-l-emerald-400"></div>
+<span style="font-size: 6px;" class="absolute -top-3.5 left-1/2 -translate-x-1/2 font-mono text-emerald-500 uppercase whitespace-nowrap">TCP Connection 2</span>
+</div>
+</div>
+<div class="w-full flex items-center gap-2">
+<div class="flex-grow h-0.5 bg-emerald-300 relative">
+<div style="border-top-width: 4px; border-bottom-width: 4px; border-left-width: 6px;" class="absolute right-0 top-1/2 -translate-y-1/2 border-t-transparent border-b-transparent border-l-emerald-400"></div>
+<span style="font-size: 6px;" class="absolute -top-3.5 left-1/2 -translate-x-1/2 font-mono text-emerald-500 uppercase whitespace-nowrap">TCP Connection 3</span>
+</div>
+</div>
+</div>
+</div>
+
+<div style="height: 300px;" class="flex flex-col justify-around shrink-0">
+<div class="flex items-center gap-3">
+<div class="w-20 h-20 bg-emerald-50 border-2 border-emerald-200 rounded-2xl flex flex-col items-center justify-center shadow-sm">
+<carbon-data-base class="text-2xl text-emerald-500 mb-1" />
+<span style="font-size: 9px;" class="font-bold text-emerald-700 uppercase tracking-widest leading-none">P1 Leader</span>
+</div>
+</div>
+</div>
+
+</div>
+
+---
+
+# Lesson 4: The Solution
+
+### Parallelizing the Serialization Tax
 
 <div class="mt-4 grid grid-cols-3 gap-4">
   <v-click>
