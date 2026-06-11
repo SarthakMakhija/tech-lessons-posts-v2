@@ -90,7 +90,7 @@ transition: fade-out
       <div>
         <h4 class="font-bold text-slate-800 text-sm m-0">Technical Writing</h4>
         <p class="text-[11px] text-slate-500 mt-1 leading-relaxed m-0">
-          Reviewer for Unmesh Joshi's <i>Patterns of Distributed Systems</i> (O'Reilly). Author of the 7-part <i>Inside a Query Engine</i> deep-dive series.
+          Validated core patterns for Unmesh Joshi's <i>Patterns of Distributed Systems</i> (O'Reilly). Author of the 7-part <i>Inside a Query Engine</i> deep-dive series.
         </p>
       </div>
     </div>
