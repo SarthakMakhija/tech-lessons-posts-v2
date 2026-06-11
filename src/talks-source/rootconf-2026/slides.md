@@ -53,6 +53,54 @@ onMounted(() => {
 transition: fade-out
 ---
 
+# About Me
+
+<div class="grid grid-cols-3 gap-8 mt-8">
+  <div class="col-span-1 flex flex-col items-center text-center bg-slate-50 p-6 rounded-2xl border border-slate-200 shadow-sm">
+    <img src="/self.png" class="w-24 h-24 rounded-full border-2 border-slate-300 object-cover shadow-sm mb-4" />
+    <h3 class="text-base font-bold text-slate-800 m-0">Sarthak Makhija</h3>
+    <p class="text-[10px] text-slate-400 font-mono mt-1">Principal Architect @ Caizin</p>
+    <div class="mt-4 flex flex-col gap-2 text-[9px] font-mono text-left w-full border-t border-slate-200/60 pt-4">
+      <div class="flex items-center gap-1.5 text-slate-600">
+        <carbon-logo-github class="text-slate-400 text-xs shrink-0"></carbon-logo-github>
+        <a href="https://github.com/SarthakMakhija" target="_blank" class="hover:text-slate-900 underline truncate">github.com/SarthakMakhija</a>
+      </div>
+      <div class="flex items-center gap-1.5 text-slate-600">
+        <carbon-logo-linkedin class="text-slate-400 text-xs shrink-0"></carbon-logo-linkedin>
+        <a href="https://www.linkedin.com/in/sarthak-makhija/" target="_blank" class="hover:text-slate-900 underline truncate">linkedin.com/in/sarthak-makhija</a>
+      </div>
+      <div class="flex items-center gap-1.5 text-slate-600">
+        <carbon-earth class="text-slate-400 text-xs shrink-0"></carbon-earth>
+        <a href="https://tech-lessons.in" target="_blank" class="hover:text-slate-900 underline">tech-lessons.in</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-span-2 flex flex-col gap-4">
+    <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex items-start gap-4">
+      <carbon-data-base class="text-3xl text-blue-500 mt-1 shrink-0"></carbon-data-base>
+      <div>
+        <h4 class="font-bold text-slate-800 text-sm m-0">Systems Engineering</h4>
+        <p class="text-[11px] text-slate-500 mt-1 leading-relaxed m-0">
+          Building storage engines, query processors, distributed databases and transpilers (primarily in Go and Rust). Led the team that built the distributed Key-Value engine discussed in this talk.
+        </p>
+      </div>
+    </div>
+    <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex items-start gap-4">
+      <carbon-book class="text-3xl text-purple-500 mt-1 shrink-0"></carbon-book>
+      <div>
+        <h4 class="font-bold text-slate-800 text-sm m-0">Technical Writing</h4>
+        <p class="text-[11px] text-slate-500 mt-1 leading-relaxed m-0">
+          Reviewer for Unmesh Joshi's <i>Patterns of Distributed Systems</i> (O'Reilly). Author of the 7-part <i>Inside a Query Engine</i> deep-dive series.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+---
+transition: fade-out
+---
+
 # What We Built
 
 We built a distributed Key-Value engine from scratch in Go. 
