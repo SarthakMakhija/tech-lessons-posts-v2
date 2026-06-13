@@ -1396,9 +1396,9 @@ In a distributed system, every performance win comes with a cost. We made an int
 <div class="bg-white p-5 rounded border border-gray-200 shadow-sm flex flex-col h-full">
   <div class="flex items-center gap-3 mb-3">
     <carbon-locked class="text-blue-500 text-xl"></carbon-locked>
-    <div style="color: #111827; font-size: 11px; font-family: 'IBM Plex Mono', monospace;" class="font-bold tracking-widest uppercase">Lock Partitioning</div>
+    <div style="color: #111827; font-size: 11px; font-family: 'IBM Plex Mono', monospace;" class="font-bold tracking-widest uppercase">Global Locks Don't Scale</div>
   </div>
-  <div style="font-size: 10px;" class="text-slate-500 leading-relaxed mb-4 flex-grow">Move from global locks to partitioned groups (<code>xsync</code>) to isolate contention.</div>
+  <div style="font-size: 9px; line-height: 1.4;" class="text-slate-500 mb-4 flex-grow">First, global locks do not scale in highly concurrent, multi-core systems. Moving from a global mutex to partitioned lock groups using <code>xsync</code> and cache-line hash tables allowed us to isolate contention and achieve our 5.6ms p99 write latency.</div>
   <div class="mt-auto pt-2 border-t border-slate-50 flex items-center justify-between">
     <span style="font-size: 9px;" class="font-bold text-blue-600 uppercase tracking-tighter bg-blue-50 px-2 py-0.5 rounded">5.6ms p99 Write</span>
   </div>
@@ -1407,9 +1407,9 @@ In a distributed system, every performance win comes with a cost. We made an int
 <div class="bg-white p-5 rounded border border-gray-200 shadow-sm flex flex-col h-full">
   <div class="flex items-center gap-3 mb-3">
     <carbon-flash class="text-yellow-500 text-xl"></carbon-flash>
-    <div style="color: #111827; font-size: 11px; font-family: 'IBM Plex Mono', monospace;" class="font-bold tracking-widest uppercase">Protocol Fast-Paths</div>
+    <div style="color: #111827; font-size: 11px; font-family: 'IBM Plex Mono', monospace;" class="font-bold tracking-widest uppercase">Avoid Coordination Tax</div>
   </div>
-  <div style="font-size: 10px;" class="text-slate-500 leading-relaxed mb-4 flex-grow">Identify "safe paths" in distributed transactions to bypass the 2PC tax.</div>
+  <div style="font-size: 9px; line-height: 1.4;" class="text-slate-500 mb-4 flex-grow">Second, avoid paying the coordination tax unless it's absolutely necessary. By identifying that single-partition writes don't need multi-phase coordination, we bypassed the 2PC tax entirely, collapsing network round-trips from four down to one.</div>
   <div class="mt-auto pt-2 border-t border-slate-50 flex items-center justify-between">
     <span style="font-size: 9px;" class="font-bold text-yellow-600 uppercase tracking-tighter bg-yellow-50 px-2 py-0.5 rounded">Bypass 2PC</span>
   </div>
@@ -1418,9 +1418,9 @@ In a distributed system, every performance win comes with a cost. We made an int
 <div class="bg-white p-5 rounded border border-gray-200 shadow-sm flex flex-col h-full">
   <div class="flex items-center gap-3 mb-3">
     <carbon-data-base class="text-green-500 text-xl"></carbon-data-base>
-    <div style="color: #111827; font-size: 11px; font-family: 'IBM Plex Mono', monospace;" class="font-bold tracking-widest uppercase">Defensive Storage</div>
+    <div style="color: #111827; font-size: 11px; font-family: 'IBM Plex Mono', monospace;" class="font-bold tracking-widest uppercase">Range Queries vs Partitioning</div>
   </div>
-  <div style="font-size: 10px;" class="text-slate-500 leading-relaxed mb-4 flex-grow">Storage-layer pagination and I/O batching to prevent OOM during range reads.</div>
+  <div style="font-size: 9px; line-height: 1.4;" class="text-slate-500 mb-4 flex-grow">Third, range queries are the enemy of uniform partitioning. We designed defensively: by routing chunked, per-partition iteration to the client SDK, we eliminated memory buffering and ensured zero OOM events in the API layer.</div>
   <div class="mt-auto pt-2 border-t border-slate-50 flex items-center justify-between">
     <span style="font-size: 9px;" class="font-bold text-green-600 uppercase tracking-tighter bg-green-50 px-2 py-0.5 rounded">Zero OOM Events</span>
   </div>
@@ -1429,15 +1429,24 @@ In a distributed system, every performance win comes with a cost. We made an int
 <div class="bg-white p-5 rounded border border-gray-200 shadow-sm flex flex-col h-full">
   <div class="flex items-center gap-3 mb-3">
     <carbon-network-2 class="text-purple-500 text-xl"></carbon-network-2>
-    <div style="color: #111827; font-size: 11px; font-family: 'IBM Plex Mono', monospace;" class="font-bold tracking-widest uppercase">Scaling Inter-Node IO</div>
+    <div style="color: #111827; font-size: 11px; font-family: 'IBM Plex Mono', monospace;" class="font-bold tracking-widest uppercase">Serialize in Parallel</div>
   </div>
-  <div style="font-size: 10px;" class="text-slate-500 leading-relaxed mb-4 flex-grow">Move to multiple persistent outbound connectors to scale serialization load.</div>
+  <div style="font-size: 9px; line-height: 1.4;" class="text-slate-500 mb-4 flex-grow">Finally, serialize in parallel. In high-throughput workloads, CPU-bound tasks like Protobuf marshalling will bottleneck your network sockets. Multiplexing persistent connections and parallelizing serialization dropped our tail latency by 15%.</div>
   <div class="mt-auto pt-2 border-t border-slate-50 flex items-center justify-between">
     <span style="font-size: 9px;" class="font-bold text-purple-600 uppercase tracking-tighter bg-purple-50 px-2 py-0.5 rounded">~15% p99 Drop</span>
   </div>
 </div>
 
 </div>
+
+<!--
+Speaker Notes:
+- To wrap things up, let's look at the key takeaways.
+- First, global locks do not scale in highly concurrent, multi-core systems. Moving from a global mutex to partitioned lock groups using xsync and cache-line hash tables allowed us to isolate contention and achieve our 5.6ms p99 write latency.
+- Second, avoid paying the coordination tax unless it's absolutely necessary. By identifying that single-partition writes don't need multi-phase coordination, we bypassed the 2PC tax entirely, collapsing network round-trips from four down to one.
+- Third, range queries are the enemy of uniform partitioning. We designed defensively: by routing chunked, per-partition iteration to the client SDK, we eliminated memory buffering and ensured zero OOM events in the API layer.
+- Finally, serialize in parallel. In high-throughput workloads, CPU-bound tasks like Protobuf marshalling will bottleneck your network sockets. Multiplexing persistent connections and parallelizing serialization dropped our tail latency by 15%.
+-->
 
 ---
 layout: center
@@ -1453,6 +1462,13 @@ class: text-center
   
   <img src="/caizin-logo.png" class="h-12 object-contain" alt="Caizin Logo" />
 </div>
+
+<!--
+Speaker Notes:
+- Ultimately, systems engineering is a study of trade-offs. The architecture we design is never exactly the architecture we run.
+- What is fast on paper is almost always slow in reality—until we profile, measure, and adapt to the hardware underneath us.
+- Thank you all for your time! I'm Sarthak Makhija, and if you are building similar storage engines or want to discuss performance tuning, I would love to connect. Thank you!
+-->
 
 
 
