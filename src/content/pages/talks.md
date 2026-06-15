@@ -9,6 +9,33 @@ type: page
 
 I share my deep dives into systems programming and storage internals through technical talks and hands-on workshops.
 
+### Fast on Paper, Slow in Reality: What We Got Wrong About Performance
+*Real-world performance lessons and design trade-offs from building a distributed key-value engine from scratch in Go.*
+
+<div class="talk-meta">
+  <span class="meta-item location">Rootconf 2026</span>
+  <span class="meta-item audience">Backend & Systems Engineers</span>
+</div>
+
+<details>
+<summary>Abstract & Key Takeaways</summary>
+
+#### What this talk covers
+- Building a strongly consistent, distributed Key-Value engine from scratch in Go on top of BadgerDB and Multi-Raft
+- Isolating lock contention: Moving from a global mutex to partitioned lock groups using `xsync` and cache-line hash tables
+- Bypassing the two-phase commit (2PC) tax for single-partition writes
+- Defensive range queries: Routing chunked, client-driven iteration to eliminate memory buffering and avoid API layer OOMs
+- Parallelizing Protobuf serialization and multiplexing persistent connections to drop tail latencies
+
+#### Key takeaway
+What is fast on paper is almost always slow in reality, until we profile, measure, and adapt to the hardware underneath. By identifying coordination bottlenecks and CPU-bound serialization limits, we optimized our distributed key-value engine from a sluggish start to a p99 write latency of ~5.6ms at 10 000 TPS.
+
+</details>
+
+<div class="flex gap-4 mt-4 mb-12">
+  <a href="/talks/rootconf-2026/" class="text-sm font-bold text-accent-600 hover:underline">View slides →</a>
+</div>
+
 ### Questioning Database Claims: Design Patterns of Storage Engines
 *A practical way to evaluate database claims using real storage engine patterns.*
 

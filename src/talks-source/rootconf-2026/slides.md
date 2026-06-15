@@ -57,7 +57,9 @@ transition: fade-out
 
 <div class="grid grid-cols-3 gap-8 mt-8">
   <div class="col-span-1 flex flex-col items-center text-center bg-slate-50 p-6 rounded-2xl border border-slate-200 shadow-sm">
-    <img src="/self.png" class="w-24 h-24 rounded-full border-2 border-slate-300 object-cover shadow-sm mb-4" />
+    <div class="w-24 h-24 rounded-full border-2 border-slate-300 overflow-hidden mb-4">
+      <img src="/self.png" class="w-full h-full object-cover" />
+    </div>
     <h3 class="text-base font-bold text-slate-800 m-0">Sarthak Makhija</h3>
     <p class="text-[10px] text-slate-400 font-mono mt-1">Principal Architect @ Caizin</p>
     <div class="mt-4 flex flex-col gap-2 text-[9px] font-mono text-left w-full border-t border-slate-200/60 pt-4">
