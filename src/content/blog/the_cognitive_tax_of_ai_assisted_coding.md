@@ -1,15 +1,15 @@
 ---
 author: "Sarthak Makhija"
 title: "The Cognitive Tax of AI-Assisted Coding"
-description: "Why fast AI code generation leads to messy designs, lost context, and exhaustion, and how keeping AI strictly at the periphery of a project brings back the joy of programming."
-pubDate: 2026-05-28
-draft: false
-tags: ["AI", "Software Craftsmanship", "Rust", "Compilers"]
+description: "Why fast AI code generation leads to messy designs, lost context, and exhaustion, and how keeping AI strictly at the periphery of my project brings back the joy of programming."
+pubDate: 2026-06-26
+draft: true
+tags: ["AI", "Software Craftsmanship"]
 ---
 
-This essay is about a feeling that has been bothering me lately: a growing frustration in my relationship with AI coding assistants. It explores what happened to my code quality, my design, and my satisfaction when I let a machine do the coding. 
+This essay is about a feeling that has been bothering me lately: a growing frustration in my relationship with AI coding assistants. It explores what happened to my design, my sense of ownership, and the joy of programming when I delegated the implementation to an AI. 
 
-To see this clearly, we will look at two compiler-like projects: one where AI was heavily involved in writing the code, and one where the AI was kept strictly at the periphery.
+To see this clearly, I'll walk through my journey: starting with a UniBasic-to-Java transpiler where I welcomed the AI into the driver's seat, and how that experience forced me to establish a "slow code" sandbox to reclaim the craft.
 
 ---
 
@@ -26,7 +26,7 @@ Since this was a complex project, I designed and built the core engine entirely 
 1. **The Lexer:** Tokenizing the legacy UniBasic source files, converting raw characters into a clean stream of syntactical tokens while handling legacy peculiarities.
 2. **The Parser:** Implementing a hand-written hybrid parser, combining **recursive descent** for statements and declarations with a **Pratt parser** (operator precedence) to elegantly handle operator precedence and associativity in complex expressions.
 3. **The AST (Abstract Syntax Tree):** Designing the strongly-typed in-memory representation of the source code structure, capturing variable declarations, subroutines, loops, and expressions.
-4. **Semantic Analysis:** Resolving symbols, identify input and output parameters of a subroutine (method in Unibasic), perform type binding etc.
+4. **Semantic Analysis:** Resolving symbols, identify input and output parameters of a subroutine (method in UniBasic), perform type binding etc.
 5. **The Transformer:** Translating legacy UniBasic keywords and built-in operations into Java equivalents (e.g., transforming the multi-value string search command `LOCATE` into a series of conditional `If/Else` nodes inside the target Java AST).
 6. **The Emitter:** Traversing the transformed AST to generate clean, readable, and compilable target Java classes.
 
@@ -48,7 +48,7 @@ RECORD<1,2>= 23
 ```
 In the second case, because there is no space before the equals sign, the characters `>` and `=` are adjacent. 
 
-Instead of stepping back to see if we could resolve this cleanly, the AI jumped straight into the expression parser. It tried to handle this ambiguity by writing complex lookahead logic directly inside the parser, scanning up to **24 tokens ahead** to figure out if it was looking at an assignment or a comparison. It was a massive, convoluted change that made the expression parser extremely hard to read and fragile to maintain.
+Instead of stepping back to see if we could resolve this cleanly, the AI jumped straight into the expression parser. It tried to handle this ambiguity by writing complex lookahead logic directly inside the parser, scanning up to **24 tokens ahead** to figure out if it was looking at an assignment or a comparison. It was a massive, convoluted change that made the expression parser extremely hard to read and fragile to maintain, with **24** being the magical number!
 
 In reality, the simplest design is to handle this in the lexer, not the parser. We can handle it in the lexer using a simple stack, pushing and popping matching brackets to track whether the angle bracket is part of a field reference or a comparison, adjusting the tokenization so the parser never has to deal with the clash. But because the design was evolving implicitly as the AI coded, we ended up with a parser that scanned 24 tokens ahead, introducing unnecessary complexity into the codebase.
 
@@ -64,7 +64,7 @@ Before diving headfirst into this collaboration, I didn't just throw code at the
 * **Pre-defined Project Structure:** The codebase structure was clean, modular, and already defined.
 * **Detailed Instructions (`claude.md`):** I wrote a comprehensive guidelines file with explicit rules to govern its output: naming patterns, design constraints, and rules to write clean unit tests with exactly one assertion per test.
 
-Yet, despite this careful preparation, the collaboration still fractured. Whichever is true,whether my priming was still insufficient or the tool simply failed,the mental tax of keeping the AI on the rails became too heavy to ignore.
+Yet, despite this careful preparation, the collaboration still fractured. Whichever is true,whether my priming was still insufficient or the tool simply failed, the mental tax of keeping the AI on the rails became too heavy to ignore.
 
 ---
 
@@ -112,7 +112,7 @@ When you hand the keyboard to an AI, the flow of information breaks. The AI modi
 
 Perhaps the most insidious side effect of AI assistance is the **loss of refactoring opportunities**.
 
-When you write code by hand, technical debt is felt physically. If adding a new feature requires you to pass a new parameter through ten layers of functions, your brain feels the friction. That cognitive pain is a feature, not a bug,it is the "check engine" light of software design. It forces you to pause, step back, and refactor the architecture before writing the feature.
+When you write code by hand, technical debt is felt physically. If adding a new feature requires you to pass a new parameter through ten layers of functions, your brain feels the friction. That cognitive pain is a feature, not a bug, it is the "check engine" light of software design. It forces you to pause, step back, and refactor the architecture before writing the feature.
 
 AI doesn't feel pain. It can update those ten functions across ten files in two seconds without complaining. Because the AI automates away the *friction* of implementation, the *signal* to refactor is silenced. You get the feature immediately, but you bypass the opportunity to clean up the design. Over time, the codebase degrades into a complex, bloated structure that is unreviewable for any human.
 
@@ -150,14 +150,14 @@ Use AI as a sounding board first, and a code generator second.
 
 #### 2. Pair with AI (Alternating Roles)
 Establish a strict division of labor:
-*   **Test-Driven Delegation:** I write the tests (the design and specifications); the AI writes the implementation (the monotony). 
+*   **Test-Driven Delegation:** I write the tests; the AI writes the implementation (the monotony). 
 *   Alternatively, I write the code, and ask the AI to critique it, write unit tests, or suggest missing edge cases.
 
 #### 3. The 15-Minute "Explainer's Tax" Circuit Breaker
-If explaining a complex edge-case and auditing its generated multi-file plan takes more than 15 minutes of prompt engineering, treat it as a signal that the problem is too nuanced for the model. Immediately close the chat, open a blank buffer, and code the logic by hand.
+If explaining a complex edge case and auditing the AI's generated code stretches beyond 15 minutes of prompting, I treat it as a signal that the problem is too nuanced for the assistant. I close the chat, open a blank buffer, and write the logic myself.
 
 #### 4. Maintaining a "Slow Code" Sanctuary
-Keep a personal sandbox project where you write the core logic entirely by hand. 
+Keep a personal sandbox project where I write the core logic entirely by hand. 
 For me, this is [**`infer`**](https://github.com/SarthakMakhija/infer), an educational compiler in Rust. The AI is allowed to act as an active reviewer or documenter, but it never sits in the driver's seat. The physical act of writing the code remains mine alone.
 
 ---
