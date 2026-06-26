@@ -3,7 +3,7 @@ author: "Sarthak Makhija"
 title: "The Cognitive Tax of AI-Assisted Coding"
 description: "Why fast AI code generation leads to messy designs, lost context, and exhaustion, and how keeping AI strictly at the periphery of my project brings back the joy of programming."
 pubDate: 2026-06-26
-draft: true
+draft: false
 tags: ["AI", "Software Craftsmanship"]
 ---
 
@@ -72,7 +72,7 @@ Yet, despite this careful preparation, the collaboration still fractured. Whiche
 
 This experience highlighted the myth of the design/implementation split: the common industry belief that **the human controls the design, and the AI just codes it.** 
 
-That division of labor doesn't work, because **design is emergent, it evolves as we write code and tests.**
+That division of labor doesn't work, because **design is emergent, it evolves as we write code and tests.** Once you delegate the implementation, the handoff becomes perpetual: any bug that arises, the AI fixes it; any new feature, the AI builds it. You tell yourself you are still the architect, but in reality, design isn't a static blueprint that can be separated from implementation. It is a sequence of small, real-time choices that only reveal themselves while writing code.
 
 When the test for `RECORD<1,2>= 23` failed, the AI's blind "coding" response was to write a 24-token lookahead in the parser. The realization that we could handle it in the lexer with a simple stack only came when I paused to reflect. It takes a human developer, actively engaged in the act of coding and testing, to pause and choose the simpler path. 
 
@@ -94,7 +94,7 @@ graph TD
 
 When you write a commit yourself, you write it with intent. Every variable name, every guard clause, and every structure is a conscious decision. When you review AI-generated commits, you are auditing.  Auditing is mentally draining. Doing it for a few lines is fine, but when the AI is generating code at a relentless pace, your brain eventually glazes over. You cannot maintain that creative passion for code you didn't write. You fall into a numb loop of *Apply -> Run tests -> Feed error -> Approve*.
 
-Worse, the AI's pace is simply too much for humans (like me). Because changes fly by so fast, **I do not remember the first commit made in the day by the time I reach 5\:00 PM.** The mental map of how the system evolved during the day becomes a blur.
+Worse, the AI's pace is simply too much for humans (like me). Because changes fly by so fast, **I do not have a clean, clear memory of what I did throughout the day by the time I reach 5\:00 PM.** The mental map of how the system evolved becomes a blur.
 
 ---
 
@@ -131,7 +131,7 @@ For example, translating unstructured jumps (`GOSUB` and `GOTO`) in UniBasic int
 By the time the transpiler generated compilable Java code, I reached a breaking point due to four realizations:
 
 1. **No Satisfaction:** The joy of programming comes from the struggle and the physical act of creation. The final success felt hollow.
-2. **Constant Frustration:** Instead of being in a state of flow, I spent my time correcting the AI's complex plans and explaining compiler concepts in prose.
+2. **Constant Frustration:** Instead of being in a state of flow, I spent my time correcting the AI's complex plans and explaining compiler concepts in prose. To me, flow does not mean continuous typing. It is about a quiet clarity of what I want to do next, maintaining a good TODO list, building small commits sequentially on top of each other, and having the mental space to pause and realize that a change I made in commit #2 actually requires a refactoring before I can proceed. The AI's velocity completely shattered this loop.
 3. **Loss of Ownership:** Reviewing generated diffs felt like grading homework. I lost track of how the codebase was evolving.
 4. **Slowing Cognitive Gears:** Outsourcing so much of the day-to-day thinking felt like it was dulling my engineering instincts. I felt further away from my own system.
 
@@ -139,7 +139,9 @@ By the time the transpiler generated compilable Java code, I reached a breaking 
 
 ### Regaining Control: Pragmatic Patterns for AI Collaboration
 
-I am not saying I should banish AI completely, that is too strict. AI has immense value. But I need to find boundaries where the AI operates where its leverage is highest, while keeping myself firmly in control of the architecture.
+I am not saying I should banish AI completely, that is too strict. AI has immense value. In software engineering, we identify code smells and take corrective actions called refactoring. Similarly, we must watch for "workflow smells" in our collaboration with AI. 
+
+If the AI is working well for you, if you are learning, and if you are in complete control of the system, that is wonderful. But if you feel a growing distance from your code, if you find yourself glazed over auditing diffs, or if your memory of what you built throughout the day is blurred, that is a smell. You need to take corrective action(s) and establish boundaries that work for you.
 
 Here are the active collaboration patterns that I am trying:
 
@@ -165,6 +167,8 @@ For me, this is [**`infer`**](https://github.com/SarthakMakhija/infer), an educa
 ### Reclaiming the Joy of Software
 
 The narrative that "coding is dead" feels wrong to me. It assumes coding is merely typing. In reality, coding is the process of reflection. It is where the design is tested, where compromises are made, and where understanding is forged. It is in the middle of writing code that we weigh design tradeoffs and make intentional choices, like deciding whether to handle `RECORD<1,2>=23` in the parser or the lexer, or stopping to refactor when an abstraction begins to stretch. 
+
+**Moving slow is an art**. It is only when I move slow that I have the space to think about my previous commits, look for design smells, and take a pause to reflect on my code. But when we chase speed as our primary engineering metric, we forget how to move slow. We lose that reflective pause.
 
 The joy of programming is found in the friction of this struggle, the elegant solution arrived at after hours of thought, and the physical act of creation. It is found in that exact moment when a compiler error finally vanishes because you understood the system, not because you fed a diff to a stateless agent.
 
