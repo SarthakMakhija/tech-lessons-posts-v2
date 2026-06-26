@@ -168,7 +168,7 @@ For me, this is [**`infer`**](https://github.com/SarthakMakhija/infer), an educa
 
 The narrative that "coding is dead" feels wrong to me. It assumes coding is merely typing. In reality, coding is the process of reflection. It is where the design is tested, where compromises are made, and where understanding is forged. It is in the middle of writing code that we weigh design tradeoffs and make intentional choices, like deciding whether to handle `RECORD<1,2>=23` in the parser or the lexer, or stopping to refactor when an abstraction begins to stretch. 
 
-**Moving slow is an art**. It is only when I move slow that I have the space to think about my previous commits, look for design smells, and take a pause to reflect on my code. But when we chase speed as our primary engineering metric, we forget how to move slow. We lose that reflective pause.
+**Moving slow is an art**. It is only when I move slow that I have the space to think about my previous commits, look for design smells, and take a pause to reflect on my code. *But when we chase speed as our primary engineering metric, we forget how to move slow. We lose that reflective pause.*
 
 The joy of programming is found in the friction of this struggle, the elegant solution arrived at after hours of thought, and the physical act of creation. It is found in that exact moment when a compiler error finally vanishes because you understood the system, not because you fed a diff to a stateless agent.
 
