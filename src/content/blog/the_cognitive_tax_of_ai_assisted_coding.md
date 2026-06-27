@@ -26,7 +26,7 @@ Since this was a complex project, I designed and built the core engine entirely 
 1. **The Lexer:** Tokenizing the legacy UniBasic source files, converting raw characters into a clean stream of syntactical tokens while handling legacy peculiarities.
 2. **The Parser:** Implementing a hand-written hybrid parser, combining **recursive descent** for statements and declarations with a **Pratt parser** (operator precedence) to elegantly handle operator precedence and associativity in complex expressions.
 3. **The AST (Abstract Syntax Tree):** Designing the strongly-typed in-memory representation of the source code structure, capturing variable declarations, subroutines, loops, and expressions.
-4. **Semantic Analysis:** Resolving symbols, identify input and output parameters of a subroutine (method in UniBasic), perform type binding etc.
+4. **Semantic Analysis:** Resolving symbols, identifying input and output parameters of a subroutine (method in UniBasic), performing type binding etc.
 5. **The Transformer:** Translating legacy UniBasic keywords and built-in operations into Java equivalents (e.g., transforming the multi-value string search command `LOCATE` into a series of conditional `If/Else` nodes inside the target Java AST).
 6. **The Emitter:** Traversing the transformed AST to generate clean, readable, and compilable target Java classes.
 
@@ -104,7 +104,7 @@ This erosion of context is directly proportional to the complexity of the projec
 
 In a simple CRUD application, the patterns are standard and easy to hold in your head. But as a project like a transpiler grows, it becomes incredibly difficult to track how a specific AST node is being transformed, or how a change in semantic analysis affects the emitter. 
 
-When you hand the keyboard to an AI, the flow of information breaks. The AI modifies a helper file, adjusts a node, and updates a transformer pass. On paper, the tests pass. But because you didn't construct the logic, the delicate thread of context is lost. The system becomes a black box of your own making.
+When you delegate the coding to an AI, the flow of information breaks. The AI modifies a helper file, adjusts a node, and updates a transformer pass. On paper, the tests pass. But because you didn't construct the logic, the delicate thread of context is lost. The system becomes a black box of your own making.
 
 ---
 
@@ -141,7 +141,7 @@ By the time the transpiler generated compilable Java code, I reached a breaking 
 
 I am not saying I should banish AI completely, that is too strict. AI has immense value. In software engineering, we identify code smells and take corrective actions called refactoring. Similarly, we must watch for "workflow smells" in our collaboration with AI. 
 
-If the AI is working well for you, if you are learning, and if you are in complete control of the system, that is wonderful. But if you feel a growing distance from your code, if you find yourself glazed over auditing diffs, or if your memory of what you built throughout the day is blurred, that is a smell. You need to take corrective action(s) and establish boundaries that work for you.
+If the AI is working well for you, if you are learning, and if you are in complete control of the system, that is wonderful. But if you feel a growing distance from your code, if you find your eyes glazing over while auditing diffs, or if your memory of what you built throughout the day is blurred, that is a smell. You need to take corrective action(s) and establish boundaries that work for you.
 
 Here are the active collaboration patterns that I am trying:
 
