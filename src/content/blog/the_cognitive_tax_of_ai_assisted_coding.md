@@ -3,7 +3,7 @@ author: "Sarthak Makhija"
 title: "The Cognitive Tax of AI-Assisted Coding"
 description: "Why fast AI code generation leads to messy designs, lost context, and exhaustion, and how keeping AI strictly at the periphery of my project brings back the joy of programming."
 pubDate: 2026-06-26
-draft: true
+draft: false
 tags: ["AI", "Software Craftsmanship"]
 ---
 
