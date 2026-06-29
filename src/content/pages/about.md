@@ -42,15 +42,13 @@ Led the engineering team that built a distributed, strongly consistent Key/Value
 
 ---
 
-### Production Systems
+### Systems Engineering & Research
 
 **Modifying Distributed Search Internals**
 Built a petabyte-scale search engine experiment by modifying Quickwit's core architecture. To bypass traditional library limits, we overhauled the engine's internal delete mechanics to implement a custom tombstone store and engineered a specialized multi-valued update engine on top of Tantivy.
 
 **Query Engine Processing Layers**
 I authored the 7-part technical series *"Inside a Query Engine"* on this [blog](https://tech-lessons.in/en/blog/inside_a_query_engine_introduction/), breaking down physical execution and logical optimization mechanics. This deep-dive series currently **ranks #1 globally on Google Search** for query engine internals.
-
----
 
 ---
 
