@@ -25,6 +25,7 @@
 @layer base {
     html {
         @apply antialiased scroll-smooth;
+        scroll-behavior: smooth;
         background-color: #ffffff;
         color: #111111;
     }

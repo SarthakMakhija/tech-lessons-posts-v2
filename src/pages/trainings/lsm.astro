@@ -62,7 +62,7 @@ const description =
                             Duration
                         </p>
                         <p class="text-sm font-bold text-zinc-800">
-                            August 1-2 & August 8-9, 2026 (Saturdays & Sundays)
+                            August 1-2 & August 8-9, 2026 (Weekends)
                         </p>
                     </div>
                 </div>
@@ -84,10 +84,19 @@ const description =
                             Timings
                         </p>
                         <p class="text-sm font-bold text-zinc-800">
-                            10:00 AM to 1:30 PM IST (Saturdays & Sundays)
+                            10:00 AM to 1:30 PM IST
                         </p>
                     </div>
                 </div>
+            </div>
+
+            <div class="mt-8 flex justify-start">
+                <a
+                    href="#enrollment-section"
+                    class="px-6 py-3 border border-zinc-300 hover:border-zinc-900 text-zinc-800 font-sans font-bold text-center rounded-xl transition-all"
+                >
+                    Secure Your Seat →
+                </a>
             </div>
         </section>
 
@@ -111,7 +120,7 @@ const description =
                     href="/en/blog/wisckey_ssd_conscious_key_value_store/#lsm-tree"
                     class="underline hover:text-blue-600 transition-colors"
                     >LSM-Tree</a
-                > database architecture:
+                > architecture:
             </p>
 
             <div class="space-y-6 my-8">
@@ -151,7 +160,7 @@ const description =
                         The Transaction Layer
                     </p>
                     <p class="text-zinc-600 text-base leading-relaxed mt-1">
-                        Building code-level <a
+                        Building <a
                             href="/en/blog/serializable_snapshot_isolation/"
                             class="underline hover:text-blue-600 transition-colors"
                             >Serializable Snapshot Isolation (SSI)</a
@@ -167,6 +176,118 @@ const description =
                 <strong>What this course is NOT:</strong> We will not focus on database
                 administration, cloud tuning, or SQL querying. This is a code-first
                 engineering deep dive into the software architecture of storage engines.
+            </div>
+        </section>
+
+        <!-- Why should you join? -->
+        <section class="mb-16">
+            <h2
+                class="text-2xl font-sans font-bold text-zinc-900 border-b border-zinc-100 pb-2 mb-6"
+            >
+                Why should you join?
+            </h2>
+            <div
+                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 font-sans text-base"
+            >
+                <div
+                    class="p-5 border border-zinc-100 rounded-xl bg-zinc-50/50"
+                >
+                    <h3 class="font-sans font-bold text-zinc-900 mb-2">
+                        Systems over CRUD
+                    </h3>
+                    <p class="text-zinc-600 leading-relaxed font-sans">
+                        Escape the loop of building basic APIs and writing SQL
+                        queries. Level up by coding the systems software that
+                        sits underneath the application layer.
+                    </p>
+                </div>
+                <div
+                    class="p-5 border border-zinc-100 rounded-xl bg-zinc-50/50"
+                >
+                    <h3 class="font-sans font-bold text-zinc-900 mb-2">
+                        Purely Hands-on
+                    </h3>
+                    <p class="text-zinc-600 leading-relaxed font-sans">
+                        Write the code yourself. Build every core component of
+                        the engine from scratch to a complete, thread-safe
+                        transactional store with tests.
+                    </p>
+                </div>
+                <div
+                    class="p-5 border border-zinc-100 rounded-xl bg-zinc-50/50"
+                >
+                    <h3 class="font-sans font-bold text-zinc-900 mb-2">
+                        Design Interview Edge
+                    </h3>
+                    <p class="text-zinc-600 leading-relaxed font-sans">
+                        Understand storage engine trade-offs at an operating
+                        system, file system, and hardware level. Confidently
+                        explain write amplification, compaction, and transaction
+                        isolation levels in Staff/Principal interviews.
+                    </p>
+                </div>
+                <div
+                    class="p-5 border border-zinc-100 rounded-xl bg-zinc-50/50"
+                >
+                    <h3 class="font-sans font-bold text-zinc-900 mb-2">
+                        L&D Reimbursement Ready
+                    </h3>
+                    <p class="text-zinc-600 leading-relaxed font-sans">
+                        This course is priced to fit comfortably within the
+                        standard corporate training/L&D budget of most tech
+                        companies. You'll receive a detailed receipt for easy
+                        reimbursement.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Production Code Studies Highlight -->
+        <section
+            class="mb-16 bg-blue-50/40 border border-blue-100/60 rounded-3xl p-6 md:p-8"
+        >
+            <div class="flex items-start gap-4">
+                <div
+                    class="p-3 bg-blue-500/10 text-blue-600 rounded-2xl shrink-0"
+                >
+                    <svg
+                        class="w-6 h-6"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="2"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-xl font-sans font-bold text-zinc-900 mb-2">
+                        From First-Principles to Production-Scale Optimizations
+                    </h3>
+                    <p
+                        class="text-zinc-600 text-base leading-relaxed font-sans mb-4"
+                    >
+                        Building a storage engine from first principles is the
+                        ultimate way to master systems programming, but matching
+                        the scale of industry giants requires seeing how these
+                        designs are optimized for production workloads.
+                    </p>
+                    <p
+                        class="text-zinc-600 text-base leading-relaxed font-sans"
+                    >
+                        Throughout our live sessions, we will build a fully
+                        transactional, concurrent storage engine from scratch,
+                        and then bridge these designs to the actual production
+                        Go repositories of CockroachDB's <strong>pebble</strong> and
+                        Dgraph's <strong>badger</strong>. You will analyze how
+                        engineers solve lock partitioning, block-aligned commit
+                        pipelining, and background compaction strategies under
+                        heavy write load.
+                    </p>
+                </div>
             </div>
         </section>
 
@@ -193,7 +314,7 @@ const description =
                     <p class="text-zinc-600 text-base leading-relaxed mb-6">
                         Learn how data moves from memory to disk and explore
                         B+Tree architecture limits. This session establishes the
-                        theoretical foundation for database internals and
+                        theoretical foundation for storage engine internals and
                         write-optimized storage engines.
                     </p>
                     <ul
@@ -276,6 +397,23 @@ const description =
                             Understanding WAL rotation and implementation
                             patterns
                         </li>
+                        <li>
+                            <strong>Production Code Study:</strong> Auditing CockroachDB's
+                            <a
+                                href="https://github.com/cockroachdb/pebble"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="underline hover:text-blue-600 transition-colors"
+                                >pebble</a
+                            > or Dgraph's <a
+                                href="https://github.com/dgraph-io/badger"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="underline hover:text-blue-600 transition-colors"
+                                >badger</a
+                            > repository to see how a production-grade engine structures
+                            its concurrent Memtable and commit pipeline.
+                        </li>
                     </ul>
                     <div
                         class="pt-5 border-t border-zinc-100 flex flex-col sm:flex-row gap-4 justify-between text-sm font-sans text-zinc-500"
@@ -289,7 +427,7 @@ const description =
                         <div>
                             <span class="font-bold text-zinc-800"
                                 >System Design:</span
-                            > Crash-Resilient In-Memory Storage
+                            > WAL + In-Memory Storage
                         </div>
                     </div>
                 </div>
@@ -353,6 +491,17 @@ const description =
                                 >Bloom Filters</a
                             > into the SSTable read path
                         </li>
+                        <li>
+                            <strong>Production Code Study:</strong> Deconstructing
+                            Dgraph's <a
+                                href="https://github.com/dgraph-io/badger"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="underline hover:text-blue-600 transition-colors"
+                                >badger</a
+                            > engine code to look at real-world block-aligned table
+                            builders and RAM-to-disk serialization.
+                        </li>
                     </ul>
                     <div
                         class="pt-5 border-t border-zinc-100 flex flex-col sm:flex-row gap-4 justify-between text-sm font-sans text-zinc-500"
@@ -360,13 +509,13 @@ const description =
                         <div>
                             <span class="font-bold text-zinc-800"
                                 >Prototypes and Demonstrations:</span
-                            > 3 (SSTable Encoder, Block-Indexed Search, Optimized
+                            > 3 (SSTable Encoder, SSTable Index Search, Optimized
                             Bloom Filter)
                         </div>
                         <div>
                             <span class="font-bold text-zinc-800"
                                 >System Design:</span
-                            > Seek-Optimized Disk-Backed Read Index
+                            > SSTable Design
                         </div>
                     </div>
                 </div>
@@ -385,8 +534,8 @@ const description =
                     <p class="text-zinc-600 text-base leading-relaxed mb-6">
                         Implement transactions with Serializable Snapshot
                         Isolation (SSI) and build a Leveled Compaction engine to
-                        keep the database optimized. This session completes the
-                        transactional LSM engine.
+                        keep the storage engine optimized. This session
+                        completes the transactional LSM engine.
                     </p>
                     <ul
                         class="space-y-3.5 pl-5 list-disc text-base text-zinc-700 mb-6"
@@ -414,7 +563,7 @@ const description =
                             concurrency
                         </li>
                         <li>
-                            Implementing code-level <a
+                            Implementing <a
                                 href="/en/blog/serializable_snapshot_isolation/"
                                 class="underline hover:text-blue-600 transition-colors"
                                 >Serializable Snapshot Isolation</a
@@ -435,6 +584,17 @@ const description =
                         <li>
                             Implementing an automated Leveled Compaction
                             executor
+                        </li>
+                        <li>
+                            <strong>Production Code Study:</strong> Analyzing transaction
+                            conflict detection and background compaction in Dgraph's
+                            <a
+                                href="https://github.com/dgraph-io/badger"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="underline hover:text-blue-600 transition-colors"
+                                >badger</a
+                            >.
                         </li>
                     </ul>
                     <div
@@ -488,6 +648,7 @@ const description =
 
         <!-- Enrollment Section (Razorpay Checkout Box) -->
         <section
+            id="enrollment-section"
             class="mb-16 border-2 border-zinc-900 rounded-3xl p-6 md:p-8 bg-zinc-950 text-white shadow-xl relative overflow-hidden"
         >
             <div
@@ -530,7 +691,7 @@ const description =
                             <span class="text-green-500 font-bold">✔</span>
                             <span
                                 >Learn the intuition behind designing, building,
-                                and implementing database engines</span
+                                and implementing storage engines</span
                             >
                         </li>
                         <li class="flex items-start gap-3">
@@ -562,6 +723,10 @@ const description =
                             weekends IST
                         </li>
                         <li class="flex items-center gap-2">
+                            <span class="text-green-500">✔</span> Live interactive
+                            sessions via Google Meet
+                        </li>
+                        <li class="flex items-center gap-2">
                             <span class="text-green-500">✔</span> 6 Months Access
                             to the course recordings
                         </li>
@@ -587,7 +752,7 @@ const description =
             >
                 <div class="text-left">
                     <span class="block text-2xl font-bold text-white font-sans">
-                        ₹6,999 INR
+                        ₹7,999 INR
                     </span>
                     <span class="text-xs text-zinc-400 font-mono"
                         >one-time payment</span
@@ -606,69 +771,6 @@ const description =
             </div>
         </section>
 
-        <!-- Why should you join? -->
-        <section class="mb-16">
-            <h2
-                class="text-2xl font-sans font-bold text-zinc-900 border-b border-zinc-100 pb-2 mb-6"
-            >
-                Why should you join?
-            </h2>
-            <div
-                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 font-sans text-base"
-            >
-                <div
-                    class="p-5 border border-zinc-100 rounded-xl bg-zinc-50/50"
-                >
-                    <h3 class="font-sans font-bold text-zinc-900 mb-2">
-                        Systems over CRUD
-                    </h3>
-                    <p class="text-zinc-600 leading-relaxed font-sans">
-                        Escape the loop of building basic APIs and writing SQL
-                        queries. Level up by coding the systems software that
-                        sits underneath the application layer.
-                    </p>
-                </div>
-                <div
-                    class="p-5 border border-zinc-100 rounded-xl bg-zinc-50/50"
-                >
-                    <h3 class="font-sans font-bold text-zinc-900 mb-2">
-                        Purely Hands-on
-                    </h3>
-                    <p class="text-zinc-600 leading-relaxed font-sans">
-                        Write the code yourself. Build every core component of
-                        the engine from scratch to a complete, thread-safe
-                        transactional store with tests.
-                    </p>
-                </div>
-                <div
-                    class="p-5 border border-zinc-100 rounded-xl bg-zinc-50/50"
-                >
-                    <h3 class="font-sans font-bold text-zinc-900 mb-2">
-                        Design Interview Edge
-                    </h3>
-                    <p class="text-zinc-600 leading-relaxed font-sans">
-                        Understand database trade-offs at an operating system,
-                        file system, and hardware level. Confidently explain
-                        write amplification, compaction, and transaction
-                        isolation levels in Staff/Principal interviews.
-                    </p>
-                </div>
-                <div
-                    class="p-5 border border-zinc-100 rounded-xl bg-zinc-50/50"
-                >
-                    <h3 class="font-sans font-bold text-zinc-900 mb-2">
-                        L&D Reimbursement Ready
-                    </h3>
-                    <p class="text-zinc-600 leading-relaxed font-sans">
-                        This course is priced to fit comfortably within the
-                        standard corporate training/L&D budget of most tech
-                        companies. You'll receive a detailed receipt for easy
-                        reimbursement.
-                    </p>
-                </div>
-            </div>
-        </section>
-
         <!-- FAQ -->
         <section class="mb-16">
             <h2
@@ -679,7 +781,7 @@ const description =
             <div class="space-y-6">
                 <div>
                     <h3 class="font-sans font-bold text-zinc-900 mb-2">
-                        Will you be teaching the entire duration?
+                        Is this course live or pre-recorded?
                     </h3>
                     <p
                         class="text-base text-zinc-600 leading-relaxed font-sans"
@@ -698,7 +800,7 @@ const description =
                     >
                         No, classes run only on weekends (Saturdays and
                         Sundays). Sessions will start at the times listed above,
-                        with an extra 30–45 minutes added if we need more time
+                        with an extra 30-40 minutes added if we need more time
                         to complete coding exercises or handle debugging.
                     </p>
                 </div>
@@ -710,7 +812,7 @@ const description =
                         class="text-base text-zinc-600 leading-relaxed font-sans"
                     >
                         If you're a backend developer looking to step away from
-                        high-level database clients and understand low-level
+                        traditional database clients and understand low-level
                         disk serialization, transactional isolation layers, and
                         storage models, this course is designed for you. Please
                         check the detailed curriculum outline above to see if it
@@ -763,10 +865,10 @@ const description =
                     <p
                         class="text-base text-zinc-600 leading-relaxed font-sans"
                     >
-                        All live sessions are recorded. You will receive
-                        lifetime access to the recordings within 24 hours of
-                        each session, along with complete code repositories for
-                        each stage of the engine.
+                        All live sessions are recorded. You will receive 6
+                        months access to the recordings within 24 hours of each
+                        session, along with complete code repositories for each
+                        stage of the engine.
                     </p>
                 </div>
                 <div>
@@ -791,7 +893,7 @@ const description =
                         class="text-base text-zinc-600 leading-relaxed font-sans"
                     >
                         To ensure high interactivity and personal attention, we
-                        cap the course at 25–30 developers. There will be open
+                        cap the course at 25-30 developers. There will be open
                         Q&A sessions, active peer discussions, and dedicated
                         doubt support.
                     </p>
