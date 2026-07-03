@@ -1,0 +1,185 @@
+---
+import Layout from "../../layouts/Layout.astro";
+
+const title = "Build a concurrent cache in Rust";
+const description = "Rather than focusing just on syntax, this workshop takes a deep dive into Rust internals by looking at actual source code while building a production-ready system.";
+---
+
+<Layout title={title} description={description}>
+    <div class="max-w-[800px] mx-auto font-sans">
+        
+        <!-- Breadcrumb & Back Link -->
+        <div class="mb-8">
+            <a href="/trainings" class="text-sm font-mono text-zinc-500 hover:text-zinc-900 transition-colors inline-flex items-center gap-1">
+                ← Back to Trainings
+            </a>
+        </div>
+
+        <!-- Hero Header -->
+        <section class="mb-12">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="p-3 bg-amber-50/50 rounded-xl border border-amber-100 shrink-0">
+                    <!-- Connection nodes representing concurrency/cache -->
+                    <svg class="w-8 h-8 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="2" width="8" height="8" rx="1.5" />
+                        <rect x="14" y="2" width="8" height="8" rx="1.5" />
+                        <rect x="2" y="14" width="8" height="8" rx="1.5" />
+                        <rect x="14" y="14" width="8" height="8" rx="1.5" />
+                        <path d="M6 10v4" />
+                        <path d="M18 10v4" />
+                        <path d="M10 6h4" />
+                        <path d="M10 18h4" />
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-sans font-bold text-zinc-900 leading-tight mb-2">
+                        {title}
+                    </h1>
+                    <div class="flex flex-wrap gap-2 text-xs md:text-sm">
+                        <span class="px-3 py-1 bg-blue-50 border border-blue-100 rounded-full text-blue-800 font-medium">
+                            Format: Instructor-led training
+                        </span>
+                        <span class="px-3 py-1 bg-blue-50 border border-blue-100 rounded-full text-blue-800 font-medium">
+                            Duration: 2 days
+                        </span>
+                        <span class="px-3 py-1 bg-blue-50 border border-blue-100 rounded-full text-blue-800 font-medium">
+                            Availability: On request
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            <p class="text-lg text-zinc-700 leading-relaxed mb-8">
+                {description}
+            </p>
+        </section>
+
+        <!-- Curriculum -->
+        <section class="mb-12">
+            <div class="mb-6">
+                <h2 class="font-sans font-bold text-2xl text-zinc-900 mb-1">Workshop Curriculum</h2>
+                <p class="text-sm text-zinc-500">A step-by-step journey from basic memory allocation to highly concurrent sharded caching.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <!-- Module 1 -->
+                <div class="rounded-2xl border border-zinc-200/80 p-6 bg-white shadow-sm hover:shadow-md transition-all">
+                    <span class="block text-xs font-mono font-bold text-blue-600 uppercase tracking-widest mb-3">Module 1</span>
+                    <h3 class="text-lg font-bold text-zinc-900 mb-3 font-sans">Foundations & Type Safety</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start gap-3 text-sm text-zinc-600">
+                            <span class="block w-1.5 h-1.5 mt-2.5 rounded-full bg-zinc-300 shrink-0"></span>
+                            <span><strong>Foundations:</strong> In-memory caching and ownership model basic constraints</span>
+                        </li>
+                        <li class="flex items-start gap-3 text-sm text-zinc-600">
+                            <span class="block w-1.5 h-1.5 mt-2.5 rounded-full bg-zinc-300 shrink-0"></span>
+                            <span><strong>Type Safety:</strong> Overcoming primitive obsession with the NewType pattern and trait derivations</span>
+                        </li>
+                        <li class="flex items-start gap-3 text-sm text-zinc-600">
+                            <span class="block w-1.5 h-1.5 mt-2.5 rounded-full bg-zinc-300 shrink-0"></span>
+                            <span><strong>Generics:</strong> Creating generic abstractions with Trait bounds and standard Library Borrow trait</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Module 2 -->
+                <div class="rounded-2xl border border-zinc-200/80 p-6 bg-white shadow-sm hover:shadow-md transition-all">
+                    <span class="block text-xs font-mono font-bold text-blue-600 uppercase tracking-widest mb-3">Module 2</span>
+                    <h3 class="text-lg font-bold text-zinc-900 mb-3 font-sans">Memory & Concurrency</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start gap-3 text-sm text-zinc-600">
+                            <span class="block w-1.5 h-1.5 mt-2.5 rounded-full bg-zinc-300 shrink-0"></span>
+                            <span><strong>Mutation vs Aliasing:</strong> Rust borrow checker rules, lifetimes, and interior mutability via RefCell</span>
+                        </li>
+                        <li class="flex items-start gap-3 text-sm text-zinc-600">
+                            <span class="block w-1.5 h-1.5 mt-2.5 rounded-full bg-zinc-300 shrink-0"></span>
+                            <span><strong>Fearless Concurrency:</strong> Implementing thread safety using Mutex, RwLock, and RAII locks</span>
+                        </li>
+                        <li class="flex items-start gap-3 text-sm text-zinc-600">
+                            <span class="block w-1.5 h-1.5 mt-2.5 rounded-full bg-zinc-300 shrink-0"></span>
+                            <span><strong>Reference Counting:</strong> Utilizing Arc for shared ownership across concurrent threads</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Module 3 -->
+                <div class="rounded-2xl border border-zinc-200/80 p-6 bg-white shadow-sm hover:shadow-md transition-all">
+                    <span class="block text-xs font-mono font-bold text-blue-600 uppercase tracking-widest mb-3">Module 3</span>
+                    <h3 class="text-lg font-bold text-zinc-900 mb-3 font-sans">Zero-Copy & Scale</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start gap-3 text-sm text-zinc-600">
+                            <span class="block w-1.5 h-1.5 mt-2.5 rounded-full bg-zinc-300 shrink-0"></span>
+                            <span><strong>Zero-Copy:</strong> Advanced memory layouts, custom references, and lifetime anchoring</span>
+                        </li>
+                        <li class="flex items-start gap-3 text-sm text-zinc-600">
+                            <span class="block w-1.5 h-1.5 mt-2.5 rounded-full bg-zinc-300 shrink-0"></span>
+                            <span><strong>Send & Sync:</strong> Understanding compile-time guarantees for concurrent programming</span>
+                        </li>
+                        <li class="flex items-start gap-3 text-sm text-zinc-600">
+                            <span class="block w-1.5 h-1.5 mt-2.5 rounded-full bg-zinc-300 shrink-0"></span>
+                            <span><strong>Scale & Sharding:</strong> Reducing lock contention by designing and implementing cache sharding</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Module 4 -->
+                <div class="rounded-2xl border border-zinc-200/80 p-6 bg-white shadow-sm hover:shadow-md transition-all">
+                    <span class="block text-xs font-mono font-bold text-blue-600 uppercase tracking-widest mb-3">Module 4</span>
+                    <h3 class="text-lg font-bold text-zinc-900 mb-3 font-sans">Real-World Mechanics</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start gap-3 text-sm text-zinc-600">
+                            <span class="block w-1.5 h-1.5 mt-2.5 rounded-full bg-zinc-300 shrink-0"></span>
+                            <span><strong>Cache Expiration:</strong> Implementing Time-To-Live (TTL) with lazy cleanups and background cleanups</span>
+                        </li>
+                        <li class="flex items-start gap-3 text-sm text-zinc-600">
+                            <span class="block w-1.5 h-1.5 mt-2.5 rounded-full bg-zinc-300 shrink-0"></span>
+                            <span><strong>Atomic Mechanics:</strong> Cache line optimization, False Sharing mitigation, and MESI protocol</span>
+                        </li>
+                        <li class="flex items-start gap-3 text-sm text-zinc-600">
+                            <span class="block w-1.5 h-1.5 mt-2.5 rounded-full bg-zinc-300 shrink-0"></span>
+                            <span><strong>Type-States:</strong> Using type-state API patterns to enforce compile-time safety during shutdown</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Key Outcomes -->
+        <section class="mb-16">
+            <div class="bg-blue-50/50 border border-blue-100 rounded-2xl p-6 md:p-8">
+                <h3 class="font-sans font-bold text-zinc-900 mb-4 text-lg">After this training, you will be able to</h3>
+                <ul class="space-y-3.5 text-zinc-700">
+                    <li class="flex items-start gap-3 text-sm md:text-base">
+                        <span class="text-blue-600 font-bold">1.</span>
+                        <span>Apply advanced memory management concepts, lifetimes, and zero-copy references to avoid unnecessary allocations</span>
+                    </li>
+                    <li class="flex items-start gap-3 text-sm md:text-base">
+                        <span class="text-blue-600 font-bold">2.</span>
+                        <span>Design and write thread-safe concurrent systems using mutexes, read-write locks, atomics, and sharding</span>
+                    </li>
+                    <li class="flex items-start gap-3 text-sm md:text-base">
+                        <span class="text-blue-600 font-bold">3.</span>
+                        <span>Leverage Rust's type system (NewType, Generics, Type-States) to turn run-time errors into compile-time proofs</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Request Section -->
+        <section class="mb-12 border border-zinc-200 rounded-2xl p-6 md:p-8 text-center bg-zinc-50/50">
+            <h3 class="text-xl font-sans font-bold text-zinc-950 mb-3 font-sans">Interested in running this training for your team?</h3>
+            <p class="text-sm text-zinc-600 max-w-[600px] mx-auto mb-6">
+                This workshop is customized for engineering teams at tech startups and enterprises looking to adopt Rust for systems programming.
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="mailto:sarthak@tech-lessons.in" class="px-5 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white font-mono text-sm rounded-md transition-all">
+                    Email for details
+                </a>
+                <a href="https://www.linkedin.com/in/sarthak-makhija/" target="_blank" rel="noopener noreferrer" class="px-5 py-2.5 border border-zinc-900 hover:bg-zinc-100 text-zinc-900 font-mono text-sm rounded-md transition-all">
+                    Connect on LinkedIn
+                </a>
+            </div>
+        </section>
+
+    </div>
+</Layout>

@@ -1,0 +1,124 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+
+const title = "Welcome to the Course!";
+const description =
+    "Thank you for enrolling in the LSM Storage Engine Course. Here are your next steps.";
+---
+
+<Layout title={title} description={description}>
+    <div class="max-w-[700px] mx-auto font-sans text-center py-12">
+        <!-- Animated / Premium Success Icon -->
+        <div
+            class="inline-flex items-center justify-center w-20 h-20 bg-green-50 rounded-full border border-green-100 mb-8"
+        >
+            <svg
+                class="w-10 h-10 text-green-600"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2.5"
+            >
+                <polyline
+                    points="20 6 9 17 4 12"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"></polyline>
+            </svg>
+        </div>
+
+        <h1
+            class="text-3xl md:text-4xl !font-sans font-bold text-zinc-900 mb-3"
+        >
+            {title}
+        </h1>
+        <p
+            class="text-zinc-500 font-mono text-xs uppercase tracking-widest mb-10"
+        >
+            Building a Transactional, LSM-Backed Storage Engine from First
+            Principles
+        </p>
+
+        <div
+            class="text-left bg-zinc-50 border border-zinc-200/60 rounded-2xl p-6 md:p-8 space-y-8 mb-10"
+        >
+            <h2
+                class="text-lg !font-sans font-bold text-zinc-900 border-b border-zinc-200/60 pb-3"
+            >
+                What happens next?
+            </h2>
+
+            <div class="flex gap-4">
+                <div
+                    class="flex-shrink-0 w-8 h-8 rounded-full bg-zinc-900 text-white flex items-center justify-center text-sm font-bold font-mono"
+                >
+                    1
+                </div>
+                <div>
+                    <h3 class="!font-sans font-bold text-zinc-900 text-base">
+                        Google Calendar Invite (with Meet Link)
+                    </h3>
+                    <p
+                        class="text-sm md:text-base text-zinc-600 mt-1 leading-relaxed font-sans"
+                    >
+                        Within 24 hours, you will receive a Google Calendar
+                        invitation sent to the email address you provided in
+                        Razorpay. This calendar invite contains the secure
+                        Google Meet link for both weekends. Once you accept the
+                        invite, you will be able to join the call directly
+                        without waiting in the lobby.
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex gap-4">
+                <div
+                    class="flex-shrink-0 w-8 h-8 rounded-full bg-zinc-900 text-white flex items-center justify-center text-sm font-bold font-mono"
+                >
+                    2
+                </div>
+                <div>
+                    <h3 class="!font-sans font-bold text-zinc-900 text-base">
+                        Prerequisites and Code Prep
+                    </h3>
+                    <p
+                        class="text-sm md:text-base text-zinc-600 mt-1 leading-relaxed font-sans"
+                    >
+                        To prepare for the hands-on sections, make sure you have
+                        Go (v1.24 or newer) installed on your machine. We will
+                        email you the link to the templates repository a few
+                        days before the first session so you can clone it and
+                        verify your setup.
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex gap-4">
+                <div
+                    class="flex-shrink-0 w-8 h-8 rounded-full bg-zinc-900 text-white flex items-center justify-center text-sm font-bold font-mono"
+                >
+                    3
+                </div>
+                <div>
+                    <h3 class="!font-sans font-bold text-zinc-900 text-base">
+                        Doubt Resolution & Slack Access
+                    </h3>
+                    <p
+                        class="text-sm md:text-base text-zinc-600 mt-1 leading-relaxed font-sans"
+                    >
+                        We will set up a private communication channel for doubt
+                        resolution and discussion. You will receive an
+                        invitation link via email before the course begins.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-base text-zinc-500 font-sans">
+            Have any immediate questions? Feel free to write to <a
+                href="mailto:sarthak@tech-lessons.in"
+                class="text-zinc-900 font-bold underline font-sans"
+                >sarthak@tech-lessons.in</a
+            >.
+        </div>
+    </div>
+</Layout>

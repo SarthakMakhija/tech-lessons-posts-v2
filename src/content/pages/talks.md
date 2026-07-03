@@ -100,4 +100,4 @@ Building a tiny concurrent cache is a journey of countless design choices. But w
 
 ## Interested in a talk or workshop?
 
-Reach out on [LinkedIn](https://www.linkedin.com/in/sarthak-makhija/) or email [sarthak.makhija@gmail.com](mailto:sarthak.makhija@gmail.com).
+Reach out on [LinkedIn](https://www.linkedin.com/in/sarthak-makhija/) or email [sarthak@tech-lessons.in](mailto:sarthak@tech-lessons.in).

@@ -1,0 +1,812 @@
+---
+import Layout from "../../layouts/Layout.astro";
+
+const title =
+    "Building a Transactional, LSM-Backed Storage Engine from First Principles";
+const description =
+    "A hands-on, live course in database architecture, concurrency models, and low-level systems programming.";
+---
+
+<Layout title={title} description={description}>
+    <div class="max-w-[850px] mx-auto font-sans">
+        <!-- Breadcrumb & Back Link -->
+        <div class="mb-8">
+            <a
+                href="/trainings"
+                class="text-sm font-mono text-zinc-500 hover:text-zinc-900 transition-colors inline-flex items-center gap-1"
+            >
+                ← Back to Trainings
+            </a>
+        </div>
+
+        <!-- Hero Header -->
+        <section class="mb-16">
+            <span
+                class="inline-block text-xs font-mono font-bold text-blue-600 bg-blue-50 border border-blue-100 px-3 py-1 rounded-full uppercase tracking-wider mb-4"
+            >
+                Live Weekend Course
+            </span>
+            <h1
+                class="text-3xl md:text-4xl font-sans font-bold text-zinc-900 leading-tight mb-6"
+            >
+                {title}
+            </h1>
+
+            <p
+                class="text-lg md:text-xl text-zinc-600 leading-relaxed font-normal mb-8"
+            >
+                {description}
+            </p>
+
+            <div
+                class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-zinc-50 border border-zinc-200/60 rounded-2xl p-6"
+            >
+                <div class="flex items-center gap-3">
+                    <svg
+                        class="w-5 h-5 text-zinc-500 shrink-0"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="2"
+                    >
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"
+                        ></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    <div>
+                        <p
+                            class="text-xs text-zinc-400 uppercase font-mono tracking-wider font-semibold"
+                        >
+                            Duration
+                        </p>
+                        <p class="text-sm font-bold text-zinc-800">
+                            August 1-2 & August 8-9, 2026 (Saturdays & Sundays)
+                        </p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <svg
+                        class="w-5 h-5 text-zinc-500 shrink-0"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="2"
+                    >
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    <div>
+                        <p
+                            class="text-xs text-zinc-400 uppercase font-mono tracking-wider font-semibold"
+                        >
+                            Timings
+                        </p>
+                        <p class="text-sm font-bold text-zinc-800">
+                            10:00 AM to 1:30 PM IST (Saturdays & Sundays)
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- The Pitch -->
+        <section class="prose prose-lg max-w-none text-zinc-800 mb-16">
+            <h2
+                class="text-2xl font-sans font-bold text-zinc-900 border-b border-zinc-100 pb-2 mb-6"
+            >
+                The Pitch
+            </h2>
+            <p class="text-lg leading-relaxed text-zinc-700 font-sans mb-6">
+                Most backend developers write application logic on top of
+                black-box databases. In this live weekend course, we pull back
+                the curtain and write the actual systems software that powers
+                modern storage giants like RocksDB, BadgerDB, and Pebble.
+            </p>
+            <p class="text-lg leading-relaxed text-zinc-700 font-sans mb-6">
+                We will write an embedded, multi-versioned key-value storage
+                engine from scratch, moving step-by-step through the classic
+                components of an <a
+                    href="/en/blog/wisckey_ssd_conscious_key_value_store/#lsm-tree"
+                    class="underline hover:text-blue-600 transition-colors"
+                    >LSM-Tree</a
+                > database architecture:
+            </p>
+
+            <div class="space-y-6 my-8">
+                <div class="border-l-4 border-blue-500 pl-4">
+                    <p class="my-0 font-sans font-bold text-zinc-900">
+                        The Memory Layer
+                    </p>
+                    <p class="text-zinc-600 text-base leading-relaxed mt-1">
+                        Coding a multi-versioned Skiplist Memtable that natively
+                        supports timestamp-ordered key versions.
+                    </p>
+                </div>
+                <div class="border-l-4 border-amber-500 pl-4">
+                    <p class="my-0 font-sans font-bold text-zinc-900">
+                        The Durability Layer
+                    </p>
+                    <p class="text-zinc-600 text-base leading-relaxed mt-1">
+                        Implementing an append-only Write-Ahead Log (WAL) with
+                        strict fsync batching and state recovery.
+                    </p>
+                </div>
+                <div class="border-l-4 border-purple-500 pl-4">
+                    <p class="my-0 font-sans font-bold text-zinc-900">
+                        The Disk Layer
+                    </p>
+                    <p class="text-zinc-600 text-base leading-relaxed mt-1">
+                        Designing block-aligned immutable SSTables, parsing
+                        encoding offsets, and writing an in-RAM <a
+                            href="/en/blog/bloom_filter/"
+                            class="underline hover:text-blue-600 transition-colors"
+                            >Bloom Filter</a
+                        > to eliminate unnecessary disk seeks.
+                    </p>
+                </div>
+                <div class="border-l-4 border-green-500 pl-4">
+                    <p class="my-0 font-sans font-bold text-zinc-900">
+                        The Transaction Layer
+                    </p>
+                    <p class="text-zinc-600 text-base leading-relaxed mt-1">
+                        Building code-level <a
+                            href="/en/blog/serializable_snapshot_isolation/"
+                            class="underline hover:text-blue-600 transition-colors"
+                            >Serializable Snapshot Isolation (SSI)</a
+                        > to detect concurrent read-write conflicts and prevent data
+                        anomalies without global locks.
+                    </p>
+                </div>
+            </div>
+
+            <div
+                class="bg-zinc-50 border border-zinc-200/60 rounded-2xl p-6 text-sm text-zinc-600 leading-relaxed font-sans italic"
+            >
+                <strong>What this course is NOT:</strong> We will not focus on database
+                administration, cloud tuning, or SQL querying. This is a code-first
+                engineering deep dive into the software architecture of storage engines.
+            </div>
+        </section>
+
+        <!-- Curriculum -->
+        <section class="mb-16">
+            <h2
+                class="text-2xl font-sans font-bold text-zinc-900 border-b border-zinc-100 pb-2 mb-8"
+            >
+                Curriculum
+            </h2>
+
+            <div class="space-y-12">
+                <!-- Week 1 - Session 1 -->
+                <div
+                    class="border border-zinc-200/80 rounded-2xl p-6 md:p-8 bg-white hover:border-zinc-300 transition-all"
+                >
+                    <span
+                        class="block text-xs font-mono font-bold text-blue-600 uppercase tracking-widest mb-2"
+                        >Week 1 - Session 1</span
+                    >
+                    <h3 class="text-xl font-sans font-bold text-zinc-900 mb-3">
+                        Foundations & B+Tree Architecture
+                    </h3>
+                    <p class="text-zinc-600 text-base leading-relaxed mb-6">
+                        Learn how data moves from memory to disk and explore
+                        B+Tree architecture limits. This session establishes the
+                        theoretical foundation for database internals and
+                        write-optimized storage engines.
+                    </p>
+                    <ul
+                        class="space-y-3.5 pl-5 list-disc text-base text-zinc-700 mb-6"
+                    >
+                        <li>
+                            Introduction to storage engines and system goals
+                        </li>
+                        <li>
+                            Introduction to block storage devices and
+                            random/sequential IO
+                        </li>
+                        <li>
+                            Understanding file organization and standard kernel
+                            IO caches
+                        </li>
+                        <li>
+                            Understanding Binary Search Trees (BST) and memory
+                            heights
+                        </li>
+                        <li>Analyzing BST limits for disk-based persistence</li>
+                        <li>
+                            Introduction to B+Tree node layouts and design
+                            trade-offs
+                        </li>
+                    </ul>
+                    <div
+                        class="pt-5 border-t border-zinc-100 flex flex-col sm:flex-row gap-4 justify-between text-sm font-sans text-zinc-500"
+                    >
+                        <div>
+                            <span class="font-bold text-zinc-800"
+                                >System Design:</span
+                            > B+Tree Node Layout
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Week 1 - Session 2 -->
+                <div
+                    class="border border-zinc-200/80 rounded-2xl p-6 md:p-8 bg-white hover:border-zinc-300 transition-all"
+                >
+                    <span
+                        class="block text-xs font-mono font-bold text-blue-600 uppercase tracking-widest mb-2"
+                        >Week 1 - Session 2</span
+                    >
+                    <h3 class="text-xl font-sans font-bold text-zinc-900 mb-3">
+                        LSM Introduction (Hands-on)
+                    </h3>
+                    <p class="text-zinc-600 text-base leading-relaxed mb-6">
+                        Get hands-on by building the core write path of an LSM
+                        engine. We will code a thread-safe Memtable and
+                        implement an append-only Write-Ahead Log (WAL) to
+                        guarantee crash durability.
+                    </p>
+                    <ul
+                        class="space-y-3.5 pl-5 list-disc text-base text-zinc-700 mb-6"
+                    >
+                        <li>
+                            Introduction to <a
+                                href="/en/blog/wisckey_ssd_conscious_key_value_store/#lsm-tree"
+                                class="underline hover:text-blue-600 transition-colors"
+                                >LSM-Tree</a
+                            > architecture and component interactions
+                        </li>
+                        <li>
+                            Implementing a multi-versioned Memtable and its
+                            iterator
+                        </li>
+                        <li>
+                            Implementing an append-only Write-Ahead Log (WAL)
+                        </li>
+                        <li>
+                            Implementing crash-resilient state recovery from WAL
+                        </li>
+                        <li>
+                            Understanding WAL rotation and implementation
+                            patterns
+                        </li>
+                    </ul>
+                    <div
+                        class="pt-5 border-t border-zinc-100 flex flex-col sm:flex-row gap-4 justify-between text-sm font-sans text-zinc-500"
+                    >
+                        <div>
+                            <span class="font-bold text-zinc-800"
+                                >Prototypes and Demonstrations:</span
+                            > 3 (SkipList Memtable, Memtable Iterator, Append-only
+                            WAL with Recovery)
+                        </div>
+                        <div>
+                            <span class="font-bold text-zinc-800"
+                                >System Design:</span
+                            > Crash-Resilient In-Memory Storage
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Week 2 - Session 3 -->
+                <div
+                    class="border border-zinc-200/80 rounded-2xl p-6 md:p-8 bg-white hover:border-zinc-300 transition-all"
+                >
+                    <span
+                        class="block text-xs font-mono font-bold text-blue-600 uppercase tracking-widest mb-2"
+                        >Week 2 - Session 3</span
+                    >
+                    <h3 class="text-xl font-sans font-bold text-zinc-900 mb-3">
+                        SSTables & Bloom Filters (Hands-on)
+                    </h3>
+                    <p class="text-zinc-600 text-base leading-relaxed mb-6">
+                        Move data from memory to disk by designing SSTables and
+                        optimize reads using Bloom Filters. This session focuses
+                        on minimizing read amplification and disk seeks.
+                    </p>
+                    <ul
+                        class="space-y-3.5 pl-5 list-disc text-base text-zinc-700 mb-6"
+                    >
+                        <li>
+                            Understanding block-aligned immutable SSTable
+                            structure
+                        </li>
+                        <li>
+                            Implementing key-value data encoding and endianness
+                        </li>
+                        <li>Implementing block-level binary search</li>
+                        <li>
+                            Implementing block-aligned SSTables and block
+                            iterators
+                        </li>
+                        <li>
+                            Understanding <a
+                                href="/en/blog/bloom_filter/"
+                                class="underline hover:text-blue-600 transition-colors"
+                                >Bloom Filter</a
+                            > theory and false positive rates
+                        </li>
+                        <li>
+                            Implementing a basic, naive <a
+                                href="/en/blog/bloom_filter/"
+                                class="underline hover:text-blue-600 transition-colors"
+                                >Bloom Filter</a
+                            >
+                        </li>
+                        <li>
+                            Implementing a production-grade in-RAM <a
+                                href="/en/blog/bloom_filter/"
+                                class="underline hover:text-blue-600 transition-colors"
+                                >Bloom Filter</a
+                            >
+                        </li>
+                        <li>
+                            Integrating <a
+                                href="/en/blog/bloom_filter/"
+                                class="underline hover:text-blue-600 transition-colors"
+                                >Bloom Filters</a
+                            > into the SSTable read path
+                        </li>
+                    </ul>
+                    <div
+                        class="pt-5 border-t border-zinc-100 flex flex-col sm:flex-row gap-4 justify-between text-sm font-sans text-zinc-500"
+                    >
+                        <div>
+                            <span class="font-bold text-zinc-800"
+                                >Prototypes and Demonstrations:</span
+                            > 3 (SSTable Encoder, Block-Indexed Search, Optimized
+                            Bloom Filter)
+                        </div>
+                        <div>
+                            <span class="font-bold text-zinc-800"
+                                >System Design:</span
+                            > Seek-Optimized Disk-Backed Read Index
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Week 2 - Session 4 -->
+                <div
+                    class="border border-zinc-200/80 rounded-2xl p-6 md:p-8 bg-white hover:border-zinc-300 transition-all"
+                >
+                    <span
+                        class="block text-xs font-mono font-bold text-blue-600 uppercase tracking-widest mb-2"
+                        >Week 2 - Session 4</span
+                    >
+                    <h3 class="text-xl font-sans font-bold text-zinc-900 mb-3">
+                        Transactions & Compaction (Hands-on)
+                    </h3>
+                    <p class="text-zinc-600 text-base leading-relaxed mb-6">
+                        Implement transactions with Serializable Snapshot
+                        Isolation (SSI) and build a Leveled Compaction engine to
+                        keep the database optimized. This session completes the
+                        transactional LSM engine.
+                    </p>
+                    <ul
+                        class="space-y-3.5 pl-5 list-disc text-base text-zinc-700 mb-6"
+                    >
+                        <li>Understanding transactions</li>
+                        <li>Understanding ACID guarantees in storage design</li>
+                        <li>
+                            Implementing durability and recovery at the
+                            transaction layer
+                        </li>
+                        <li>
+                            Understanding SQL isolation levels and write
+                            anomalies
+                        </li>
+                        <li>
+                            Understanding <a
+                                href="/en/blog/serializable_snapshot_isolation/"
+                                class="underline hover:text-blue-600 transition-colors"
+                                >Serializable Snapshot Isolation (SSI)</a
+                            >
+                            theory
+                        </li>
+                        <li>
+                            Implementing a singular update queue for safe
+                            concurrency
+                        </li>
+                        <li>
+                            Implementing code-level <a
+                                href="/en/blog/serializable_snapshot_isolation/"
+                                class="underline hover:text-blue-600 transition-colors"
+                                >Serializable Snapshot Isolation</a
+                            >
+                        </li>
+                        <li>
+                            Implementing transactional iterators with
+                            multi-version reads
+                        </li>
+                        <li>
+                            Introduction to Compaction and delete tombstone
+                            management
+                        </li>
+                        <li>
+                            Understanding Leveled and Size-Tiered compaction
+                            models
+                        </li>
+                        <li>
+                            Implementing an automated Leveled Compaction
+                            executor
+                        </li>
+                    </ul>
+                    <div
+                        class="pt-5 border-t border-zinc-100 flex flex-col sm:flex-row gap-4 justify-between text-sm font-sans text-zinc-500"
+                    >
+                        <div>
+                            <span class="font-bold text-zinc-800"
+                                >Prototypes and Demonstrations:</span
+                            > 4 (ACID Transaction Manager, SSI Conflict Detector,
+                            Transactional Iterator, Compaction Executor)
+                        </div>
+                        <div>
+                            <span class="font-bold text-zinc-800"
+                                >System Design:</span
+                            > Transactional, LSM-Backed Storage Engine
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Program Prerequisites -->
+        <section class="mb-16">
+            <h2
+                class="text-2xl font-sans font-bold text-zinc-900 border-b border-zinc-100 pb-2 mb-6"
+            >
+                Program Prerequisites
+            </h2>
+            <ul
+                class="space-y-3.5 pl-5 list-disc text-base text-zinc-700 leading-relaxed font-sans"
+            >
+                <li>
+                    <strong>Go 1.24</strong> (or newer) installed on your machine.
+                </li>
+                <li>
+                    An <strong>IDE/Editor</strong> of your choice (e.g., GoLand, VS
+                    Code) configured for Go.
+                </li>
+                <li>
+                    Intermediate proficiency in Go (or any systems-friendly
+                    programming language like Rust, Java, or C++). Familiarity
+                    with pointers, goroutines, and basic IO interfaces is
+                    helpful.
+                </li>
+                <li>
+                    Clear understanding of fundamental data structures (arrays,
+                    hash maps, binary trees, linked lists).
+                </li>
+            </ul>
+        </section>
+
+        <!-- Enrollment Section (Razorpay Checkout Box) -->
+        <section
+            class="mb-16 border-2 border-zinc-900 rounded-3xl p-6 md:p-8 bg-zinc-950 text-white shadow-xl relative overflow-hidden"
+        >
+            <div
+                class="absolute -right-8 -top-8 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl"
+            >
+            </div>
+
+            <div class="flex flex-wrap justify-between items-start gap-4 mb-8">
+                <div>
+                    <h3 class="text-2xl font-sans font-bold mt-1 text-white">
+                        LSM Storage Engine Course
+                    </h3>
+                    <p class="text-sm text-zinc-400 mt-1">
+                        August 1-2 & August 8-9, 2026
+                    </p>
+                </div>
+                <div class="text-right">
+                    <p
+                        class="text-xs text-zinc-400 uppercase font-mono tracking-wider font-semibold"
+                    >
+                        Time Schedule
+                    </p>
+                    <p class="text-sm font-bold text-zinc-200 mt-1">
+                        10:00 AM to 1:30 PM IST
+                    </p>
+                </div>
+            </div>
+
+            <div
+                class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 border-t border-zinc-800 pt-8"
+            >
+                <div>
+                    <h4
+                        class="text-sm font-mono text-zinc-400 uppercase tracking-wider mb-4 font-bold"
+                    >
+                        During the live sessions, you will
+                    </h4>
+                    <ul class="space-y-3 text-sm text-zinc-300">
+                        <li class="flex items-start gap-3">
+                            <span class="text-green-500 font-bold">✔</span>
+                            <span
+                                >Learn the intuition behind designing, building,
+                                and implementing database engines</span
+                            >
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-green-500 font-bold">✔</span>
+                            <span
+                                >Brainstorm, interact, and learn from your peers
+                                and their experiences</span
+                            >
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-green-500 font-bold">✔</span>
+                            <span
+                                >Build prototypes & understand implementation
+                                details and operational challenges of LSM
+                                storage</span
+                            >
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h4
+                        class="text-sm font-mono text-zinc-400 uppercase tracking-wider mb-4 font-bold"
+                    >
+                        You'll Get
+                    </h4>
+                    <ul class="space-y-2 text-sm text-zinc-300">
+                        <li class="flex items-center gap-2">
+                            <span class="text-green-500">✔</span> Live classes on
+                            weekends IST
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="text-green-500">✔</span> 6 Months Access
+                            to the course recordings
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="text-green-500">✔</span> Doubt resolution
+                            during and post live sessions
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="text-green-500">✔</span> First-weekend money-back
+                            guarantee: full refund within 48 hours of starting, if
+                            the course is not for you
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="text-green-500">✔</span> Language of communication
+                            will be strictly English
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div
+                class="flex flex-col sm:flex-row justify-between items-center gap-6 border-t border-zinc-800 pt-8 mt-4"
+            >
+                <div class="text-left">
+                    <span class="block text-2xl font-bold text-white font-sans">
+                        ₹6,999 INR
+                    </span>
+                    <span class="text-xs text-zinc-400 font-mono"
+                        >one-time payment</span
+                    >
+                </div>
+
+                <!-- Razorpay Payment Redirect (Update this link to your actual hosted razorpay page) -->
+                <a
+                    href="https://rzp.io/l/lsm-storage-engine"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="w-full sm:w-auto px-10 py-4 bg-red-600 hover:bg-red-700 text-white font-bold text-center rounded-xl shadow-lg hover:shadow-red-900/30 transition-all font-mono uppercase tracking-wider text-base"
+                >
+                    Enroll Now →
+                </a>
+            </div>
+        </section>
+
+        <!-- Why should you join? -->
+        <section class="mb-16">
+            <h2
+                class="text-2xl font-sans font-bold text-zinc-900 border-b border-zinc-100 pb-2 mb-6"
+            >
+                Why should you join?
+            </h2>
+            <div
+                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 font-sans text-base"
+            >
+                <div
+                    class="p-5 border border-zinc-100 rounded-xl bg-zinc-50/50"
+                >
+                    <h3 class="font-sans font-bold text-zinc-900 mb-2">
+                        Systems over CRUD
+                    </h3>
+                    <p class="text-zinc-600 leading-relaxed font-sans">
+                        Escape the loop of building basic APIs and writing SQL
+                        queries. Level up by coding the systems software that
+                        sits underneath the application layer.
+                    </p>
+                </div>
+                <div
+                    class="p-5 border border-zinc-100 rounded-xl bg-zinc-50/50"
+                >
+                    <h3 class="font-sans font-bold text-zinc-900 mb-2">
+                        Purely Hands-on
+                    </h3>
+                    <p class="text-zinc-600 leading-relaxed font-sans">
+                        Write the code yourself. Build every core component of
+                        the engine from scratch to a complete, thread-safe
+                        transactional store with tests.
+                    </p>
+                </div>
+                <div
+                    class="p-5 border border-zinc-100 rounded-xl bg-zinc-50/50"
+                >
+                    <h3 class="font-sans font-bold text-zinc-900 mb-2">
+                        Design Interview Edge
+                    </h3>
+                    <p class="text-zinc-600 leading-relaxed font-sans">
+                        Understand database trade-offs at an operating system,
+                        file system, and hardware level. Confidently explain
+                        write amplification, compaction, and transaction
+                        isolation levels in Staff/Principal interviews.
+                    </p>
+                </div>
+                <div
+                    class="p-5 border border-zinc-100 rounded-xl bg-zinc-50/50"
+                >
+                    <h3 class="font-sans font-bold text-zinc-900 mb-2">
+                        L&D Reimbursement Ready
+                    </h3>
+                    <p class="text-zinc-600 leading-relaxed font-sans">
+                        This course is priced to fit comfortably within the
+                        standard corporate training/L&D budget of most tech
+                        companies. You'll receive a detailed receipt for easy
+                        reimbursement.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ -->
+        <section class="mb-16">
+            <h2
+                class="text-2xl font-sans font-bold text-zinc-900 border-b border-zinc-100 pb-2 mb-6"
+            >
+                Frequently Asked Questions
+            </h2>
+            <div class="space-y-6">
+                <div>
+                    <h3 class="font-sans font-bold text-zinc-900 mb-2">
+                        Will you be teaching the entire duration?
+                    </h3>
+                    <p
+                        class="text-base text-zinc-600 leading-relaxed font-sans"
+                    >
+                        Yes, every session is live. I will personally facilitate
+                        and teach all modules online over Google Meet, including
+                        hands-on coding walkthroughs and interactive Q&A.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="font-sans font-bold text-zinc-900 mb-2">
+                        Will there be a class every day?
+                    </h3>
+                    <p
+                        class="text-base text-zinc-600 leading-relaxed font-sans"
+                    >
+                        No, classes run only on weekends (Saturdays and
+                        Sundays). Sessions will start at the times listed above,
+                        with an extra 30–45 minutes added if we need more time
+                        to complete coding exercises or handle debugging.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="font-sans font-bold text-zinc-900 mb-2">
+                        Is this course right for me?
+                    </h3>
+                    <p
+                        class="text-base text-zinc-600 leading-relaxed font-sans"
+                    >
+                        If you're a backend developer looking to step away from
+                        high-level database clients and understand low-level
+                        disk serialization, transactional isolation layers, and
+                        storage models, this course is designed for you. Please
+                        check the detailed curriculum outline above to see if it
+                        covers your learning goals.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="font-sans font-bold text-zinc-900 mb-2">
+                        Will I get an invoice for my payment?
+                    </h3>
+                    <p
+                        class="text-base text-zinc-600 leading-relaxed font-sans"
+                    >
+                        Yes. A standard payment receipt with all necessary
+                        billing details will be issued to you automatically. If
+                        your employer provides an L&D budget for professional
+                        training, this document will serve as valid proof of
+                        payment for reimbursement.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="font-sans font-bold text-zinc-900 mb-2">
+                        When will I receive my invoice?
+                    </h3>
+                    <p
+                        class="text-base text-zinc-600 leading-relaxed font-sans"
+                    >
+                        Your invoice is sent via email immediately after a
+                        successful transaction. Please note that if you choose
+                        to request a refund during the first weekend, your
+                        invoice will be voided.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="font-sans font-bold text-zinc-900 mb-2">
+                        Will there be 1:1 mentorship sessions?
+                    </h3>
+                    <p
+                        class="text-base text-zinc-600 leading-relaxed font-sans"
+                    >
+                        No. While the course features live chat, hands-on
+                        debugging, and interactive Q&A during class hours, it
+                        does not include individual 1-on-1 mentorship sessions.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="font-sans font-bold text-zinc-900 mb-2">
+                        What if I miss a live session?
+                    </h3>
+                    <p
+                        class="text-base text-zinc-600 leading-relaxed font-sans"
+                    >
+                        All live sessions are recorded. You will receive
+                        lifetime access to the recordings within 24 hours of
+                        each session, along with complete code repositories for
+                        each stage of the engine.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="font-sans font-bold text-zinc-900 mb-2">
+                        Can I write the engine in a language other than Go?
+                    </h3>
+                    <p
+                        class="text-base text-zinc-600 leading-relaxed font-sans"
+                    >
+                        Yes. While the instructor walkthroughs, code templates,
+                        and helper utilities are written in Go, the
+                        architectural principles, SSTable layouts, and SSI
+                        transactional isolation mechanics apply directly to
+                        Rust, C++, Java, or any other systems language.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="font-sans font-bold text-zinc-900 mb-2">
+                        How interactive is the course?
+                    </h3>
+                    <p
+                        class="text-base text-zinc-600 leading-relaxed font-sans"
+                    >
+                        To ensure high interactivity and personal attention, we
+                        cap the course at 25–30 developers. There will be open
+                        Q&A sessions, active peer discussions, and dedicated
+                        doubt support.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="font-sans font-bold text-zinc-900 mb-2">
+                        What is the refund policy?
+                    </h3>
+                    <p
+                        class="text-base text-zinc-600 leading-relaxed font-sans"
+                    >
+                        We offer a first-weekend money-back guarantee. If you
+                        decide the course is not a good fit for you after
+                        completing the first weekend, request a refund within 48
+                        hours of starting, and we will process a 100% refund
+                        immediately.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </div>
+</Layout>
