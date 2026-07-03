@@ -114,6 +114,9 @@ const description =
                 modern storage giants like RocksDB, BadgerDB, and Pebble.
             </p>
             <p class="text-lg leading-relaxed text-zinc-700 font-sans mb-6">
+                Key-value storage engines form the foundational storage layer of almost all modern databases. CockroachDB relies on <a href="https://github.com/cockroachdb/pebble" target="_blank" rel="noopener noreferrer" class="underline hover:text-blue-600 transition-colors">Pebble</a>, Dgraph is built on <a href="https://github.com/dgraph-io/badger" target="_blank" rel="noopener noreferrer" class="underline hover:text-blue-600 transition-colors">Badger</a>, and etcd is backed by <a href="https://github.com/etcd-io/bbolt" target="_blank" rel="noopener noreferrer" class="underline hover:text-blue-600 transition-colors">BBolt</a>. By understanding how a concurrent, transactional key-value store operates under the hood, you master the storage backbone of the systems you use every day.
+            </p>
+            <p class="text-lg leading-relaxed text-zinc-700 font-sans mb-6">
                 We will write an embedded, multi-versioned key-value storage
                 engine from scratch, moving step-by-step through the classic
                 components of an <a
@@ -350,6 +353,9 @@ const description =
                         <li>
                             Introduction to B+Tree node layouts and design
                             trade-offs
+                        </li>
+                        <li>
+                            Demystifying how database indexes work
                         </li>
                         <li>
                             <strong>Production Code Study:</strong> Deconstructing
