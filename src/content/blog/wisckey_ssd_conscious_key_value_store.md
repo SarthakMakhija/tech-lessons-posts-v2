@@ -108,10 +108,6 @@ void MemTable::Add(SequenceNumber s, ValueType type, const Slice& key,
 }
 ```
 
-Let's understand the high-level architecture of LevelDB.
-
-<img class="align-center" src="/leveldb.png" />
-
 Let's spend a few minutes understanding an SSTable file's structure before we move on.
 
 SSTables contain key-value pairs sorted by key. Key-value pairs are encoded before they can be written to a file. One encoding scheme could be to use `key-size`, followed by `value-size`, followed by the `actual key` and then the `actual value` as depicted in the following table:
