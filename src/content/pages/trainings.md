@@ -9,7 +9,7 @@ type: page
 
 I design and facilitate hands-on, deep-dive trainings focused on mastering software craftsmanship and storage internals.
 
-Interested in running a training for your team? Email [sarthak@tech-lessons.in](mailto:sarthak@tech-lessons.in) or reach out on [LinkedIn](https://www.linkedin.com/in/sarthak-makhija/).
+Interested in running a training for your team? Email [sarthak.makhija@tech-lessons.in](mailto:sarthak.makhija@tech-lessons.in) or reach out on [LinkedIn](https://www.linkedin.com/in/sarthak-makhija/).
 
 <div class="bg-zinc-50/50 border border-zinc-200/60 rounded-3xl p-6 md:p-8 mb-16 shadow-sm hover:shadow-md transition-all">
 <div class="flex items-center gap-4 mb-6">
