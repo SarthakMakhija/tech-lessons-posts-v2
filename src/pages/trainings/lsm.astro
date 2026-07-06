@@ -4,7 +4,7 @@ import Layout from "../../layouts/Layout.astro";
 const title =
     "Building a Transactional, LSM-Backed Storage Engine from First Principles";
 const description =
-    "A hands-on, live course in storage engine architecture, transaction concurrency models, and LSM and B+Tree structural internals";
+    "A hands-on, live course on building transactional storage engines, concurrency models, and LSM & B+Tree structural internals";
 ---
 
 <Layout title={title} description={description}>
@@ -114,7 +114,28 @@ const description =
                 modern storage giants like RocksDB, BadgerDB, and Pebble.
             </p>
             <p class="text-lg leading-relaxed text-zinc-700 font-sans mb-6">
-                Key-value storage engines form the foundational storage layer of almost all modern databases. CockroachDB relies on <a href="https://github.com/cockroachdb/pebble" target="_blank" rel="noopener noreferrer" class="underline hover:text-blue-600 transition-colors">Pebble</a>, Dgraph is built on <a href="https://github.com/dgraph-io/badger" target="_blank" rel="noopener noreferrer" class="underline hover:text-blue-600 transition-colors">Badger</a>, and etcd is backed by <a href="https://github.com/etcd-io/bbolt" target="_blank" rel="noopener noreferrer" class="underline hover:text-blue-600 transition-colors">BBolt</a>. By understanding how a concurrent, transactional key-value store operates under the hood, you master the storage backbone of the systems you use every day.
+            Key-value storage engines form the foundational storage layer of
+            almost all modern databases. CockroachDB relies on <a
+                href="https://github.com/cockroachdb/pebble"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="underline hover:text-blue-600 transition-colors"
+                >Pebble</a
+            >, Dgraph is built on <a
+                href="https://github.com/dgraph-io/badger"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="underline hover:text-blue-600 transition-colors"
+                >Badger</a
+            >, and etcd is backed by <a
+                href="https://github.com/etcd-io/bbolt"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="underline hover:text-blue-600 transition-colors"
+                >Bbolt</a
+            >. By understanding how a concurrent, transactional key-value
+                store operates under the hood, you master the storage backbone
+                of the systems you use every day.
             </p>
             <p class="text-lg leading-relaxed text-zinc-700 font-sans mb-6">
                 We will write an embedded, multi-versioned key-value storage
@@ -284,14 +305,24 @@ const description =
                         Throughout our live sessions, we will build a fully
                         transactional, concurrent storage engine from scratch,
                         and then bridge these designs to the actual production
-                        Go repositories of <a
+                        repositories of <a
                             href="https://github.com/boltdb/bolt"
                             target="_blank"
                             rel="noopener noreferrer"
                             class="underline hover:text-blue-600 transition-colors"
                             >boltdb/bolt</a
-                        >, CockroachDB's <strong>pebble</strong>, and Dgraph's <strong
-                            >badger</strong
+                        >, CockroachDB's <a
+                            href="https://github.com/cockroachdb/pebble"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="underline hover:text-blue-600 transition-colors"
+                            >pebble</a
+                        >, and Dgraph's <a
+                            href="https://github.com/dgraph-io/badger"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="underline hover:text-blue-600 transition-colors"
+                            >badger</a
                         >. You will analyze how engineers solve disk page
                         layouts, lock partitioning, block-aligned commit
                         pipelining, and background compaction strategies under
@@ -354,9 +385,7 @@ const description =
                             Introduction to B+Tree node layouts and design
                             trade-offs
                         </li>
-                        <li>
-                            Demystifying how database indexes work
-                        </li>
+                        <li>Demystifying how database indexes work</li>
                         <li>
                             <strong>Production Code Study:</strong> Deconstructing
                             <a
@@ -728,8 +757,8 @@ const description =
                         <li class="flex items-start gap-3">
                             <span class="text-green-500 font-bold">✔</span>
                             <span
-                                >Build a concurrent, transactional storage engine
-                                and understand its operational challenges</span
+                                >Build a concurrent, transactional storage
+                                engine and understand its operational challenges</span
                             >
                         </li>
                     </ul>
@@ -932,7 +961,11 @@ const description =
                         decide the course is not a good fit for you after
                         completing the first weekend, request a refund within 48
                         hours of starting, and we will process a 100% refund
-                        immediately. Please review our full <a href="/refund-policy" class="text-blue-600 hover:underline">Refund Policy</a> for terms and details.
+                        immediately. Please review our full <a
+                            href="/refund-policy"
+                            class="text-blue-600 hover:underline"
+                            >Refund Policy</a
+                        > for terms and details.
                     </p>
                 </div>
             </div>
