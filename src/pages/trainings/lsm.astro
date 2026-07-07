@@ -343,11 +343,15 @@ const description =
                 Curriculum
             </h2>
 
-            <div class="space-y-12">
+            <div class="relative pl-6 md:pl-10 border-l-2 border-zinc-200/80 space-y-12 ml-4 md:ml-6">
                 <!-- Week 1 - Session 1 -->
                 <div
-                    class="border border-zinc-200/80 rounded-2xl p-6 md:p-8 bg-white hover:border-zinc-300 transition-all"
+                    class="relative border border-zinc-200/80 rounded-2xl p-6 md:p-8 bg-white hover:border-zinc-300 transition-all group"
                 >
+                    <!-- Timeline Step Indicator -->
+                    <div class="absolute -left-[41px] md:-left-[61px] top-6 flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-blue-500 bg-white text-blue-600 font-mono text-xs md:text-sm font-bold shadow-sm group-hover:bg-blue-500 group-hover:text-white transition-all duration-300">
+                        01
+                    </div>
                     <span
                         class="block text-xs font-mono font-bold text-blue-600 uppercase tracking-widest mb-2"
                         >Week 1 - Session 1</span
@@ -355,50 +359,54 @@ const description =
                     <h3 class="text-xl font-sans font-bold text-zinc-900 mb-3">
                         Foundations & B+Tree Architecture
                     </h3>
-                    <p class="text-zinc-600 text-base leading-relaxed mb-6">
-                        Learn how data moves from memory to disk and explore
-                        B+Tree architecture limits. This session establishes the
-                        foundational concepts of database storage and B+Tree
-                        architectures.
-                    </p>
                     <ul
-                        class="space-y-3.5 pl-5 list-disc text-base text-zinc-700 mb-6"
+                        class="space-y-4 text-base text-zinc-700 mb-6"
                     >
-                        <li>
-                            Introduction to storage engines and system goals
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-zinc-100 text-zinc-700 border border-zinc-200 mr-2.5 mt-1 uppercase shrink-0">Concept</span>
+                            <span>Introduction to storage engines and system goals</span>
                         </li>
-                        <li>
-                            Introduction to block storage devices and
-                            random/sequential IO
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-zinc-100 text-zinc-700 border border-zinc-200 mr-2.5 mt-1 uppercase shrink-0">Concept</span>
+                            <span>Introduction to block storage devices and random/sequential IO</span>
                         </li>
-                        <li>
-                            Understanding file organization and standard kernel
-                            IO caches
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-zinc-100 text-zinc-700 border border-zinc-200 mr-2.5 mt-1 uppercase shrink-0">Concept</span>
+                            <span>Understanding file organization and standard kernel IO caches</span>
                         </li>
-                        <li>
-                            Understanding logical in-memory structures vs
-                            physical block layouts
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-zinc-100 text-zinc-700 border border-zinc-200 mr-2.5 mt-1 uppercase shrink-0">Concept</span>
+                            <span>Understanding logical in-memory structures vs physical block layouts</span>
                         </li>
-                        <li>
-                            Understanding Binary Search Trees (BST) and memory
-                            heights
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-zinc-100 text-zinc-700 border border-zinc-200 mr-2.5 mt-1 uppercase shrink-0">Concept</span>
+                            <span>Understanding Binary Search Trees (BST) and memory heights</span>
                         </li>
-                        <li>Analyzing BST limits for disk-based persistence</li>
-                        <li>
-                            Introduction to B+Tree node layouts and design
-                            trade-offs
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-zinc-100 text-zinc-700 border border-zinc-200 mr-2.5 mt-1 uppercase shrink-0">Concept</span>
+                            <span>Analyzing BST limits for disk-based persistence</span>
                         </li>
-                        <li>Demystifying how database indexes work</li>
-                        <li>
-                            <strong>Production Code Study:</strong> Deconstructing
-                            <a
-                                href="https://github.com/boltdb/bolt"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                class="underline hover:text-blue-600 transition-colors"
-                                >boltdb/bolt</a
-                            > to see how a production-grade B+Tree engine structures
-                            its physical on-disk pages.
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-zinc-100 text-zinc-700 border border-zinc-200 mr-2.5 mt-1 uppercase shrink-0">Concept</span>
+                            <span>Introduction to B+Tree node layouts and design trade-offs</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-zinc-100 text-zinc-700 border border-zinc-200 mr-2.5 mt-1 uppercase shrink-0">Concept</span>
+                            <span>Demystifying how database indexes work</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-purple-50 text-purple-700 border border-purple-100 mr-2.5 mt-1 uppercase shrink-0">Code Study</span>
+                            <span>
+                                <strong>Production Code Study:</strong> Deconstructing
+                                <a
+                                    href="https://github.com/boltdb/bolt"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="underline hover:text-blue-600 transition-colors"
+                                    >boltdb/bolt</a
+                                > to see how a production-grade B+Tree engine structures
+                                its physical on-disk pages.
+                            </span>
                         </li>
                     </ul>
                     <div
@@ -414,8 +422,12 @@ const description =
 
                 <!-- Week 1 - Session 2 -->
                 <div
-                    class="border border-zinc-200/80 rounded-2xl p-6 md:p-8 bg-white hover:border-zinc-300 transition-all"
+                    class="relative border border-zinc-200/80 rounded-2xl p-6 md:p-8 bg-white hover:border-zinc-300 transition-all group"
                 >
+                    <!-- Timeline Step Indicator -->
+                    <div class="absolute -left-[41px] md:-left-[61px] top-6 flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-blue-500 bg-white text-blue-600 font-mono text-xs md:text-sm font-bold shadow-sm group-hover:bg-blue-500 group-hover:text-white transition-all duration-300">
+                        02
+                    </div>
                     <span
                         class="block text-xs font-mono font-bold text-blue-600 uppercase tracking-widest mb-2"
                         >Week 1 - Session 2</span
@@ -430,45 +442,53 @@ const description =
                         guarantee crash durability.
                     </p>
                     <ul
-                        class="space-y-3.5 pl-5 list-disc text-base text-zinc-700 mb-6"
+                        class="space-y-4 text-base text-zinc-700 mb-6"
                     >
-                        <li>
-                            Introduction to <a
-                                href="/en/blog/wisckey_ssd_conscious_key_value_store/#lsm-tree"
-                                class="underline hover:text-blue-600 transition-colors"
-                                >LSM-Tree</a
-                            > architecture and component interactions
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-zinc-100 text-zinc-700 border border-zinc-200 mr-2.5 mt-1 uppercase shrink-0">Concept</span>
+                            <span>
+                                Introduction to <a
+                                    href="/en/blog/wisckey_ssd_conscious_key_value_store/#lsm-tree"
+                                    class="underline hover:text-blue-600 transition-colors"
+                                    >LSM-Tree</a
+                                > architecture and component interactions
+                            </span>
                         </li>
-                        <li>
-                            Implementing a multi-versioned Memtable and its
-                            iterator
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-100 mr-2.5 mt-1 uppercase shrink-0">Build</span>
+                            <span>Implementing a multi-versioned Memtable and its iterator</span>
                         </li>
-                        <li>
-                            Implementing an append-only Write-Ahead Log (WAL)
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-100 mr-2.5 mt-1 uppercase shrink-0">Build</span>
+                            <span>Implementing an append-only Write-Ahead Log (WAL)</span>
                         </li>
-                        <li>
-                            Implementing crash-resilient state recovery from WAL
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-100 mr-2.5 mt-1 uppercase shrink-0">Build</span>
+                            <span>Implementing crash-resilient state recovery from WAL</span>
                         </li>
-                        <li>
-                            Understanding WAL rotation and implementation
-                            patterns
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-zinc-100 text-zinc-700 border border-zinc-200 mr-2.5 mt-1 uppercase shrink-0">Concept</span>
+                            <span>Understanding WAL rotation and implementation patterns</span>
                         </li>
-                        <li>
-                            <strong>Production Code Study:</strong> Auditing CockroachDB's
-                            <a
-                                href="https://github.com/cockroachdb/pebble"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                class="underline hover:text-blue-600 transition-colors"
-                                >pebble</a
-                            > or Dgraph's <a
-                                href="https://github.com/dgraph-io/badger"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                class="underline hover:text-blue-600 transition-colors"
-                                >badger</a
-                            > repository to see how a production-grade engine structures
-                            its concurrent Memtable and commit pipeline.
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-purple-50 text-purple-700 border border-purple-100 mr-2.5 mt-1 uppercase shrink-0">Code Study</span>
+                            <span>
+                                <strong>Production Code Study:</strong> Auditing CockroachDB's
+                                <a
+                                    href="https://github.com/cockroachdb/pebble"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="underline hover:text-blue-600 transition-colors"
+                                    >pebble</a
+                                > or Dgraph's <a
+                                    href="https://github.com/dgraph-io/badger"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="underline hover:text-blue-600 transition-colors"
+                                    >badger</a
+                                > repository to see how a production-grade engine structures
+                                its concurrent Memtable and commit pipeline.
+                            </span>
                         </li>
                     </ul>
                     <div
@@ -490,8 +510,12 @@ const description =
 
                 <!-- Week 2 - Session 3 -->
                 <div
-                    class="border border-zinc-200/80 rounded-2xl p-6 md:p-8 bg-white hover:border-zinc-300 transition-all"
+                    class="relative border border-zinc-200/80 rounded-2xl p-6 md:p-8 bg-white hover:border-zinc-300 transition-all group"
                 >
+                    <!-- Timeline Step Indicator -->
+                    <div class="absolute -left-[41px] md:-left-[61px] top-6 flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-blue-500 bg-white text-blue-600 font-mono text-xs md:text-sm font-bold shadow-sm group-hover:bg-blue-500 group-hover:text-white transition-all duration-300">
+                        03
+                    </div>
                     <span
                         class="block text-xs font-mono font-bold text-blue-600 uppercase tracking-widest mb-2"
                         >Week 2 - Session 3</span
@@ -505,58 +529,77 @@ const description =
                         on minimizing read amplification and disk seeks.
                     </p>
                     <ul
-                        class="space-y-3.5 pl-5 list-disc text-base text-zinc-700 mb-6"
+                        class="space-y-4 text-base text-zinc-700 mb-6"
                     >
-                        <li>
-                            Understanding block-aligned immutable SSTable
-                            structure
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-zinc-100 text-zinc-700 border border-zinc-200 mr-2.5 mt-1 uppercase shrink-0">Concept</span>
+                            <span>Understanding block-aligned immutable SSTable structure</span>
                         </li>
-                        <li>
-                            Implementing key-value data encoding and endianness
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-100 mr-2.5 mt-1 uppercase shrink-0">Build</span>
+                            <span>Implementing key-value data encoding and endianness</span>
                         </li>
-                        <li>Implementing block-level binary search</li>
-                        <li>
-                            Implementing block-aligned SSTables and block
-                            iterators
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-100 mr-2.5 mt-1 uppercase shrink-0">Build</span>
+                            <span>Implementing block-level binary search</span>
                         </li>
-                        <li>
-                            Understanding <a
-                                href="/en/blog/bloom_filter/"
-                                class="underline hover:text-blue-600 transition-colors"
-                                >Bloom Filter</a
-                            > theory
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-100 mr-2.5 mt-1 uppercase shrink-0">Build</span>
+                            <span>Implementing block-aligned SSTables and block iterators</span>
                         </li>
-                        <li>
-                            Implementing a basic, naive <a
-                                href="/en/blog/bloom_filter/"
-                                class="underline hover:text-blue-600 transition-colors"
-                                >Bloom Filter</a
-                            >
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-zinc-100 text-zinc-700 border border-zinc-200 mr-2.5 mt-1 uppercase shrink-0">Concept</span>
+                            <span>
+                                Understanding <a
+                                    href="/en/blog/bloom_filter/"
+                                    class="underline hover:text-blue-600 transition-colors"
+                                    >Bloom Filter</a
+                                > theory
+                            </span>
                         </li>
-                        <li>
-                            Implementing a production-grade in-RAM <a
-                                href="/en/blog/bloom_filter/"
-                                class="underline hover:text-blue-600 transition-colors"
-                                >Bloom Filter</a
-                            >
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-100 mr-2.5 mt-1 uppercase shrink-0">Build</span>
+                            <span>
+                                Implementing a basic, naive <a
+                                    href="/en/blog/bloom_filter/"
+                                    class="underline hover:text-blue-600 transition-colors"
+                                    >Bloom Filter</a
+                                >
+                            </span>
                         </li>
-                        <li>
-                            Integrating <a
-                                href="/en/blog/bloom_filter/"
-                                class="underline hover:text-blue-600 transition-colors"
-                                >Bloom Filters</a
-                            > into the SSTable read path
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-100 mr-2.5 mt-1 uppercase shrink-0">Build</span>
+                            <span>
+                                Implementing a production-grade in-RAM <a
+                                    href="/en/blog/bloom_filter/"
+                                    class="underline hover:text-blue-600 transition-colors"
+                                    >Bloom Filter</a
+                                >
+                            </span>
                         </li>
-                        <li>
-                            <strong>Production Code Study:</strong> Deconstructing
-                            Dgraph's <a
-                                href="https://github.com/dgraph-io/badger"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                class="underline hover:text-blue-600 transition-colors"
-                                >badger</a
-                            > engine code to look at real-world block-aligned table
-                            builders and RAM-to-disk serialization.
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-100 mr-2.5 mt-1 uppercase shrink-0">Build</span>
+                            <span>
+                                Integrating <a
+                                    href="/en/blog/bloom_filter/"
+                                    class="underline hover:text-blue-600 transition-colors"
+                                    >Bloom Filters</a
+                                > into the SSTable read path
+                            </span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-purple-50 text-purple-700 border border-purple-100 mr-2.5 mt-1 uppercase shrink-0">Code Study</span>
+                            <span>
+                                <strong>Production Code Study:</strong> Deconstructing
+                                Dgraph's <a
+                                    href="https://github.com/dgraph-io/badger"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="underline hover:text-blue-600 transition-colors"
+                                    >badger</a
+                                > engine code to look at real-world block-aligned table
+                                builders and RAM-to-disk serialization.
+                            </span>
                         </li>
                     </ul>
                     <div
@@ -578,8 +621,12 @@ const description =
 
                 <!-- Week 2 - Session 4 -->
                 <div
-                    class="border border-zinc-200/80 rounded-2xl p-6 md:p-8 bg-white hover:border-zinc-300 transition-all"
+                    class="relative border border-zinc-200/80 rounded-2xl p-6 md:p-8 bg-white hover:border-zinc-300 transition-all group"
                 >
+                    <!-- Timeline Step Indicator -->
+                    <div class="absolute -left-[41px] md:-left-[61px] top-6 flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-blue-500 bg-white text-blue-600 font-mono text-xs md:text-sm font-bold shadow-sm group-hover:bg-blue-500 group-hover:text-white transition-all duration-300">
+                        04
+                    </div>
                     <span
                         class="block text-xs font-mono font-bold text-blue-600 uppercase tracking-widest mb-2"
                         >Week 2 - Session 4</span
@@ -594,63 +641,77 @@ const description =
                         completes the transactional LSM engine.
                     </p>
                     <ul
-                        class="space-y-3.5 pl-5 list-disc text-base text-zinc-700 mb-6"
+                        class="space-y-4 text-base text-zinc-700 mb-6"
                     >
-                        <li>Understanding transactions</li>
-                        <li>Understanding ACID guarantees in storage design</li>
-                        <li>
-                            Implementing durability and recovery at the
-                            transaction layer
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-zinc-100 text-zinc-700 border border-zinc-200 mr-2.5 mt-1 uppercase shrink-0">Concept</span>
+                            <span>Understanding transactions</span>
                         </li>
-                        <li>
-                            Understanding SQL isolation levels and write
-                            anomalies
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-zinc-100 text-zinc-700 border border-zinc-200 mr-2.5 mt-1 uppercase shrink-0">Concept</span>
+                            <span>Understanding ACID guarantees in storage design</span>
                         </li>
-                        <li>
-                            Understanding <a
-                                href="/en/blog/serializable_snapshot_isolation/"
-                                class="underline hover:text-blue-600 transition-colors"
-                                >Serializable Snapshot Isolation (SSI)</a
-                            >
-                            theory
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-100 mr-2.5 mt-1 uppercase shrink-0">Build</span>
+                            <span>Implementing durability and recovery at the transaction layer</span>
                         </li>
-                        <li>
-                            Implementing a singular update queue for safe
-                            concurrency
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-zinc-100 text-zinc-700 border border-zinc-200 mr-2.5 mt-1 uppercase shrink-0">Concept</span>
+                            <span>Understanding SQL isolation levels and write anomalies</span>
                         </li>
-                        <li>
-                            Implementing <a
-                                href="/en/blog/serializable_snapshot_isolation/"
-                                class="underline hover:text-blue-600 transition-colors"
-                                >Serializable Snapshot Isolation</a
-                            >
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-zinc-100 text-zinc-700 border border-zinc-200 mr-2.5 mt-1 uppercase shrink-0">Concept</span>
+                            <span>
+                                Understanding <a
+                                    href="/en/blog/serializable_snapshot_isolation/"
+                                    class="underline hover:text-blue-600 transition-colors"
+                                    >Serializable Snapshot Isolation (SSI)</a
+                                > theory
+                            </span>
                         </li>
-                        <li>
-                            Implementing transactional iterators with
-                            multi-version reads
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-100 mr-2.5 mt-1 uppercase shrink-0">Build</span>
+                            <span>Implementing a singular update queue for safe concurrency</span>
                         </li>
-                        <li>
-                            Introduction to Compaction and delete tombstone
-                            management
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-100 mr-2.5 mt-1 uppercase shrink-0">Build</span>
+                            <span>
+                                Implementing <a
+                                    href="/en/blog/serializable_snapshot_isolation/"
+                                    class="underline hover:text-blue-600 transition-colors"
+                                    >Serializable Snapshot Isolation</a
+                                >
+                            </span>
                         </li>
-                        <li>
-                            Understanding Leveled and Size-Tiered compaction
-                            models
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-100 mr-2.5 mt-1 uppercase shrink-0">Build</span>
+                            <span>Implementing transactional iterators with multi-version reads</span>
                         </li>
-                        <li>
-                            Implementing an automated Leveled Compaction
-                            executor
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-zinc-100 text-zinc-700 border border-zinc-200 mr-2.5 mt-1 uppercase shrink-0">Concept</span>
+                            <span>Introduction to Compaction and delete tombstone management</span>
                         </li>
-                        <li>
-                            <strong>Production Code Study:</strong> Analyzing transaction
-                            conflict detection and background compaction in Dgraph's
-                            <a
-                                href="https://github.com/dgraph-io/badger"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                class="underline hover:text-blue-600 transition-colors"
-                                >badger</a
-                            >.
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-zinc-100 text-zinc-700 border border-zinc-200 mr-2.5 mt-1 uppercase shrink-0">Concept</span>
+                            <span>Understanding Leveled and Size-Tiered compaction models</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-100 mr-2.5 mt-1 uppercase shrink-0">Build</span>
+                            <span>Implementing an automated Leveled Compaction executor</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-purple-50 text-purple-700 border border-purple-100 mr-2.5 mt-1 uppercase shrink-0">Code Study</span>
+                            <span>
+                                <strong>Production Code Study:</strong> Analyzing transaction
+                                conflict detection and background compaction in Dgraph's
+                                <a
+                                    href="https://github.com/dgraph-io/badger"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="underline hover:text-blue-600 transition-colors"
+                                    >badger</a
+                                >.
+                            </span>
                         </li>
                     </ul>
                     <div
