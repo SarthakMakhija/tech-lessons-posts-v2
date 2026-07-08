@@ -75,6 +75,16 @@ const relatedPosts = allPosts
         return b.data.pubDate.valueOf() - a.data.pubDate.valueOf(); // Newer first
     })
     .slice(0, 3); // Top 3
+
+const lsmPromoSlugs = new Set([
+    "bloom_filter",
+    "serializable_snapshot_isolation",
+    "wisckey_ssd_conscious_key_value_store",
+    "bitcask",
+    "cache_line_hashtable",
+]);
+
+const showLsmPromo = lsmPromoSlugs.has(post.slug);
 ---
 
 <Layout
@@ -159,6 +169,41 @@ const relatedPosts = allPosts
                 >
                     <Content />
                 </div>
+
+                <!-- Promotional Callout for LSM Course -->
+                {
+                    showLsmPromo && (
+                        <div class="my-12 p-6 md:p-8 rounded-2xl bg-zinc-50 border border-zinc-200/80 shadow-sm relative overflow-hidden group">
+                            <!-- Premium Top Gradient Line Accent -->
+                            <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500" />
+                            
+                            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+                                <div class="max-w-xl">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-mono font-bold bg-zinc-100 text-zinc-800 border border-zinc-200 uppercase tracking-wider mb-3">
+                                        Live Weekend Course
+                                    </span>
+                                    <h3 class="text-xl md:text-2xl font-sans font-bold text-zinc-900 mb-2">
+                                        Building a Transactional, LSM-Backed Storage Engine from First Principles
+                                    </h3>
+                                    <p class="text-zinc-600 text-sm md:text-base leading-relaxed">
+                                        Go beyond database abstractions. Learn B+Tree & LSM structures, WAL durability, and write-concurrency by coding a transactional storage engine from first principles.
+                                    </p>
+                                </div>
+                                <div class="shrink-0">
+                                    <a
+                                        href="/trainings/lsm"
+                                        class="inline-flex items-center justify-center px-5 py-3 border border-zinc-900 rounded-xl text-sm font-sans font-bold text-white bg-zinc-900 hover:bg-zinc-800 hover:border-zinc-800 transition-all shadow-sm active:scale-[0.98]"
+                                    >
+                                        Learn Internals
+                                        <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    )
+                }
 
                 <!-- Tags Section -->
                 {
