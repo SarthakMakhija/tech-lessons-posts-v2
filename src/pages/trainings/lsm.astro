@@ -867,28 +867,80 @@ const description =
             </div>
 
             <div
-                class="flex flex-col sm:flex-row justify-between items-center gap-6 border-t border-zinc-800 pt-8 mt-4"
+                class="flex flex-col md:flex-row justify-between items-center gap-6 border-t border-zinc-800 pt-8 mt-4"
             >
-                <div class="text-left">
-                    <span class="block text-2xl font-bold text-white font-sans">
-                        ₹9,999 INR
-                    </span>
-                    <span class="text-xs text-zinc-400 font-mono"
-                        >one-time payment</span
-                    >
+                <div class="flex items-center gap-6 text-left w-full md:w-auto">
+                    <!-- INR Radio Choice -->
+                    <label class="flex items-center gap-3 cursor-pointer group select-none">
+                        <input
+                            type="radio"
+                            name="currency-select"
+                            value="inr"
+                            checked
+                            class="w-4 h-4 accent-red-600 cursor-pointer shrink-0"
+                        />
+                        <div>
+                            <span class="block text-xl font-bold text-white group-hover:text-red-500 transition-colors leading-tight">
+                                ₹9,999 INR
+                            </span>
+                            <span class="block text-[10px] text-zinc-400 font-mono uppercase tracking-wider mt-0.5">
+                                India
+                            </span>
+                        </div>
+                    </label>
+                    
+                    <div class="h-8 w-px bg-zinc-800 shrink-0"></div>
+
+                    <!-- USD Radio Choice -->
+                    <label class="flex items-center gap-3 cursor-pointer group select-none">
+                        <input
+                            type="radio"
+                            name="currency-select"
+                            value="usd"
+                            class="w-4 h-4 accent-red-600 cursor-pointer shrink-0"
+                        />
+                        <div>
+                            <span class="block text-xl font-bold text-white group-hover:text-red-500 transition-colors leading-tight">
+                                $120 USD
+                            </span>
+                            <span class="block text-[10px] text-zinc-400 font-mono uppercase tracking-wider mt-0.5">
+                                Outside India
+                            </span>
+                        </div>
+                    </label>
                 </div>
 
                 <!-- Razorpay Payment Redirect -->
                 <a
+                    id="enroll-cta"
                     href="https://rzp.io/rzp/ornufma"
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="w-full sm:w-auto px-10 py-4 bg-red-600 hover:bg-red-700 text-white font-bold text-center rounded-xl shadow-lg hover:shadow-red-900/30 transition-all font-mono uppercase tracking-wider text-base"
+                    class="w-full md:w-auto px-10 py-4 bg-red-600 hover:bg-red-700 text-white font-bold text-center rounded-xl shadow-lg hover:shadow-red-900/30 transition-all font-mono uppercase tracking-wider text-base"
                 >
                     Enroll Now →
                 </a>
             </div>
         </section>
+
+        <script>
+            const enrollCta = document.getElementById("enroll-cta");
+            const currencyRadios = document.querySelectorAll('input[name="currency-select"]');
+
+            const inrLink = "https://rzp.io/rzp/ornufma";
+            const usdLink = "https://rzp.io/rzp/3Vnjr3xu";
+
+            currencyRadios.forEach((radio) => {
+                radio.addEventListener("change", (e) => {
+                    const target = e.target as HTMLInputElement;
+                    if (target.value === "usd") {
+                        enrollCta?.setAttribute("href", usdLink);
+                    } else {
+                        enrollCta?.setAttribute("href", inrLink);
+                    }
+                });
+            });
+        </script>
 
         <!-- FAQ -->
         <section class="mb-16">
