@@ -76,24 +76,24 @@ func (db *DB) doWrites(lc *z.Closer) {
 	for {
 		var r *request
 		select {
-		case r = <-db.writeCh:
+			case r = <-db.writeCh:
 
-		for {
-			reqs = append(reqs, r)		 	//batching
-			reqLen.Set(int64(len(reqs)))
+			for {
+				reqs = append(reqs, r)		 	//batching
+				reqLen.Set(int64(len(reqs)))
 
-			if len(reqs) >= 3*kvWriteChCapacity {
-				pendingCh <- struct{}{} 	      //write serialization
-				goto writeCase
+				if len(reqs) >= 3*kvWriteChCapacity {
+					pendingCh <- struct{}{} 	      //write serialization
+					goto writeCase
+				}
+				// Note: Continuous non-blocking polling of db.writeCh 
+				// and pendingCh slot availability removed for brevity.
 			}
-			// Note: Continuous non-blocking polling of db.writeCh 
-               // and pendingCh slot availability removed for brevity.
-		}
 
-		writeCase:
-			go writeRequests(reqs)
-			reqs = make([]*request, 0, 10)
-			reqLen.Set(0)
+			writeCase:
+				go writeRequests(reqs)
+				reqs = make([]*request, 0, 10)
+				reqLen.Set(0)
 		}
 	}
 }

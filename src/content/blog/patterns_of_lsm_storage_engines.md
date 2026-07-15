@@ -8,7 +8,7 @@ tags: ["Storage engine", "LSM", "WriteOptimized"]
 caption: "Patterns of LSM Storage Engines"
 ---
 
-Log-Structured Merge-tree (LSM) storage engines power some of the world's most demanding write-heavy databases, including RocksDB, Cassandra, Pebble, and BadgerDB. Unlike traditional B+Tree-based systems that perform random, in-place updates on disk, LSM storage engines optimize for sequential writes by buffering incoming data in volatile memory before flushing it to persistent storage as immutable sorted files.
+[Log-Structured Merge-tree (LSM)](https://tech-lessons.in/en/blog/wisckey_ssd_conscious_key_value_store/#lsm-tree) storage engines power some of the world's most demanding write-heavy databases, including RocksDB, Cassandra, Pebble, and BadgerDB. Unlike traditional B+Tree-based systems that perform random, in-place updates on disk, LSM storage engines optimize for sequential writes by buffering incoming data in volatile memory before flushing it to persistent storage as immutable sorted files.
 
 However, behind the high write throughput of LSM engines lies a complex web of engineering challenges. Serializing writes to the disk, maintaining read visibility order, managing in-memory components (like MemTables), and reclaiming disk space through compactions all require highly optimized architectural choices.
 
@@ -18,9 +18,9 @@ To understand these engines from first principles, we can catalog their architec
 
 Coordinating concurrent client threads as they write to volatile memory (RAM) and persist to the Write-Ahead Log (WAL) on disk.
 
-* **[Pipelined Batch Aggregator (BadgerDB’s Pattern)](/en/blog/badger_pipelined_batch_aggregator/)**: Decouples batch accumulation from write execution using a background worker loop and a separate write worker.
-* **[Staged Pipeline Commit (Pebble’s Pattern)](/en/blog/pebble_staged_pipeline_commit/)**: Treats the commit path as a multi-stage assembly line, minimizing lock hold times to fast RAM-to-RAM copies before inserting into the MemTable concurrently.
-* **[Cooperative Group Commit (RocksDB’s Pattern)](/en/blog/rocksdb_cooperative_group_commit/)**: Coordinates concurrent threads to pool their write requests together under an elected leader thread.
+* **[Pipelined Batch Aggregator](/en/blog/pipelined_batch_aggregator/)**: Decouples batch accumulation from write execution using a background worker loop and a separate write worker.
+* **[Staged Pipeline Commit](/en/blog/staged_pipeline_commit/)**: Treats the commit path as a multi-stage assembly line, minimizing lock hold times to fast RAM-to-RAM copies before inserting into the MemTable concurrently.
+* **Group Commit**: Coordinates concurrent threads to pool their write requests together under an elected leader thread.
 
 ### Other Patterns Coming Soon
 
