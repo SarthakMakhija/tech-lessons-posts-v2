@@ -18,9 +18,9 @@ To understand these engines from first principles, we can catalog their architec
 
 Coordinating concurrent client threads as they write to volatile memory (RAM) and persist to the Write-Ahead Log (WAL) on disk.
 
-* **[Pipelined Batch Aggregator](/en/blog/ingest_commit_concurrency_pipelines/)**: Decouples batch accumulation from write execution using a background worker loop and a separate write worker.
-* **[Staged Pipeline Commit](/en/blog/pebble_staged_pipeline_commit/)**: Treats the commit path as a multi-stage assembly line, minimizing lock hold times to fast RAM-to-RAM copies before inserting into the MemTable concurrently.
-* **Group Commit**: Coordinates concurrent threads to pool their write requests together under an elected leader thread.
+* **[Pipelined Batch Aggregator (BadgerDB’s Pattern)](/en/blog/badger_pipelined_batch_aggregator/)**: Decouples batch accumulation from write execution using a background worker loop and a separate write worker.
+* **[Staged Pipeline Commit (Pebble’s Pattern)](/en/blog/pebble_staged_pipeline_commit/)**: Treats the commit path as a multi-stage assembly line, minimizing lock hold times to fast RAM-to-RAM copies before inserting into the MemTable concurrently.
+* **[Cooperative Group Commit (RocksDB’s Pattern)](/en/blog/rocksdb_cooperative_group_commit/)**: Coordinates concurrent threads to pool their write requests together under an elected leader thread.
 
 ### Other Patterns Coming Soon
 
