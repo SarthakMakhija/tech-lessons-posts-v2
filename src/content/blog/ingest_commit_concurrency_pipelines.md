@@ -3,6 +3,7 @@ author: "Sarthak Makhija"
 title: "Patterns of LSM Storage Engines: Ingest & Commit Concurrency Pipelines - Pipelined Batch Aggregator"
 description: "An architectural exploration of write path concurrency in modern key-value storage engines, examining BadgerDB's Pipelined Batch Aggregator."
 pubDate: 2026-07-15
+weight: 2
 tags: ["Storage engine", "BadgerDB", "Concurrency", "Go"]
 caption: "Ingest & Commit Pipelines in Modern Storage Engines"
 ---
@@ -33,11 +34,11 @@ To scale under high concurrency, the engine must separate batch accumulation fro
 
 #### The Solution
 
-The **Pipelined Batch Aggregator** solves this by :h[decoupling batch accumulation from write execution using an asynchronous channel proxy.] 
-
-Instead of client threads directly writing to disk, they encapsulate their mutations into a [request](https://github.com/dgraph-io/badger/blob/main/value.go#L697) structure and dispatch them to an in-memory channel. A single, dedicated background loop (the aggregator thread) continuously drains these requests from the channel and groups them into a batch. 
-
-When a batch boundary is met (e.g., max size or count is reached) or when the execution worker is ready, the aggregator delegates the accumulated batch to a separate goroutine execution slot, ensuring that :h[only one goroutine is actively writing to the WAL, MemTable, and Value Log (vlog) at any given time.] This immediately unblocks the main aggregator loop, allowing it to resume draining the channel and collecting the next wave of transactions in memory while the previous batch is being written to disk in the background.
+**Pipelined Batch Aggregator**: It means **client threads do not perform any database writes themselves**. Instead:
+1. Client threads package their write requests and send them into a thread-safe, in-memory queue.
+2. A dedicated background **accumulator loop** drains this queue and groups incoming requests into a single batch.
+3. Once a batch is ready, the accumulator loop hands it off to a **separate, serialized write worker** that writes it to the Value Log (vlog), WAL, and MemTable.
+4. Because the write execution is handed off, the accumulator loop is immediately unblocked to resume draining the queue and building the next batch in parallel, protecting the client threads from write latency.
 
 #### Badger's Code
 
@@ -97,6 +98,14 @@ func (db *DB) doWrites(lc *z.Closer) {
 	}
 }
 ```
+
+#### The Write Serialization Mechanism (`pendingCh`)
+
+To prevent multiple concurrent write workers from writing to the disk out of order, Badger uses a synchronization channel named `pendingCh` with a capacity of **1**:
+
+* **Acquiring the Write Lock**: Before launching a background writer goroutine (`go writeRequests(reqs)`), the aggregator sends a token into the channel: `pendingCh <- struct{}{}`. If a previous write worker is still running, this send will block, parking the aggregator loop and preventing a second write worker from spawning.
+* **Eager Flushes**: If the number of accumulated requests becomes too large (`len(reqs) >= 3 * kvWriteChCapacity`), Badger doesn't wait for the standard loop; it immediately blocks until it can acquire the write lock (`pendingCh <- struct{}{}`) and jumps to trigger the flush (`goto writeCase`).
+* **Releasing the Lock**: Once the active write worker completes `db.writeRequests(reqs)`, it drains a token from the channel: `<-pendingCh`. This immediately unblocks the aggregator loop, allowing it to spawn the next write worker.
 
 `doWrites` is available [here](https://github.com/dgraph-io/badger/blob/main/db.go#L943).
 

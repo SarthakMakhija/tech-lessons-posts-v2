@@ -3,6 +3,7 @@ author: "Sarthak Makhija"
 title: "Patterns of LSM Storage Engines: Ingest & Commit Concurrency Pipelines - Staged Pipeline Commit"
 description: "An architectural exploration of write path concurrency in CockroachDB's Pebble storage engine, analyzing its microsecond RAM-to-RAM WAL copy and concurrent MemTable updates."
 pubDate: 2026-07-15
+weight: 1
 tags: ["Storage engine", "Pebble", "Concurrency", "Go"]
 caption: "The Staged Pipeline Commit in Pebble"
 ---
@@ -29,7 +30,12 @@ Conversely, attempting to solve this by forcing threads to pool together and sle
 
 #### The Solution
 
-The **Staged Pipeline Commit** eliminates thread hierarchies and thread-sleeping coordination structures entirely, treating the write path as a strict, multi-stage assembly line where every client thread remains fully active and drives its own execution workflow. By recognizing that appending data to a log buffer is a rapid memory copy, the pattern limits lock retention to that micro-window. The engine uses a single coordination mutex to assign ordered transaction sequence numbers and copy data into the log buffer, then instantly drops the lock to let client threads execute the heavy in-memory mutations in parallel across multiple CPU cores.
+**Staged Pipeline Commit**: It means **client threads themselves drive the write process, but they do it in decoupled stages** like a multi-stage assembly line:
+1. **The Brief Lock (RAM WAL copy)**: A client thread briefly locks a mutex only to claim its sequence number and perform a fast memory copy of its batch into Pebble's WAL memory buffer (RAM). Since this is strictly a RAM-to-RAM copy, it takes microseconds, and the mutex is immediately dropped.
+2. **The Parallel Fan-out (MemTable inserts)**: Having dropped the lock, multiple client threads concurrently write their mutations into the lock-free Skiplist in the MemTable. They utilize separate CPU cores, running in parallel.
+3. **The Background Sync (Disk durability)**: A background loop collects the batches and performs the slow physical write to disk and the fsync syscall. The client threads only block to wait for this background sync to finish before returning.
+
+By splitting the write path into these stages, the serialized lock is held only for microseconds (RAM speed) rather than milliseconds (disk speed or CPU-heavy MemTable updates), allowing high multi-core parallelism.
 
 #### The Execution Architecture
 
@@ -53,7 +59,7 @@ func (p *commitPipeline) Commit(b *Batch, syncWAL bool, noSyncWait bool) error {
         return err
     }
 
-    // Stage 2: Heavy multi-core MemTable insertion outside the lock
+    // Stage 2: Multi-core MemTable insertion outside the lock
     if err := p.env.apply(b, mem); err != nil { // [!code highlight]
         b.db = nil
         return err
@@ -94,9 +100,10 @@ func (p *commitPipeline) prepare(b *Batch, syncWAL bool, noSyncWait bool) (*memT
 Deep inside [SyncRecordGeneralized](https://github.com/cockroachdb/pebble/blob/master/record/log_writer.go#L979) and [emitFragmentRecyclable](https://github.com/cockroachdb/pebble/blob/master/record/log_writer.go#L1034), we see that `p.env.write` performs nothing more than a standard memory-to-memory copy into Pebble's internal `block.buf`:
 
 ```go
-// Inside record/log_writer.go
-r := copy(b.buf[i+recyclableHeaderSize:], p) // [!code highlight]
-// ...
+// Inside record/log_writer.go -> emitFragmentRecyclable
+r := copy(b.buf[i+recyclableHeaderSize:], p)
+
+// Inside record/log_writer.go -> SyncRecordGeneralized
 if ps.syncRequested() {
     f := &w.flusher
     f.pendingSyncs.push(ps) // Register completion WaitGroup tracking (b.commit)
@@ -104,7 +111,7 @@ if ps.syncRequested() {
 }
 ```
 
-Because this step is strictly a RAM-to-RAM operation, the thread releases the mutex in microseconds, clearing the gate for trailing application threads.
+Because this step is strictly a RAM-to-RAM operation, the thread releases the mutex in microseconds, clearing the gate for trailing application threads. Simultaneously, if synchronous durability is requested, `pendingSyncs.push(ps)` registers the client's completion intent (`b.commit`) in the flusher's queue, allowing the decoupled background flusher daemon to eventually notify and wake the thread once the WAL is synced to disk.
 
 #### Stage 2: Parallel In-Memory Fan-out (Concurrent MemTable Insertion)
 
