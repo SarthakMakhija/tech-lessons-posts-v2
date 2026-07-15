@@ -4,7 +4,7 @@ title: "Patterns of LSM Storage Engines: Ingest & Commit Concurrency Pipelines -
 description: "An architectural exploration of write path concurrency in CockroachDB's Pebble storage engine, analyzing its microsecond RAM-to-RAM WAL copy and concurrent MemTable updates."
 pubDate: 2026-07-15
 weight: 1
-tags: ["Storage engine", "Pebble", "Concurrency", "Go"]
+tags: ["Storage engine", "Pebble", "Concurrency", "Go", "LSM"]
 caption: "The Staged Pipeline Commit in Pebble"
 ---
 
@@ -31,6 +31,7 @@ Conversely, attempting to solve this by forcing threads to pool together and sle
 #### The Solution
 
 **Staged Pipeline Commit**: It means **client threads themselves drive the write process, but they do it in decoupled stages** like a multi-stage assembly line:
+
 1. **The Brief Lock (RAM WAL copy)**: A client thread briefly locks a mutex only to claim its sequence number and perform a fast memory copy of its batch into Pebble's WAL memory buffer (RAM). Since this is strictly a RAM-to-RAM copy, it takes microseconds, and the mutex is immediately dropped.
 2. **The Parallel Fan-out (MemTable inserts)**: Having dropped the lock, multiple client threads concurrently write their mutations into the lock-free Skiplist in the MemTable. They utilize separate CPU cores, running in parallel.
 3. **The Background Sync (Disk durability)**: A background loop collects the batches and performs the slow physical write to disk and the fsync syscall. The client threads only block to wait for this background sync to finish before returning.

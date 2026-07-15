@@ -4,7 +4,7 @@ title: "Patterns of LSM Storage Engines: Ingest & Commit Concurrency Pipelines -
 description: "An architectural exploration of write path concurrency in modern key-value storage engines, examining BadgerDB's Pipelined Batch Aggregator."
 pubDate: 2026-07-15
 weight: 2
-tags: ["Storage engine", "BadgerDB", "Concurrency", "Go"]
+tags: ["Storage engine", "BadgerDB", "Concurrency", "Go", "LSM"]
 caption: "Ingest & Commit Pipelines in Modern Storage Engines"
 ---
 
