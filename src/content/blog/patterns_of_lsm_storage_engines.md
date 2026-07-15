@@ -12,7 +12,7 @@ caption: "Patterns of LSM Storage Engines"
 
 However, behind the high write throughput of LSM engines lies a complex web of engineering challenges. Serializing writes to the disk, maintaining read visibility order, managing in-memory components (like MemTables), and reclaiming disk space through compactions all require highly optimized architectural choices.
 
-To understand these engines from first principles, we can catalog their architectures into a series of recurring design patterns across various categories:
+To understand these engines from first principles, we can catalog their architectures into a series of design patterns across **various categories**:
 
 ### Ingest & Commit Concurrency Pipelines
 
@@ -58,7 +58,7 @@ To maximize concurrency, storage engines employ ingest pipeline designs that opt
   </div>
 </div>
 
-### Other Patterns Coming Soon
+### Other Categories Coming Soon
 
 * **In-Memory Component Patterns**
 * **Durability & Persistent Storage Patterns**
