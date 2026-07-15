@@ -100,6 +100,37 @@ func (db *DB) doWrites(lc *z.Closer) {
 
 `doWrites` is available [here](https://github.com/dgraph-io/badger/blob/main/db.go#L943).
 
+#### Visualizing the Pipeline
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Client_1
+    participant Client_2
+    participant writeCh
+    participant doWrites
+    participant Write_Worker
+
+    Client_1->>writeCh: sendToWriteCh
+    Client_2->>writeCh: sendToWriteCh
+    Note over Client_1,Client_2: Client threads block on req.Wait
+
+    loop Batch Accumulation
+        doWrites->>writeCh: Drain requests
+    end
+
+    doWrites->>Write_Worker: Spawn writeRequests
+    Note over doWrites: Aggregator loop unblocks, resumes draining
+
+    activate Write_Worker
+    Note over Write_Worker: Acquires pendingCh semaphore
+    Write_Worker->>Write_Worker: Write to Vlog, MemTable and LSM
+    Write_Worker-->>Client_1: Wg.Done
+    Write_Worker-->>Client_2: Wg.Done
+    Note over Write_Worker: Releases pendingCh semaphore
+    deactivate Write_Worker
+```
+
 #### The Invariant Control
 
 To prevent data corruption from concurrent file descriptor writes, the execution slot is guarded by the **concurrency gate** `pendingCh := make(chan struct{}, 1)`.
