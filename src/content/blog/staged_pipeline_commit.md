@@ -1,12 +1,14 @@
 ---
 author: "Sarthak Makhija"
-title: "Patterns of LSM Storage Engines: Ingest & Commit Concurrency Pipelines - Staged Pipeline Commit"
+title: "Staged Pipeline Commit (Pebble)"
 description: "An architectural exploration of write path concurrency in CockroachDB's Pebble storage engine, analyzing its microsecond RAM-to-RAM WAL copy and concurrent MemTable updates."
 pubDate: 2026-07-15
 weight: 1
 tags: ["Storage engine", "Pebble", "Concurrency", "Go", "LSM"]
 caption: "The Staged Pipeline Commit in Pebble"
 ---
+
+*This article is part of the series **[Patterns of LSM Storage Engines](/en/blog/patterns_of_lsm_storage_engines/)**.*
 
 When building or analyzing high-performance storage engines, one of the most critical engineering challenges is coordinating concurrent client threads across the boundaries of volatile memory (RAM) and non-volatile storage (disk). If every client thread manages its own lock acquisition and performs synchronous disk I/O, the storage engine quickly succumbs to thread contention, excessive context switching, and low throughput.
 
