@@ -1,6 +1,6 @@
 ---
 author: "Sarthak Makhija"
-title: "Patterns of LSM Storage Engines: The Ingest & Commit Concurrency Pipelines"
+title: "Patterns of LSM Storage Engines: Ingest & Commit Concurrency Pipelines - Pipelined Batch Aggregator"
 description: "An architectural exploration of write path concurrency in modern key-value storage engines, examining BadgerDB's Pipelined Batch Aggregator."
 pubDate: 2026-07-15
 tags: ["Storage engine", "BadgerDB", "Concurrency", "Go"]
