@@ -60,6 +60,6 @@ To maximize concurrency, storage engines employ ingest pipeline designs that opt
 
 ### Other Patterns Coming Soon
 
-* **In-Memory Component Patterns**: MemTable balance, concurrency, and sizing.
-* **Durability & Persistent Storage Patterns**: Compactions, SSTable layouts, and write amplification control.
-* **Metadata Journaling Patterns**: Version edits, manifests, and crash recovery journaling.
+* **In-Memory Component Patterns**
+* **Durability & Persistent Storage Patterns**
+* **Metadata Journaling Patterns**
