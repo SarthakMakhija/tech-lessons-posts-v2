@@ -95,6 +95,11 @@
     }
 
     /* Shiki Highlight Transformers */
+    .highlighted {
+        background-color: rgba(255, 255, 255, 0.15) !important;
+        border-left: 3px solid #ffffff !important;
+    }
+
     .highlighted.error {
         background-color: rgba(255, 0, 0, 0.1);
         border-left: 3px solid #f87171;
