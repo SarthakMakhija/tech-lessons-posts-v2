@@ -180,7 +180,7 @@ Their solution: **rate-limit file deletion**. Instead of deleting 100 files imme
 **2. Compaction I/O Rate Limiting to Prevent Bandwidth Monopolization**
 
 **Compaction I/O Contention**
-Compaction reads and writes huge amounts of data. Imagine the SSD can deliver a bandwidth of 1 GB/s. A background compaction may consume 900 MB/s. Now, a user query arrives that needs 20 MB of data. The query is forced to wait behind the compaction's reads/writes. The SSD queue might look like:
+Compaction reads and writes huge amounts of data. Imagine the SSD can deliver a bandwidth of 1 GB/s. A background compaction may consume 900 MB/s. Now, a foreground user query arrives that needs 20 MB of data. The query is forced to wait behind the compaction's reads/writes. The SSD queue might look like:
 ```
 Compaction Read -> Compaction Read -> Compaction Write -> Compaction Read -> Query Read
 ```
