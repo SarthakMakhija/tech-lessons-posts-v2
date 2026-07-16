@@ -43,7 +43,7 @@ Compression was also limited in InnoDB. Default InnoDB data block size was 16KB 
 
 When Meta started the project, the primary goal was to reduce the number of UDB servers by 50%. Achieving that required the MyRocks space usage to be no more than 50% of the compressed InnoDB format, while maintaining comparable CPU and I/O utilization.
 
-### 7. A Brief on UDB and the TAO Cache Tier
+### 7. UDB and the TAO Cache Tier
 
 To shield UDB from direct user traffic, Facebook operates a massive distributed cache tier called **TAO** (The Association Object cache):
 * **Role**: TAO is a distributed write-through caching tier that handles Facebook's social graph queries (representing nodes like users, and edges like friendships or likes).
