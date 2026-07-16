@@ -4,6 +4,7 @@ title: "Pipelined Batch Aggregator (BadgerDB)"
 description: "An architectural exploration of write path concurrency in modern key-value storage engines, examining BadgerDB's Pipelined Batch Aggregator."
 pubDate: 2026-07-15
 weight: 2
+draft: true
 tags: ["Storage engine", "BadgerDB", "Concurrency", "Go", "LSM"]
 caption: "Ingest & Commit Pipelines in Modern Storage Engines"
 ---

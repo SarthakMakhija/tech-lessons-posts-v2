@@ -4,6 +4,7 @@ title: "Patterns of LSM Storage Engines"
 description: "An introduction to the architectural patterns of Log-Structured Merge-tree (LSM) storage engines, organizing write path, memory components, and durability."
 pubDate: 2026-07-15
 weight: 3
+draft: true
 tags: ["Storage engine", "LSM", "WriteOptimized"]
 caption: "Patterns of LSM Storage Engines"
 ---
