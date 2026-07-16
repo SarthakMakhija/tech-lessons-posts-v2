@@ -1,8 +1,8 @@
 ---
 author: "Sarthak Makhija"
 title: "MyRocks: LSM-Tree Database Storage Engine Serving Facebook's Social Graph"
-pubDate: 2026-07-16
-description: "A detailed summary of the MyRocks paper, exploring Facebook's shift from B+Tree InnoDB to LSM-Tree RocksDB, B-Tree fragmentation and padding issues, schema mapping, and optimization techniques."
+pubDate: 2026-07-21
+description: "A detailed summary of the MyRocks paper, exploring Facebook's shift from B+Tree InnoDB to LSM-Tree RocksDB, B+Tree fragmentation and padding issues, schema mapping, and optimization techniques."
 tags: ["MyRocks", "RocksDB", "LSM-Tree", "UDB", "Database"]
 ---
 
@@ -14,40 +14,43 @@ This paper details Meta's migration of its User Database (UDB) tier, which serve
 
 Facebook's User Database (UDB) serves as the persistent repository for the social graph. UDB is responsible for handling high-volume OLTP workloads that represent connections, users, posts, and likes. Because this social graph underpins every interaction on Facebook, UDB requires highly reliable transactions, low latency, and efficient storage scaling to handle the astronomical growth of user data.
 
-### 2. InnoDB, B-Trees, and Magnetic Hard Drives (HDDs)
+### 2. InnoDB, B+Trees, and Magnetic Hard Drives (HDDs)
 
 Historically, UDB ran on MySQL using the standard InnoDB storage engine, which is built on the B+Tree data structure. In the era of magnetic hard disk drives (HDDs):
 * **Disk Characteristic**: Physical spinning disks have high latency for random operations due to seek time (moving the disk arm).
-* **The Bottleneck**: The legacy UDB setup quickly saturated the hard drive's :h[removed IOPS bottleneck]. The disk heads could not physically keep up with random reads and writes, leaving the host CPU mostly idle while waiting for disk operations to complete.
-* **Write Inefficiency**: InnoDB updates data in-place by writing to 16KB leaf pages. This requires frequent random writes across the disk surface, exacerbating the IOPS limitation of HDDs.
+* **The Bottleneck**: The legacy UDB setup quickly saturated the hard drive's :h[Input/Output Operations Per Second (IOPS)] capacity. The disk heads could not physically keep up with random reads and writes, leaving the host CPU mostly idle while waiting for disk operations to complete.
+* **Write Inefficiency**: InnoDB updates data in-place by writing to 16KB leaf pages. This requires frequent random writes across the disk surface, worsening the IOPS limitation of HDDs.
 
 ### 3. The Flash SSD Shift: From IOPS to Capacity Bottlenecks
 
 As hardware evolved, Facebook transitioned its UDB infrastructure to Solid State Drives (Flash/SSDs). This shift fundamentally altered the database bottleneck:
-* **The Pro**: Flash drives effectively :h[removed IOPS bottleneck]. Lacking moving physical parts, SSDs could handle thousands of random disk operations per second without breaking a sweat, allowing database threads to utilize CPU cycles rather than blocking on disk I/O.
+* **The Pro**: Flash drives effectively :h[removed IOPS bottleneck]. SSDs could handle thousands of random disk operations per second without breaking a sweat, allowing database threads to utilize CPU cycles rather than blocking on disk I/O.
 * **The Con**: Flash storage was significantly more expensive per gigabyte than traditional magnetic HDDs.
 * **The New Bottleneck**: Because the database was no longer bound by I/O throughput (IOPS), the bottleneck shifted from performance to :h[storage capacity]. Facebook was filling up the physical capacity of their expensive flash drives long before hitting performance or I/O limits. Minimizing storage footprint via compression and space optimization became the engineering team's highest priority.
 
-### 4. B-Tree Fragmentation and Space Amplification
+### 4. B+Tree Fragmentation and Space Amplification
 
-Under InnoDB, B-Trees suffer from severe space amplification due to internal fragmentation. This fragmentation is a direct consequence of B-Tree mechanics:
+Under InnoDB, B+Trees suffer from severe space amplification due to internal fragmentation. This fragmentation is a direct consequence of B+Tree mechanics:
 * **In-Place Updates**: InnoDB updates data inside existing leaf pages. When rows are deleted, empty gaps are left within these pages.
 * **Page Splits**: When a new row is inserted into a page that is already full, InnoDB splits the page into two, typically leaving both resulting pages only 50% to 75% full.
 * **Persistent Gaps**: Over time, these gaps accumulate, causing the database to occupy far more disk space than the actual payload data warrants. Reclaiming this fragmented space requires expensive `OPTIMIZE TABLE` operations that rebuild the table, which is operationally costly at Facebook's scale.
 
 ### 5. InnoDB Compression Limits & The "Internal Padding" Problem
 
-To combat storage consumption, InnoDB offers page-level compression. However, this compression is severely limited by the Wasted "Internal Padding" (Cap on Savings):
-> If you configure your key_block_size to 8KB, you are telling the database: "Allocate exactly 8KB chunks on the disk for my compressed pages." If a 16KB page compresses down to 5KB, the database cannot use the leftover 3KB for anything else. It is forced to pad that block with 3KB of empty, dead space to fill out the mandatory 8KB slot. Because it is locked into an 8KB grid, your storage savings are mathematically capped at 50%, no matter how efficient the actual compression algorithm is.
+Compression was also limited in InnoDB. Default InnoDB data block size was 16KB and table level compression required predefining the after-compressed block size (key_block_size), to one of 1KB, 2KB, 4KB or 8KB. This is to guarantee that pages can be individually updated, a basic requirement for B-tree/B+tree. For example, if key_block_size was 8KB, then even if 16KB data was compressed to 5KB, actual space usage was still 8KB, so the storage savings was capped at 50%
 
-### 6. UDB and the TAO Cache Tier
+### 6. MyRocks Project Goals
+
+When Meta started the project, the primary goal was to reduce the number of UDB servers by 50%. Achieving that required the MyRocks space usage to be no more than 50% of the compressed InnoDB format, while maintaining comparable CPU and I/O utilization.
+
+### 7. A Brief on UDB and the TAO Cache Tier
 
 To shield UDB from direct user traffic, Facebook operates a massive distributed cache tier called **TAO** (The Association Object cache):
 * **Role**: TAO is a distributed write-through caching tier that handles Facebook's social graph queries (representing nodes like users, and edges like friendships or likes).
 * **Mapping**: TAO maps graph-structured requests into individual rows stored in the relational databases of the UDB tier. 
 * **Traffic Pattern**: Because TAO absorbs the vast majority of read operations, UDB's workload is highly write-intensive and dominated by point lookups and updates that bypass the cache during mutations.
 
-### 7. RocksDB LSM-Tree Architecture
+### 8. RocksDB LSM-Tree Architecture
 
 MyRocks replaces InnoDB with RocksDB, an embeddable Log-Structured Merge-tree (LSM) key-value store. RocksDB operates on a layered write and compaction architecture:
 1. **Write Path**: Writes are first written to a sequential **Write Ahead Log (WAL)** on disk for crash recovery, and then appended to the in-memory buffer called the **MemTable**.
@@ -60,26 +63,26 @@ MyRocks replaces InnoDB with RocksDB, an embeddable Log-Structured Merge-tree (L
     <figcaption style="text-align: center;">RocksDB LSM-Tree levels structure showing flushes from the MemTable to L0 and compactions down to Lmax.</figcaption>
 </figure>
 
-### 8. Auto-Solved Issues in LSM: No Fragmentation
+### 9. Auto-Solved Issues in LSM: No Fragmentation
 
 Moving to an LSM-tree architecture automatically **eliminates the fragmentation** problem inherent to B-Trees:
 * **Sequential Flushes**: Because RocksDB only writes SST files sequentially during MemTable flushes and compaction, keys are packed contiguously without internal page gaps.
 * **No In-Place Updates**: Modifications are written as new updates or tombstones. Old versions are discarded entirely during compaction, ensuring that disk space is packed tightly and fragmentation is non-existent.
 
-### 9. RocksDB Compression Efficiency
+### 10. RocksDB Compression Efficiency
 
 Unlike InnoDB, RocksDB does not require compressed blocks to align with a fixed page boundary:
 * **No Page Constraints**: If a block of data compresses from 16KB to 5KB, RocksDB writes exactly 5KB to the SST file.
 * **Offset-Based Indexes**: This is possible because RocksDB's index block contains the exact start offset and size of each compressed data block, eliminating any requirement to align blocks to fixed boundaries (such as 8KB).
 * **Granular Savings**: By storing variable-sized compressed blocks sequentially on disk without "internal padding" or grid alignment, RocksDB achieves significantly higher compression ratios than InnoDB, maximizing storage efficiency on expensive flash SSDs.
 
-### 10. Core LSM Challenges & MyRocks Solutions
+### 11. Core LSM Challenges & MyRocks Solutions
 
 While LSM-trees solve fragmentation and compression issues, they introduce specific challenges that MyRocks had to address:
 
-#### a) Mem-comparable Keys
-To look for the start key of a range, we only need one binary search per page in a B-tree, while we need to do one binary search for each sorted run in an LSM-tree and merge them using a heap. This can lead to several times more key comparisons.
-* **Shifting Work to Write Path**: The work is shifted to the write path. When MyRocks inserts or updates a row, it encodes each indexed column into a sortable binary representation. This allows RocksDB to compare keys using raw byte comparison (`memcmp`) rather than complex type-specific collation checks.
+#### a) Minimizing Key Comparisons
+* **The Problem**: In a B+tree, looking up a key requires only one binary search per page. In an LSM-tree, since data is split across multiple sorted runs, we must perform a binary search for each sorted run and merge them using a heap. This drastically increases key comparisons on the read path. If comparisons require executing complex, type-specific database collations, the read path becomes heavily CPU-bound.
+* **The Solution (Mem-comparable Keys)**: The work is shifted to the write path. When MyRocks inserts or updates a row, it encodes each indexed column into a sortable binary representation. This allows RocksDB to compare keys using raw byte comparison (`memcmp`) rather than complex type-specific collation checks.
 * **Unicode Collation Algorithm (UCA)**: For case-insensitive collations (e.g., `utf8mb4_general_ci`), MySQL rules dictate that `ABC == abc == AbC`. To avoid executing these complex collation rules during every comparison on the read path, MyRocks computes a **weight string** on the write path using the following two steps:
   
   **Step 1. Every character has a weight**
@@ -105,13 +108,12 @@ To look for the start key of a range, we only need one binary search per page in
   By storing these weight strings directly, MyRocks can execute rapid binary comparisons on the read path.
 * **CPU Savings**: If this collation check were not done on the write path, MyRocks would have to load the key, deserialize it, and perform type-specific comparison operations on the read path. Given that LSM-trees perform a high volume of key comparisons during run merging, this would introduce an unacceptably high CPU cost.
 
-#### b) Reverse Key Comparator
-LSM-trees are naturally optimized for forward scans, but reverse scans (`ORDER BY DESC`) are inherently slow for three main reasons:
-1. **Delta Encoding**: RocksDB uses key delta encoding within data blocks to save space. Reading backward requires parsing the entire block forward to reconstruct the keys.
-2. **Version Ordering**: RocksDB stores multiple versions of the same key sorted by version timestamp/sequence number in descending order (e.g., `user1:200`, `user1:100`, `user1:50`). During a forward scan, the newest version (`user1:200`) is read first, allowing the scan to skip older versions immediately. In a reverse scan, RocksDB encounters older versions first and must scan ahead to find the latest version, introducing extra reads.
-3. **Skip List Pointers**: The MemTable skip list uses single-direction (forward) pointers. Moving backward requires performing another binary search from the root of the skip list.
-
-* **Meta's Solution (Reverse Key Comparator)**: Meta observed that a vast majority of social graph queries are descending (e.g., fetching the latest posts or comments first). To optimize this, they introduced Reverse Column Families configured with a **Reverse Key Comparator** (configured by prefixing `rev:` to the column family name). This comparator reverses the ordering of the timestamp suffix at the key level, which turns logical descending queries into highly efficient physical forward scans.
+#### b) Optimizing Reverse Scans
+* **The Problem**: LSM-trees are naturally optimized for forward scans, but reverse scans (`ORDER BY DESC`) are inherently slow for three reasons:
+  1. **Delta Encoding**: RocksDB uses key delta encoding within data blocks to save space. Reading backward requires parsing the entire block forward to reconstruct the keys.
+  2. **Version Ordering**: RocksDB stores multiple versions of the same key sorted by version timestamp/sequence number in descending order (e.g., `user1:200`, `user1:100`, `user1:50`). During a forward scan, the newest version (`user1:200`) is read first, allowing the scan to skip older versions immediately. In a reverse scan, RocksDB encounters older versions first and must scan ahead to find the latest version, introducing extra reads.
+  3. **Skip List Pointers**: The MemTable skip list uses single-direction (forward) pointers. Moving backward requires performing another binary search from the root of the skip list.
+* **The Solution (Reverse Key Comparator)**: Meta observed that a vast majority of social graph queries are descending (e.g., fetching the latest posts or comments first). To optimize this, they configured Reverse Column Families with a **Reverse Key Comparator** (by prefixing `rev:` to the column family name). This comparator reverses the ordering of the timestamp suffix at the key level, turning logical descending queries into highly efficient physical forward scans.
 * **Example of Reverse Key Comparator**:
   Suppose your user keys are actually association keys that include a timestamp. For example:
   * `(User1, ts=102)`
@@ -132,15 +134,13 @@ LSM-trees are naturally optimized for forward scans, but reverse scans (`ORDER B
   
   This structure allows Meta to perform a fast physical forward scan to retrieve the latest events (such as the most recent likes or posts) in descending order, avoiding the heavy penalties of reverse iteration in RocksDB.
 
-#### c) Prefix Bloom Filter
-Range queries are typically slower in LSM-trees because they check multiple SST files. To mitigate this penalty for short range scans, MyRocks utilizes **Prefix Bloom Filters**:
-* **Prefix Seek**: To mitigate short range scan performance, we introduced the prefix bloom filter in RocksDB. Users specify the number of bytes as a "prefix", so that users can skip all SST files that do not match the prefix.
+#### c) Optimizing Range Seeks
+* **The Problem**: Range queries are typically slower in LSM-trees because they must search and check key ranges across multiple SST files and levels on disk.
+* **The Solution (Prefix Bloom Filters)**: To speed up short range seeks, MyRocks configures **Prefix Bloom Filters** in RocksDB. Users specify the prefix length in bytes, allowing RocksDB to skip searching entire SST files whose key prefixes do not match the target prefix.
 
-#### d) Reducing Tombstones via SingleDelete
-In a normal deletion, RocksDB appends a `DELETE` tombstone record.
-* **Tombstone Lifetime**: RocksDB cannot immediately discard the tombstone during compaction because the deleted key might exist in a lower level (e.g., a `PUT(key)` in L5). If the tombstone in L0 is deleted too early, the old data in L5 is revived. Thus, standard tombstones must survive until they reach Lmax.
-* **Secondary Index Constraint**: Meta observed that when MyRocks updates a secondary index, it replaces exactly one old index entry (e.g., updating a status from `active` to `inactive`). There is exactly one matching `PUT` to be deleted, not multiple.
-* **SingleDelete Optimization**: Instead of writing a generic `DELETE` tombstone, MyRocks issues a `SingleDelete`. When compaction encounters a `SingleDelete` and a matching `PUT` (even above Lmax), it immediately eliminates both, freeing storage space and resolving the tombstone without waiting for Lmax compaction.
+#### d) Reducing Tombstone Lifetimes
+* **The Problem**: In a normal deletion, RocksDB appends a `DELETE` tombstone record. RocksDB cannot immediately discard this tombstone during compaction because the deleted key might exist in a lower level (e.g., a `PUT(key)` in L5). If the tombstone is deleted too early, the old data in the lower level is revived. Thus, standard tombstones must survive until they reach Lmax.
+* **The Solution (SingleDelete Optimization)**: Meta observed that when MyRocks updates a secondary index, it replaces exactly one old index entry (e.g., updating a status from `active` to `inactive`). There is exactly one matching `PUT` to be deleted, not multiple. Instead of writing a generic `DELETE` tombstone, MyRocks issues a `SingleDelete`. When compaction encounters a `SingleDelete` and a matching `PUT` (even above Lmax), it immediately eliminates both, freeing storage space and resolving the tombstone without waiting for Lmax compaction.
 
 #### e) SSD Compaction, TRIM, & SSD Write Stalls
 Compaction is a background activity, but it can easily dominate storage resources: it reads large SST files, writes new SST files, and deletes old SST files (triggering TRIM). Without controls, these background tasks can interfere with the foreground workload, the reads and writes your application is actively serving. To address this, Meta introduced two independent rate limiters:
@@ -199,7 +199,7 @@ During massive data migrations (e.g., copying tables from InnoDB to MyRocks) or 
 * **Manifest Updates**: The manifest is updated atomically to link the new SST files.
 * **Non-Overlapping Constraint**: This bypasses the WAL, MemTable, and compaction layers entirely. It requires that the ingested key ranges do not overlap with existing data, which fits the database migration and new table creation use-cases perfectly.
 
-### 11. Links
+### 12. Links
 
 * [MyRocks: LSM-Tree Database Storage Engine Serving Facebook's Social Graph (PDF)](https://www.vldb.org/pvldb/vol13/p3217-matsunobu.pdf)
-* [Facebook Research MyRocks Resource](https://research.facebook.com/file/370100598018311/MyRocks-LSM-Tree-Database-Storage-Engine-Serving-Facebooks-Social-Graph.pdf)
+* [Facebook Research MyRocks Resource](https://research.facebook.com/publications/myrocks-lsm-tree-database-storage-engine-serving-facebooks-social-graph/)
