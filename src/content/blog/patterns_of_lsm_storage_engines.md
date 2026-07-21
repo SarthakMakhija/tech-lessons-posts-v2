@@ -4,7 +4,7 @@ title: "Patterns of LSM Storage Engines"
 description: "A comprehensive guide to write path concurrency patterns in modern LSM-tree storage engines, exploring BadgerDB's Pipelined Aggregator, RocksDB's Group Commit, and Pebble's Staged Commit."
 pubDate: 2026-07-15
 weight: 3
-draft: false
+draft: true
 tags: ["Storage engine", "LSM", "Concurrency", "RocksDB", "Pebble", "BadgerDB"]
 caption: "Patterns of LSM Storage Engines"
 ---
