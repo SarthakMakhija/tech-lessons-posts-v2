@@ -28,12 +28,13 @@ I share my deep dives into systems programming and storage internals through tec
 - Parallelizing Protobuf serialization and multiplexing persistent connections to drop tail latencies
 
 #### Key takeaway
-What is fast on paper is almost always slow in reality, until we profile, measure, and adapt to the hardware underneath. By identifying coordination bottlenecks and CPU-bound serialization limits, we optimized our distributed key-value engine from a sluggish start to a p99 write latency of ~5.6ms at 10 000 TPS.
+What is fast on paper is almost always slow in reality, until we profile, measure, and adapt to the hardware underneath. By identifying coordination bottlenecks and CPU-bound serialization limits, we optimized our distributed key-value engine from a sluggish start to a p99 write latency of ~5.6ms at 10,000 TPS.
 
 </details>
 
 <div class="flex gap-4 mt-4 mb-12">
-  <a href="/talks/rootconf-2026/" class="text-sm font-bold text-accent-600 hover:underline">View slides →</a>
+  <a href="https://youtu.be/5sM7etqSgho?si=7dKo__4ec7_m1g42" class="text-sm font-bold text-accent-600 hover:underline">Watch the talk →</a>
+  <a href="/talks/rootconf-2026/" class="text-sm font-bold text-zinc-500 hover:underline">Slides</a>
 </div>
 
 ### Questioning Database Claims: Design Patterns of Storage Engines
