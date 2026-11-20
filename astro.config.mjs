@@ -9,6 +9,7 @@ import sitemap from '@astrojs/sitemap';
 import remarkDirective from 'remark-directive';
 import { remarkHighlight } from './src/plugins/remark-highlight.mjs';
 import { remarkMermaid } from './src/plugins/remark-mermaid.mjs';
+import { unibasicGrammar } from './src/plugins/unibasic-grammar.mjs';
 import {
   transformerNotationDiff,
   transformerNotationHighlight,
@@ -30,6 +31,7 @@ export default defineConfig({
   markdown: {
     remarkPlugins: [remarkDirective, remarkHighlight, remarkMermaid],
     shikiConfig: {
+      langs: [unibasicGrammar],
       transformers: [
         transformerNotationDiff(),
         transformerNotationHighlight(),
