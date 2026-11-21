@@ -157,7 +157,7 @@ Here is what is planned for this series:
 
 1. **Transpiler Architecture:** A high-level tour of the 7-stage compilation pipeline: from discovery and Pratt parsing to cross-program semantic analysis, AST lowering, and pure emission.
 2. **[Foundations of an Industrial Transpiler](/en/blog/foundations_of_an_industrial_transpiler/):** The core architectural pillars and engineering discipline that prevent a large-scale compiler from collapsing under real-world complexity.
-3. **Observability in Compilers: Parser Tracing:** Demystifying parser failures in complex grammars by treating syntax trees like distributed tracing spans.
+3. **[Observability in Transpilers: Parser Tracing](/en/blog/observability_in_transpilers_parser_tracing/):** Demystifying parser failures in complex grammars by treating syntax trees like distributed tracing spans.
 4. **Building the Target Runtime:** Why every transpiler needs a "standard library" to bridge semantic impedance mismatches, and how to verify runtime contracts using automated stub generation.
 5. **Semantic Analysis (SEMA):** Traversing and rewriting ASTs across whole-program compilation units using recursive rewriters and symbol registries.
 6. **Fact Promotion & Scope Reconstruction:** Reconstructing lexical scopes, variable hoisting, and field promotions from an unscoped legacy language using deferred decision hints.

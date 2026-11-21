@@ -803,4 +803,4 @@ Building an industrial-grade transpiler is fundamentally an exercise in drawing 
 4. [**Pillar 4: Decoupled Runtime & Observability**](#pillar-4-decoupled-runtime--observability): Prevent contract drift through reflective verification across Gradle modules, and illuminate parser failures instantly with span-based tracing.
 5. [**Pillar 5: Engineering Hygiene as an Architectural Requirement**](#pillar-5-engineering-hygiene-as-an-architectural-requirement): Enforce deterministic output, zero abbreviations, and one-to-one test parity across the entire compiler codebase.
 
-In the next installment, we’ll explore compiler observability: **Observability in Compilers: Parser Tracing**: demystifying parser failures in complex grammars by treating syntax trees like distributed tracing spans.
+In the next installment, we’ll explore compiler observability: [**Observability in Transpilers: Parser Tracing**](/en/blog/observability_in_transpilers_parser_tracing/): demystifying parser failures in complex grammars by treating syntax trees like distributed tracing spans.
