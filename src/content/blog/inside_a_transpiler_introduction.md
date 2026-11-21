@@ -52,9 +52,53 @@ RETURN
 Our target was not a toy demo. We were tasked with transpiling **more than 14,000 legacy source files** into clean, compilable Java.
 
 Furthermore, we established clear success criteria:
-1. **Clean, Warning-Free Compilation:** The emitted Java code must compile cleanly with standard Java compilers (`javac`) without warnings or suppressed errors.
-2. **Behavioral Parity:** The transpiled code must preserve 100% of the runtime semantics, memory mutations, and control flow guarantees of the original UniBasic programs.
-3. **Structured Java Constructs:** Instead of flattening control flow into low-level dispatch loops, we aimed for structured Java classes, methods, and loops that developers can inspect, debug, and maintain.
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-6 font-sans">
+  <div class="p-5 bg-gradient-to-br from-emerald-50/50 via-white to-white border border-emerald-200/80 rounded-2xl flex flex-col justify-between hover:shadow-md hover:border-emerald-300 transition-all duration-300">
+    <div>
+      <div class="flex items-center gap-2.5 mb-2.5">
+        <div class="w-8 h-8 rounded-lg bg-emerald-100/80 border border-emerald-200/60 flex items-center justify-center shrink-0">
+          <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        </div>
+        <div>
+          <div class="text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-600">Criterion 1</div>
+          <div class="font-bold text-[15px] text-zinc-900 leading-snug">Clean Compilation</div>
+        </div>
+      </div>
+      <p style="margin: 0;" class="text-[13.5px] text-zinc-600 leading-relaxed">Emitted Java code must compile cleanly with standard Java compilers (<code>javac</code>) without warnings or suppressed errors.</p>
+    </div>
+  </div>
+
+  <div class="p-5 bg-gradient-to-br from-emerald-50/50 via-white to-white border border-emerald-200/80 rounded-2xl flex flex-col justify-between hover:shadow-md hover:border-emerald-300 transition-all duration-300">
+    <div>
+      <div class="flex items-center gap-2.5 mb-2.5">
+        <div class="w-8 h-8 rounded-lg bg-emerald-100/80 border border-emerald-200/60 flex items-center justify-center shrink-0">
+          <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"></path></svg>
+        </div>
+        <div>
+          <div class="text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-600">Criterion 2</div>
+          <div class="font-bold text-[15px] text-zinc-900 leading-snug">Behavioral Parity</div>
+        </div>
+      </div>
+      <p style="margin: 0;" class="text-[13.5px] text-zinc-600 leading-relaxed">Transpiled code must preserve 100% of runtime semantics, memory mutations, and control flow guarantees of the original UniBasic programs.</p>
+    </div>
+  </div>
+
+  <div class="p-5 bg-gradient-to-br from-emerald-50/50 via-white to-white border border-emerald-200/80 rounded-2xl flex flex-col justify-between hover:shadow-md hover:border-emerald-300 transition-all duration-300">
+    <div>
+      <div class="flex items-center gap-2.5 mb-2.5">
+        <div class="w-8 h-8 rounded-lg bg-emerald-100/80 border border-emerald-200/60 flex items-center justify-center shrink-0">
+          <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+        </div>
+        <div>
+          <div class="text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-600">Criterion 3</div>
+          <div class="font-bold text-[15px] text-zinc-900 leading-snug">Structured Constructs</div>
+        </div>
+      </div>
+      <p style="margin: 0;" class="text-[13.5px] text-zinc-600 leading-relaxed">Produces readable Java classes, methods, and loops that developers can inspect, debug, and maintain instead of flattened dispatch loops.</p>
+    </div>
+  </div>
+</div>
 
 To achieve this, we decided to build a dedicated, industrial-grade **source-to-source transpiler** from scratch.
 
@@ -66,20 +110,39 @@ UniBasic has no formal grammar specification (at least nothing that is publicly 
 
 For example, a construct like `MATREAD` can appear with various combinations of optional clauses (`FROM`, `THEN`, `ELSE`, `LOCKED`, `ON ERROR`). By analyzing every production usage across the codebase, we uncovered how developers actually wrote these constructs over decades, allowing us to build parsers that handled real-world code rather than textbook assumptions. Their codebase itself became our living specification.
 
-<div class="my-8 p-6 bg-zinc-50 border border-zinc-200/80 rounded-2xl">
-  <div class="font-mono text-xs font-bold uppercase tracking-wider text-zinc-500 mb-1">Commentary</div>
-  <h4 class="text-lg font-bold text-zinc-900 mt-0 mb-3">On the Use of AI</h4>
+<div class="my-8 p-6 bg-gradient-to-br from-purple-50/60 via-white to-white border border-purple-200/80 rounded-2xl font-sans shadow-xs">
+  <div class="flex items-center gap-3 mb-4">
+    <div class="w-9 h-9 rounded-xl bg-purple-100/80 border border-purple-200/60 flex items-center justify-center shrink-0">
+      <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z"></path></svg>
+    </div>
+    <div>
+      <div class="text-[11px] font-mono font-bold uppercase tracking-wider text-purple-600">Commentary</div>
+      <div class="text-[18px] font-bold font-sans text-zinc-900 leading-snug">On the Use of AI</div>
+    </div>
+  </div>
 
-  <p class="text-zinc-700 text-base leading-relaxed mb-4">
+  <p class="text-zinc-700 text-[15px] leading-relaxed mb-4">
     Building a transpiler from scratch without an official grammar is an enormous undertaking. Throughout this project, we leveraged AI (specifically Claude) as an active engineering partner across four key areas:
   </p>
 
-  <ol class="space-y-3 text-base text-zinc-700 list-decimal list-inside">
-    <li><strong class="text-zinc-900">Identifying Usage Patterns:</strong> Claude helped identify various patterns of usage of complex constructs like <code class="font-mono text-xs bg-zinc-200/60 px-1.5 py-0.5 rounded text-zinc-900">MATREAD</code> across the client's 14,000-file codebase.</li>
-    <li><strong class="text-zinc-900">Developing Parsers on Established Foundations:</strong> It helped with the development of parsers after the foundation of the parser was built: a parser class providing methods like <code class="font-mono text-xs bg-zinc-200/60 px-1.5 py-0.5 rounded text-zinc-900">expectIdentifier</code>, <code class="font-mono text-xs bg-zinc-200/60 px-1.5 py-0.5 rounded text-zinc-900">expectKeyword</code>, and <code class="font-mono text-xs bg-zinc-200/60 px-1.5 py-0.5 rounded text-zinc-900">expect*</code> to consume and validate tokens.</li>
-    <li><strong class="text-zinc-900">Debugging Parser Gaps:</strong> It assisted in debugging parser gaps by analyzing failing programs and pinpointing syntax errors, until we built our own <a href="#the-series-roadmap" class="text-zinc-900 underline font-medium hover:text-indigo-600">Parser Tracing</a>.</li>
-    <li><strong class="text-zinc-900">Explaining Legacy Functionality for Transformers:</strong> It provided explanations of legacy functionality for constructs like <code class="font-mono text-xs bg-zinc-200/60 px-1.5 py-0.5 rounded text-zinc-900">OCONV</code>, <code class="font-mono text-xs bg-zinc-200/60 px-1.5 py-0.5 rounded text-zinc-900">MATREAD</code>, and dynamic arrays, which helped in building the <strong>transformers</strong> (the layer which converts the Source AST to the Java Target AST).</li>
-  </ol>
+  <div class="space-y-3 my-4">
+    <div class="flex items-start gap-2.5">
+      <span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded text-[11px] font-mono font-bold bg-purple-100 text-purple-800 border border-purple-200/60 mt-0.5 shrink-0">1</span>
+      <div class="text-[14.5px] text-zinc-700 leading-relaxed"><strong class="text-zinc-900">Identifying Usage Patterns:</strong> Claude helped identify various patterns of usage of complex constructs like <code class="font-mono text-xs bg-purple-50 text-purple-900 border border-purple-100 px-1.5 py-0.5 rounded">MATREAD</code> across the client's 14,000-file codebase.</div>
+    </div>
+    <div class="flex items-start gap-2.5">
+      <span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded text-[11px] font-mono font-bold bg-purple-100 text-purple-800 border border-purple-200/60 mt-0.5 shrink-0">2</span>
+      <div class="text-[14.5px] text-zinc-700 leading-relaxed"><strong class="text-zinc-900">Developing Parsers on Established Foundations:</strong> It helped with the development of parsers after the foundation of the parser was built: a parser class providing methods like <code class="font-mono text-xs bg-purple-50 text-purple-900 border border-purple-100 px-1.5 py-0.5 rounded">expectIdentifier</code>, <code class="font-mono text-xs bg-purple-50 text-purple-900 border border-purple-100 px-1.5 py-0.5 rounded">expectKeyword</code>, and <code class="font-mono text-xs bg-purple-50 text-purple-900 border border-purple-100 px-1.5 py-0.5 rounded">expect*</code> to consume and validate tokens.</div>
+    </div>
+    <div class="flex items-start gap-2.5">
+      <span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded text-[11px] font-mono font-bold bg-purple-100 text-purple-800 border border-purple-200/60 mt-0.5 shrink-0">3</span>
+      <div class="text-[14.5px] text-zinc-700 leading-relaxed"><strong class="text-zinc-900">Debugging Parser Gaps:</strong> It assisted in debugging parser gaps by analyzing failing programs and pinpointing syntax errors, until we built our own <a href="#the-series-roadmap" class="text-purple-700 underline font-medium hover:text-purple-900">Parser Tracing</a>.</div>
+    </div>
+    <div class="flex items-start gap-2.5">
+      <span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded text-[11px] font-mono font-bold bg-purple-100 text-purple-800 border border-purple-200/60 mt-0.5 shrink-0">4</span>
+      <div class="text-[14.5px] text-zinc-700 leading-relaxed"><strong class="text-zinc-900">Explaining Legacy Functionality for Transformers:</strong> It provided explanations of legacy functionality for constructs like <code class="font-mono text-xs bg-purple-50 text-purple-900 border border-purple-100 px-1.5 py-0.5 rounded">OCONV</code>, <code class="font-mono text-xs bg-purple-50 text-purple-900 border border-purple-100 px-1.5 py-0.5 rounded">MATREAD</code>, and dynamic arrays, which helped in building the <strong>transformers</strong> (the layer which converts the Source AST to the Java Target AST).</div>
+    </div>
+  </div>
 </div>
 
 ### What is this Series About?
