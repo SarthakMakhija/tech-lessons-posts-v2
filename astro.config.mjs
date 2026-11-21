@@ -14,7 +14,8 @@ import {
   transformerNotationDiff,
   transformerNotationHighlight,
   transformerNotationWordHighlight,
-  transformerNotationErrorLevel
+  transformerNotationErrorLevel,
+  transformerNotationFocus,
 } from '@shikijs/transformers';
 
 // https://astro.build/config
@@ -37,6 +38,7 @@ export default defineConfig({
         transformerNotationHighlight(),
         transformerNotationWordHighlight(),
         transformerNotationErrorLevel(),
+        transformerNotationFocus(),
       ],
     },
   },
