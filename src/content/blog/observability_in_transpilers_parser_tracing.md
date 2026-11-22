@@ -452,4 +452,4 @@ When modernizing thousands of undocumented legacy files, treating the compiler f
 
 By treating parser executions as observability spans and decoupling tracing into `StatementParserRegistry`, we transformed parser debugging from guesswork into a deterministic science.
 
-In the next installment of this series, we will examine the runtime layer: **Building the Target Runtime**, exploring why every industrial transpiler requires a dedicated runtime library to bridge fundamental language impedance mismatches.
+In the next installment of this series, we will examine the runtime layer: **[The Target Runtime for Transpiled Code](/en/blog/building_the_target_runtime/)**, exploring how generated code emulates legacy dynamic semantics in Java and how candidate abstractions enable contract-first stub generation.
