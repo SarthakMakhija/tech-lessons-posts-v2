@@ -157,11 +157,11 @@ Here is what is planned for this series:
 
 1. **Transpiler Architecture:** A high-level tour of the 7-stage compilation pipeline: from discovery and Pratt parsing to cross-program semantic analysis, AST lowering, and pure emission.
 2. **[Foundations of an Industrial Transpiler](/en/blog/foundations_of_an_industrial_transpiler/):** The core architectural pillars and engineering discipline that prevent a large-scale compiler from collapsing under real-world complexity.
-3. **[Observability in Transpilers: Parser Tracing](/en/blog/observability_in_transpilers_parser_tracing/):** Demystifying parser failures in complex grammars by treating syntax trees like distributed tracing spans.
-4. **[The Target Runtime for Transpiled Code](/en/blog/building_the_target_runtime/):** Why generated code requires a dedicated target runtime to emulate legacy dynamic semantics, and how candidate abstractions enable contract-first stub generation.
-5. **Semantic Analysis (SEMA):** Traversing and rewriting ASTs across whole-program compilation units using recursive rewriters and symbol registries.
-6. **Fact Promotion & Scope Reconstruction:** Reconstructing lexical scopes, variable hoisting, and field promotions from an unscoped legacy language using deferred decision hints.
-7. **Handling the Unhandleable: Eliminating GOTOs:** Transforming tangled, arbitrary jump patterns into structured loops, continues, breaks, and state machines across 13 passes.
+3. **[The Target Runtime for Transpiled Code](/en/blog/building_the_target_runtime/):** Why generated code requires a dedicated target runtime to emulate legacy dynamic semantics, and how candidate abstractions enable contract-first stub generation.
+4. **Semantic Analysis (SEMA):** Traversing and rewriting ASTs across whole-program compilation units using recursive rewriters and symbol registries.
+5. **Fact Promotion & Scope Reconstruction:** Reconstructing lexical scopes, variable hoisting, and field promotions from an unscoped legacy language using deferred decision hints.
+6. **Handling the Unhandleable: Eliminating GOTOs:** Transforming tangled, arbitrary jump patterns into structured loops, continues, breaks, and state machines across 13 passes.
+7. **[Observability in Transpilers: Parser Tracing](/en/blog/observability_in_transpilers_parser_tracing/):** Demystifying parser failures in complex grammars by treating syntax trees like distributed tracing spans.
 8. **Transpiling at Enterprise Scale:** Validating 14,000+ programs against strict compilation gates, categorizing gaps, and practical takeaways from real-world migration.
 
 Let's start with Transpiler Architecture.

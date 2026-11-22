@@ -1,12 +1,12 @@
 ---
 author: "Sarthak Makhija"
-title: "Inside a Transpiler (Part 4): The Target Runtime for Transpiled Code"
+title: "Inside a Transpiler (Part 3): The Target Runtime for Transpiled Code"
 description: "Why transpiled code needs a dedicated target runtime: dynamic types, reference cells, and contract-first stub generation."
-pubDate: 2026-11-22
+pubDate: 2026-11-21
 weight: 4
 tags: ["Compilers", "Transpiler", "Architecture", "Java", "Runtime"]
 draft: false
-caption: "Inside a Transpiler (Part 4): The Target Runtime for Transpiled Code"
+caption: "Inside a Transpiler (Part 3): The Target Runtime for Transpiled Code"
 ---
 
 When engineers think about writing a transpiler, they usually picture the front end: lexing source text, building a parser, constructing an Abstract Syntax Tree (AST), and printing equivalent Java statements.
@@ -788,4 +788,4 @@ By isolating runtime mapping definitions in `RuntimeCallMappings`, wrapping comp
 * **A unified, decoupled runtime interface** free of hardcoded strings or brittle signatures.
 * **Automated stub generation** that enabled parallel, contract-first development across transpiler and runtime teams.
 
-In the next article of this series, we will examine the semantic heart of the transpiler: **[Inside a Transpiler (Part 5): Semantic Analysis (SEMA)](/en/blog/semantic_analysis_sema/)**, exploring how we traverse whole-program compilation units to resolve symbols, promote facts, and handle legacy global memory blocks.
+In the next article of this series, we will examine the semantic heart of the transpiler: **[Inside a Transpiler (Part 4): Semantic Analysis (SEMA)](/en/blog/semantic_analysis_sema/)**, exploring how we traverse whole-program compilation units to resolve symbols, promote facts, and handle legacy global memory blocks.

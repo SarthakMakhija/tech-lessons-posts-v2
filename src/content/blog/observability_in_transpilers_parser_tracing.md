@@ -1,12 +1,12 @@
 ---
 author: "Sarthak Makhija"
-title: "Inside a Transpiler (Part 3): Observability in Transpilers: Parser Tracing"
+title: "Inside a Transpiler (Part 7): Observability in Transpilers: Parser Tracing"
 description: "Why compiler stack traces fail you; introducing span-based tracing, sealOnFailure, and diagnostic reporting for deep syntax trees."
-pubDate: 2026-11-21
+pubDate: 2026-11-22
 weight: 3
 tags: ["Compilers", "Transpiler", "Architecture", "Java", "Clean Code"]
 draft: false
-caption: "Inside a Transpiler (Part 3): Observability in Transpilers: Parser Tracing"
+caption: "Inside a Transpiler (Part 7): Observability in Transpilers: Parser Tracing"
 ---
 
 When transpiling over 14,000 legacy files spanning millions of lines of code, parser failures are not edge cases; they are your daily reality.
@@ -452,4 +452,4 @@ When modernizing thousands of undocumented legacy files, treating the compiler f
 
 By treating parser executions as observability spans and decoupling tracing into `StatementParserRegistry`, we transformed parser debugging from guesswork into a deterministic science.
 
-In the next installment of this series, we will examine the runtime layer: **[Inside a Transpiler (Part 4): The Target Runtime for Transpiled Code](/en/blog/building_the_target_runtime/)**, exploring how generated code emulates legacy dynamic semantics in Java and how candidate abstractions enable contract-first stub generation.
+In the final installment of this series, we will examine: **[Inside a Transpiler (Part 8): Transpiling at Enterprise Scale](/en/blog/transpiling_at_enterprise_scale/)**, exploring real-world validation against 14,000+ programs, gap tracking, and practical takeaways from modernizing enterprise systems.
