@@ -1,7 +1,7 @@
 ---
 author: "Sarthak Makhija"
 title: "Inside a Transpiler: Introduction"
-description: "Part 1 of Inside a Transpiler: Modernizing 14,000+ files of legacy UniBasic to Java, and the roadmap for this series."
+description: "Modernizing 14,000+ files of legacy UniBasic to Java, and the roadmap for this series."
 pubDate: "2026-11-20"
 weight: 2
 tags: ["Compilers", "Transpiler", "Java", "UniBasic"]

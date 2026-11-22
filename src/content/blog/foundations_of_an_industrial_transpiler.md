@@ -1,12 +1,12 @@
 ---
 author: "Sarthak Makhija"
-title: "Foundations of an Industrial Transpiler"
+title: "Inside a Transpiler (Part 2): Foundations of an Industrial Transpiler"
 description: "What separates a fragile script from production compiler engineering: two-tier ASTs, dumb emitters, decoupled runtimes, multi-pass micro-rewriters, and strict engineering discipline."
 pubDate: 2026-11-20
 weight: 1
 tags: ["Compilers", "Transpiler", "Architecture", "Java", "Clean Code"]
 draft: false
-caption: "Foundations of an Industrial Transpiler"
+caption: "Inside a Transpiler (Part 2): Foundations of an Industrial Transpiler"
 ---
 
 In the [introduction to this series](/en/blog/inside_a_transpiler_introduction/), we outlined our mission: building an industrial-grade transpiler to migrate an enterprise codebase of **over 14,000 legacy UniBasic files** to Java 21.
@@ -803,4 +803,4 @@ Building an industrial-grade transpiler is fundamentally an exercise in drawing 
 4. [**Pillar 4: Decoupled Runtime & Observability**](#pillar-4-decoupled-runtime--observability): Prevent contract drift through reflective verification across Gradle modules, and illuminate parser failures instantly with span-based tracing.
 5. [**Pillar 5: Engineering Hygiene as an Architectural Requirement**](#pillar-5-engineering-hygiene-as-an-architectural-requirement): Enforce deterministic output, zero abbreviations, and one-to-one test parity across the entire compiler codebase.
 
-In the next installment, we’ll explore compiler observability: [**Observability in Transpilers: Parser Tracing**](/en/blog/observability_in_transpilers_parser_tracing/): demystifying parser failures in complex grammars by treating syntax trees like distributed tracing spans.
+In the next installment of this series, we will explore compiler observability: [**Inside a Transpiler (Part 3): Observability in Transpilers: Parser Tracing**](/en/blog/observability_in_transpilers_parser_tracing/): demystifying parser failures in complex grammars by treating syntax trees like distributed tracing spans.
