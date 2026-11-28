@@ -126,7 +126,7 @@ Because UniBasic lacks a native module system or namespace encapsulation, a prog
 
 Crucially, inlining text presents a diagnostic challenge: when a 150-line program expands into a **4,000+ line inlined monolith**, debugging a syntax failure at line 3,240 becomes nearly impossible with standard tools. A raw exception tells you the token that failed, but provides zero context on which parent statement got lost, what branch was taken, or which include file introduced the broken syntax.
 
-Rather than complicating the discovery layer with fragile line-mapping tables, we solve this diagnostic challenge downstream using **Parser Tracing** (explored in depth in [Part 7: Observability in Transpilers: Parser Tracing](/en/blog/observability_in_transpilers_parser_tracing/)). By treating parser rules as hierarchical spans, the parser records its exact execution trace, turning a 4,000-line monolith mystery into an actionable diagnostic tree that pinpoints the exact failing rule and context in seconds.
+Rather than complicating the discovery layer with fragile line-mapping tables, we solve this diagnostic challenge downstream using **Parser Tracing** (explored in depth in [Part 6: Observability in Transpilers: Parser Tracing](/en/blog/observability_in_transpilers_parser_tracing/)). By treating parser rules as hierarchical spans, the parser records its exact execution trace, turning a 4,000-line monolith mystery into an actionable diagnostic tree that pinpoints the exact failing rule and context in seconds.
 
 ---
 
@@ -625,7 +625,7 @@ final class StatementParserRegistry {
 }
 ```
 
-This code snippet is simplified for clarity. In the production transpiler, `StatementParserRegistry` also serves as the single integration point for parser observability. Instead of registering bare suppliers, every parser is wrapped in a tracing decorator (`traced(IfParser.class, ...)`). This decorator automatically opens and closes hierarchical spans on a shared `ParserTrace`, recording exact token positions upon entry and exit. When a syntax failure occurs thousands of lines deep, this tracing layer produces an actionable diagnostic tree showing every enclosing parser that was active at the time of failure. We explore this span-based diagnostic system in depth in [Part 7: Observability in Transpilers: Parser Tracing](/en/blog/observability_in_transpilers_parser_tracing/).
+This code snippet is simplified for clarity. In the production transpiler, `StatementParserRegistry` also serves as the single integration point for parser observability. Instead of registering bare suppliers, every parser is wrapped in a tracing decorator (`traced(IfParser.class, ...)`). This decorator automatically opens and closes hierarchical spans on a shared `ParserTrace`, recording exact token positions upon entry and exit. When a syntax failure occurs thousands of lines deep, this tracing layer produces an actionable diagnostic tree showing every enclosing parser that was active at the time of failure. We explore this span-based diagnostic system in depth in [Part 6: Observability in Transpilers: Parser Tracing](/en/blog/observability_in_transpilers_parser_tracing/).
 
 **Simple Parsers versus Compound Parsers**
 
@@ -1194,7 +1194,187 @@ When this Target AST node eventually reaches the emitter, the emitter prints:
 UnibasicOsRuntime.sleep(5);
 ```
 
-#### How Candidates Decouple Transformers from the Runtime Library
+---
+
+#### 4. Composable Expression Rewriting with `TransformerRule`
+
+Notice in the `SleepTransformer` example above that the duration expression is passed through `this.applyRules(sleepStatement.duration())`.
+
+UniBasic statements are composed of expressions: variable identifiers, array accesses, string concatenations, and function invocations. Across different statements (`ASSIGNMENT`, `PRINT`, `IF`, `LOOP`, `SLEEP`), expressions consistently require semantic adjustments before they can be lowered into target Java constructs:
+
+* **Variable Name Normalization (`VariableNameTransformerRule`):** UniBasic identifiers use uppercase words separated by periods (such as `TOTAL.COUNT` or `CUST.NAME`). In Java, these must become idiomatic camelCase (`totalCount`, `custName`), or map to domain-specific names registered in an external domain registry.
+* **Zero-Based Array Indexing (`ArrayAccessZeroBasedIndicesTransformerRule`):** UniBasic arrays are 1-based (the first element is `SCORES(1)`). Java arrays are 0-based (`scores[0]`). Literal integer indices must be decremented by one, while dynamic variable indices (`SCORES(I)`) must be rewritten as `(i - 1)`.
+
+If every individual statement transformer had to manually implement identifier renaming, array index arithmetic, and expression coercion, that logic would be duplicated across dozens of transformer classes.
+
+To keep transformers clean and maintainable, our architecture isolates expression-level rewrites into composable rules through the **`TransformerRule`** interface:
+
+```java
+// Note: Code trimmed for brevity
+package com.unibasictojava.transpiler.transformer;
+
+import com.unibasictojava.transpiler.source.ast.Expression;
+
+@FunctionalInterface
+public interface TransformerRule {
+
+    Expression transform(Expression expression);
+}
+```
+
+Because `TransformerRule` is a functional interface that accepts a Source AST `Expression` and returns a rewritten Source AST `Expression`, rules are completely composable. Multiple rules can be chained together in sequence, with each rule receiving the output of the preceding one.
+
+##### How the Base Transformer Chains Rules
+
+Every statement transformer inherits from the abstract base class `Transformer`:
+
+```java
+// Note: Code trimmed for brevity
+package com.unibasictojava.transpiler.transformer;
+
+import com.unibasictojava.transpiler.source.ast.Expression;
+import com.unibasictojava.transpiler.source.ast.Statement;
+import java.util.List;
+
+public abstract class Transformer {
+
+    private final List<TransformerRule> rules;
+
+    protected Transformer(List<TransformerRule> rules) {
+        this.rules = rules;
+    }
+
+    protected Transformer() {
+        this.rules = List.of();
+    }
+
+    public abstract com.unibasictojava.transpiler.target.ast.Statement transform(Statement statement);
+
+    protected Expression applyRules(Expression expression) {
+        Expression result = expression;
+        for (TransformerRule rule : rules) {
+            result = rule.transform(result);
+        }
+        return result;
+    }
+}
+```
+
+When a transformer processes a statement, it passes each inner expression to `applyRules(expression)`. The expression flows through the registered rule chain before being converted into a Target AST node.
+
+##### Concrete Example: Zero-Based Array Index Shifting
+
+Consider `ArrayAccessZeroBasedIndicesTransformerRule`. In UniBasic, developers access dimensioned arrays using 1-based indexing:
+
+```basic
+SCORES(1) = 100
+SCORES(CURRENT.INDEX) = 200
+```
+
+In Java, arrays start at index 0. If `1` is left as `1`, the generated Java code accesses the second element instead of the first, introducing an off-by-one bug.
+
+`ArrayAccessZeroBasedIndicesTransformerRule` solves this by implementing `TransformerRule` along with `RecursiveExpressionVisitor`:
+
+```java
+// Note: Code trimmed for brevity
+package com.unibasictojava.transpiler.transformer.rules;
+
+import com.unibasictojava.transpiler.source.ast.BinaryOperator;
+import com.unibasictojava.transpiler.source.ast.Expression;
+import com.unibasictojava.transpiler.source.ast.RecursiveExpressionVisitor;
+import com.unibasictojava.transpiler.transformer.TransformerRule;
+
+public final class ArrayAccessZeroBasedIndicesTransformerRule 
+        implements TransformerRule, RecursiveExpressionVisitor {
+
+    @Override
+    public Expression transform(Expression expression) {
+        return expression.accept(this);
+    }
+
+    @Override
+    public Expression visit(Expression.ArrayGet expression) {
+        return new Expression.ArrayGet(
+                expression.base(), 
+                expression.indices().stream().map(this::toZeroBased).toList()
+        );
+    }
+
+    @Override
+    public Expression visit(Expression.ArraySet expression) {
+        return new Expression.ArraySet(
+                expression.base(), 
+                expression.indices().stream().map(this::toZeroBased).toList()
+        );
+    }
+
+    private Expression toZeroBased(Expression index) {
+        Expression adjustedIndex = index.accept(this);
+        if (adjustedIndex instanceof Expression.IntegerLiteral(int value)) {
+            // Constant adjustment immediately: 1 becomes 0
+            return new Expression.IntegerLiteral(value - 1);
+        }
+        // Dynamic expression: wrap in a subtraction (index becomes index - 1)
+        return new Expression.Binary(adjustedIndex, BinaryOperator.Subtract, new Expression.IntegerLiteral(1));
+    }
+}
+```
+
+Notice how clean this separation of responsibilities is:
+* **Literal Constant Optimization:** If the index is a literal integer like `SCORES(1)`, the rule decrements the value directly during AST transformation (`0`), producing clean Java: `scores[0]`.
+* **Dynamic Safety:** If the index is a variable or expression like `SCORES(CURRENT.INDEX)`, the rule wraps it in a binary subtraction: `scores[currentIndex - 1]`.
+* **Arbitrary Nesting:** Because it implements `RecursiveExpressionVisitor`, nested array lookups (such as `SCORES(LOOKUP(1))`) automatically have both the inner and outer indices adjusted: `scores[lookup[0] - 1]`.
+
+##### How Statement Transformers Use Rules
+
+Now consider how `ScalarAssignmentTransformer` leverages this rule pipeline when converting an assignment statement:
+
+```java
+// Note: Code trimmed for brevity
+package com.unibasictojava.transpiler.transformer.assignment;
+
+final class ScalarAssignmentTransformer extends Transformer {
+
+    private final ExpressionTransformer transformer;
+
+    ScalarAssignmentTransformer(List<TransformerRule> rules) {
+        super(rules);
+        this.transformer = new ExpressionTransformer();
+    }
+
+    Statement.Assignment transform(Identifier identifier, Expression value) {
+        // 1. Run all rules across target and value expressions
+        target.ast.Expression adaptedTarget = transformer.transform(this.applyRules(identifier));
+        target.ast.Expression adaptedValue  = transformer.transform(this.applyRules(value));
+
+        // 2. Emit target assignment statement
+        return new Statement.Assignment(adaptedTarget, adaptedValue);
+    }
+}
+```
+
+When transpiling the UniBasic statement:
+
+```basic
+RESULT.COUNT = SCORES(1) + 10
+```
+
+1. `this.applyRules(identifier)` normalizes `RESULT.COUNT` to `resultCount`.
+2. `this.applyRules(value)` passes the right-hand side through the rule pipeline:
+   * `VariableNameTransformerRule` normalizes `SCORES` to `scores`.
+   * `ArrayAccessZeroBasedIndicesTransformerRule` detects `SCORES(1)` and converts the index from `1` to `0`.
+3. `ExpressionTransformer` lowers the adjusted expressions into `target.ast.Expression` representations.
+4. The emitter prints clean, idiomatic Java:
+
+```java
+resultCount = scores[0].add(new UnibasicValue(10));
+```
+
+By decoupling statement structure from expression rewriting, each statement transformer focuses solely on its statement mapping, while expression rules remain modular, composable, and independently testable.
+
+---
+
+#### 5. How Candidates Decouple Transformers from the Runtime Library
 
 Notice that `SleepTransformer` does not hardcode class names or method strings like `"UnibasicOsRuntime.sleep"`.
 
