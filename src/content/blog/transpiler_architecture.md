@@ -23,7 +23,7 @@ System.out.println("CUSTOMER NAME: " + name);
 
 In an industrial codebase, this illusion vanishes within the first five minutes. 
 
-UniBasic programs do not look like clean, linear scripts. They are procedural programs filled with universal pass-by-reference subroutine calls, untyped variables that fluidly coerce between numbers and strings, dynamic 3-dimensional delimited arrays (`@FM`, `@VM`, `@SM`), global shared memory segments (`COMMON` blocks), and arbitrary jumps (`GOTO`, `GOSUB`, `ON GOTO`). 
+UniBasic programs do not look like clean, linear scripts. They are procedural programs filled with universal pass-by-reference subroutine calls, untyped variables that fluidly coerce between numbers and strings, multi-value dynamic arrays (`@FM`, `@VM`, `@SM`), global shared memory segments (`COMMON` blocks), and arbitrary jumps (`GOTO`, `GOSUB`, `ON GOTO`). 
 
 Trying to convert these constructs directly from source text to Java strings in a single leap leads to unmaintainable complexity. The moment you encounter an unstructured jump into the middle of a loop, or a variable mutated inside an external subroutine that must become a class-level instance field in Java, a naive script completely breaks down.
 
@@ -113,7 +113,7 @@ PROGRAM UPDATE.CUSTOMER
     $INCLUDE CUSTOMER.RECORD.LAYOUT
     $INCLUDE IO.ROUTINES
 
-    CUSTOMER.RECORD<1> = "ACME CORP"
+    CUSTOMER.RECORD<1> = "GLOBAL CORP"
     CALL WRITE.CUSTOMER(CUSTOMER.RECORD)
 STOP
 ```

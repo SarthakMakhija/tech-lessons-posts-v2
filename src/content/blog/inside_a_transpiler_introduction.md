@@ -65,7 +65,7 @@ Furthermore, we established clear success criteria:
           <div class="font-bold text-[15px] text-zinc-900 leading-snug">Clean Compilation</div>
         </div>
       </div>
-      <p style="margin: 0;" class="text-[13.5px] text-zinc-600 leading-relaxed">Emitted Java code must compile cleanly with standard Java compilers (<code>javac</code>) without warnings or suppressed errors.</p>
+      <p style="margin: 0;" class="text-[13.5px] text-zinc-600 leading-relaxed">Emitted Java code must compile cleanly with standard Java toolchains (<code>javac</code>) without warnings or suppressed errors.</p>
     </div>
   </div>
 
@@ -104,7 +104,7 @@ To achieve this, we decided to build a dedicated, industrial-grade **source-to-s
 
 ### Reverse-Engineering a Grammar Without a Specification
 
-In textbook compiler engineering, you start with a clean, formal EBNF grammar specification. We had no such luxury.
+In textbook language engineering, you start with a clean, formal EBNF grammar specification. We had no such luxury.
 
 UniBasic has no formal grammar specification (at least nothing that is publicly available). To build our parsers, we had to reverse-engineer the syntax empirically by mining the client's 14,000-file codebase to study every real-world variation of how statements were written in production.
 
@@ -155,13 +155,12 @@ This series pulls back the curtain on how we designed and built this transpiler.
 
 Here is what is planned for this series:
 
-1. **[Transpiler Architecture](/en/blog/transpiler_architecture/):** A high-level tour of the 7-stage compilation pipeline: from discovery and Pratt parsing to cross-program semantic analysis, AST lowering, and pure emission.
-2. **[Foundations of an Industrial Transpiler](/en/blog/foundations_of_an_industrial_transpiler/):** The core architectural pillars and engineering discipline that prevent a large-scale compiler from collapsing under real-world complexity.
-3. **[The Target Runtime for Transpiled Code](/en/blog/building_the_target_runtime/):** Why generated code requires a dedicated target runtime to emulate legacy dynamic semantics, and how candidate abstractions enable contract-first stub generation.
-4. **Semantic Analysis (SEMA):** Traversing and rewriting ASTs across whole-program compilation units using recursive rewriters and symbol registries.
-5. **Fact Promotion & Scope Reconstruction:** Reconstructing lexical scopes, variable hoisting, and field promotions from an unscoped legacy language using deferred decision hints.
-6. **Handling the Unhandleable: Eliminating GOTOs:** Transforming tangled, arbitrary jump patterns into structured loops, continues, breaks, and state machines across 13 passes.
-7. **[Observability in Transpilers: Parser Tracing](/en/blog/observability_in_transpilers_parser_tracing/):** Demystifying parser failures in complex grammars by treating syntax trees like distributed tracing spans.
-8. **Transpiling at Enterprise Scale:** Validating 14,000+ programs against strict compilation gates, categorizing gaps, and practical takeaways from real-world migration.
+1. **[Transpiler Architecture](/en/blog/transpiler_architecture/):** A tour of the 7-stage transpilation pipeline that converts legacy UniBasic into structured Java 21: from filesystem discovery and Pratt parsing to cross-program semantic analysis, AST lowering with composable transformer rules, and template emission.
+2. **[Foundations of an Industrial Transpiler](/en/blog/foundations_of_an_industrial_transpiler/):** The core architectural pillars that prevent a large-scale transpiler from collapsing under complexity: two-tier AST decoupling (`source.ast` vs `target.ast`), the dumb emitter philosophy, candidate decoupling, and multi-pass micro-rewriters.
+3. **[The Target Runtime for Transpiled Code](/en/blog/building_the_target_runtime/):** Why generated code requires a dedicated target runtime to emulate legacy dynamic semantics: dynamic string-number duality (`UnibasicValue`), multi-value dynamic arrays, pass-by-reference cells, and candidate decoupling for contract-first stub generation.
+4. **Multi-Pass AST Rewriting: SEMA and Fact Promotion:** Traversing and rewriting syntax trees across whole-program compilation units using recursive statement rewriters, lexical scope reconstruction, and symbol registries.
+5. **Handling the Unhandleable: Eliminating GOTOs:** Transforming tangled, arbitrary procedural jump patterns into structured loops, continues, breaks, and state machines across 13 AST restructuring passes.
+6. **[Observability in Transpilers: Parser Tracing](/en/blog/observability_in_transpilers_parser_tracing/):** Demystifying parser failures in complex, undocumented grammars by treating syntax trees like distributed tracing spans, with nested span hierarchies and deterministic diagnostic reporting.
+7. **[Transpiling at Enterprise Scale](/en/blog/transpiling_at_enterprise_scale/):** How our clean transpiler architecture absorbed messy enterprise realities across 14,000 files: handling extensionless filesystems, ghost dependencies, domain-driven identifier preservation, overcoming JVM 64 KB bytecode ceilings with `LongClassSplitter`, and scaffolding multi-module Gradle builds.
 
 Let's start with Part 1: [Transpiler Architecture](/en/blog/transpiler_architecture/).
