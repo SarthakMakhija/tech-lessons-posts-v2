@@ -2,14 +2,14 @@
 author: "Sarthak Makhija"
 title: "Inside a Transpiler (Part 2): Foundations of an Industrial Transpiler"
 description: "What separates a fragile script from production compiler engineering: two-tier ASTs, dumb emitters, decoupled runtimes, multi-pass micro-rewriters, and strict engineering discipline."
-pubDate: 2026-11-20
-weight: 1
+pubDate: 2026-11-22
+weight: 2
 tags: ["Compilers", "Transpiler", "Architecture", "Java", "Clean Code"]
 draft: false
 caption: "Inside a Transpiler (Part 2): Foundations of an Industrial Transpiler"
 ---
 
-In the [introduction to this series](/en/blog/inside_a_transpiler_introduction/), we outlined our mission: building an industrial-grade transpiler to migrate an enterprise codebase of **over 14,000 legacy UniBasic files** to Java 21.
+In the [introduction to this series](/en/blog/inside_a_transpiler_introduction/) and [Part 1: Transpiler Architecture](/en/blog/transpiler_architecture/), we outlined our mission: building an industrial-grade transpiler to migrate an enterprise codebase of **over 14,000 legacy UniBasic files** to Java 21.
 
 Transpiling legacy code at this scale is not a syntax-mapping exercise; it is an exercise in rigorous compiler engineering. Before diving into the mechanics of parsing, semantic analysis, and control-flow deconstruction, we need to examine the bedrock principles that keep a large compiler maintainable.
 
@@ -496,7 +496,7 @@ A common pitfall in compiler design is attempting to resolve the meaning of cons
 3. **Loss of Parallel Parsing Across 14,000 Files:**
    When parsing is strictly syntactic, :h[every source file can be parsed completely in isolation]. You can parse all 14,000 files concurrently in parallel across all CPU cores in seconds, because the parser never needs to read external files, load symbol tables, or resolve cross-program dependencies. If parsing required resolving symbols or included types, you would be forced into a slow, sequential compilation graph where parsing one file blocks on analyzing its dependencies.
 
-By strictly isolating the parser, it produces a clean, purely syntactic `source.ast.UnibasicProgram`. All symbol resolution, array mapping, common block bindings, equate substitutions, and arity mismatch corrections are deferred to **Semantic Analysis (SEMA)**.
+By strictly isolating the parser, it produces a clean, purely syntactic `source.ast.UnibasicProgram`. All symbol resolution, type binding, DIM rewriting, common block bindings, and equate substitutions are deferred to **Semantic Analysis (SEMA)**.
 
 #### 2.2 Multi-Pass Micro-Rewriters (Over a "God Visitor")
 

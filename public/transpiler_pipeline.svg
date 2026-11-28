@@ -1,0 +1,194 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 500" width="100%" height="auto" class="font-sans select-none">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="bridge-grad" x1="100%" y1="0%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#7c3aed" />
+      <stop offset="50%" stop-color="#4f46e5" />
+      <stop offset="100%" stop-color="#d97706" />
+    </linearGradient>
+    <linearGradient id="java-box-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="100%" stop-color="#eff6ff" />
+    </linearGradient>
+
+    <!-- Arrow Markers -->
+    <marker id="arrow-sky" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#0284c7" />
+    </marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#0d9488" />
+    </marker>
+    <marker id="arrow-indigo" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#4f46e5" />
+    </marker>
+    <marker id="arrow-bridge" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#d97706" />
+    </marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#d97706" />
+    </marker>
+    <marker id="arrow-emerald" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#059669" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#16a34a" />
+    </marker>
+
+    <!-- Filters -->
+    <filter id="card-shadow" x="-4%" y="-6%" width="108%" height="116%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="2" flood-color="#0f172a" flood-opacity="0.04" />
+    </filter>
+    <filter id="bridge-shadow" x="-5%" y="-10%" width="110%" height="125%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#4f46e5" flood-opacity="0.15" />
+    </filter>
+  </defs>
+
+  <!-- ========================================== -->
+  <!-- TOP ROW: SOURCE AST DOMAIN (UNIBASIC)      -->
+  <!-- ========================================== -->
+  <rect x="15" y="15" width="950" height="185" rx="16" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5" />
+
+  <!-- Domain Header Top -->
+  <rect x="32" y="27" width="235" height="24" rx="6" fill="#e0f2fe" stroke="#bae6fd" stroke-width="1" />
+  <circle cx="44" cy="39" r="3.5" fill="#0284c7" />
+  <text x="54" y="43" font-family="ui-monospace, monospace" font-size="10.5" font-weight="700" fill="#0369a1" letter-spacing="0.5">SOURCE AST DOMAIN (UNIBASIC)</text>
+  <text x="945" y="43" font-family="ui-monospace, monospace" font-size="10" font-weight="600" fill="#64748b" text-anchor="end">Front-End Pipeline</text>
+
+  <!-- Stage 01: Source Discovery -->
+  <g filter="url(#card-shadow)">
+    <rect x="32" y="60" width="195" height="124" rx="12" fill="#ffffff" stroke="#7dd3fc" stroke-width="1.5" />
+    <rect x="42" y="70" width="28" height="22" rx="6" fill="#0284c7" />
+    <text x="56" y="85" font-family="ui-monospace, monospace" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">01</text>
+    <text x="78" y="86" font-family="system-ui, sans-serif" font-size="13" font-weight="700" fill="#0369a1">Source Discovery</text>
+    <text x="42" y="108" font-family="system-ui, sans-serif" font-size="10" fill="#64748b">Identifies runnable programs</text>
+    <text x="42" y="121" font-family="system-ui, sans-serif" font-size="10" fill="#64748b">&amp; recursively inlines includes</text>
+    <rect x="42" y="142" width="175" height="24" rx="6" fill="#f0f9ff" stroke="#bae6fd" stroke-width="1" />
+    <text x="129" y="157" font-family="ui-monospace, monospace" font-size="9" font-weight="600" fill="#0284c7" text-anchor="middle">TranspileableSources</text>
+  </g>
+
+  <!-- Arrow 1 -> 2 -->
+  <line x1="227" y1="122" x2="265" y2="122" stroke="#0284c7" stroke-width="2" marker-end="url(#arrow-sky)" />
+
+  <!-- Stage 02: Lexer -->
+  <g filter="url(#card-shadow)">
+    <rect x="273" y="60" width="195" height="124" rx="12" fill="#ffffff" stroke="#5eead4" stroke-width="1.5" />
+    <rect x="283" y="70" width="28" height="22" rx="6" fill="#0d9488" />
+    <text x="297" y="85" font-family="ui-monospace, monospace" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">02</text>
+    <text x="319" y="86" font-family="system-ui, sans-serif" font-size="13" font-weight="700" fill="#0f766e">Lexer</text>
+    <text x="283" y="108" font-family="system-ui, sans-serif" font-size="10" fill="#64748b">Scans character stream into</text>
+    <text x="283" y="121" font-family="system-ui, sans-serif" font-size="10" fill="#64748b">context-aware tokens</text>
+    <rect x="283" y="142" width="175" height="24" rx="6" fill="#f0fdfa" stroke="#99f6e4" stroke-width="1" />
+    <text x="370" y="157" font-family="ui-monospace, monospace" font-size="9" font-weight="600" fill="#0d9488" text-anchor="middle">Token Stream</text>
+  </g>
+
+  <!-- Arrow 2 -> 3 -->
+  <line x1="468" y1="122" x2="506" y2="122" stroke="#0d9488" stroke-width="2" marker-end="url(#arrow-teal)" />
+
+  <!-- Stage 03: Parsers -->
+  <g filter="url(#card-shadow)">
+    <rect x="514" y="60" width="195" height="124" rx="12" fill="#ffffff" stroke="#a5b4fc" stroke-width="1.5" />
+    <rect x="524" y="70" width="28" height="22" rx="6" fill="#4f46e5" />
+    <text x="538" y="85" font-family="ui-monospace, monospace" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">03</text>
+    <text x="560" y="86" font-family="system-ui, sans-serif" font-size="13" font-weight="700" fill="#4338ca">Parsers</text>
+    <text x="524" y="108" font-family="system-ui, sans-serif" font-size="10" fill="#64748b">Statement dispatch &amp; Pratt</text>
+    <text x="524" y="121" font-family="system-ui, sans-serif" font-size="10" fill="#64748b">precedence expression parsing</text>
+    <rect x="524" y="142" width="175" height="24" rx="6" fill="#eef2ff" stroke="#c7d2fe" stroke-width="1" />
+    <text x="611" y="157" font-family="ui-monospace, monospace" font-size="9" font-weight="600" fill="#4f46e5" text-anchor="middle">Source AST</text>
+  </g>
+
+  <!-- Arrow 3 -> 4 -->
+  <line x1="709" y1="122" x2="747" y2="122" stroke="#4f46e5" stroke-width="2" marker-end="url(#arrow-indigo)" />
+
+  <!-- Stage 04: SEMA -->
+  <g filter="url(#card-shadow)">
+    <rect x="755" y="60" width="195" height="124" rx="12" fill="#ffffff" stroke="#c084fc" stroke-width="1.5" />
+    <rect x="765" y="70" width="28" height="22" rx="6" fill="#7c3aed" />
+    <text x="779" y="85" font-family="ui-monospace, monospace" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">04</text>
+    <text x="801" y="86" font-family="system-ui, sans-serif" font-size="13" font-weight="700" fill="#6d28d9">SEMA</text>
+    <text x="765" y="108" font-family="system-ui, sans-serif" font-size="10" fill="#64748b">Type binding &amp; DIM rewriting</text>
+    <text x="765" y="121" font-family="system-ui, sans-serif" font-size="10" fill="#64748b">Resolves symbols &amp; array bounds</text>
+    <rect x="765" y="142" width="175" height="24" rx="6" fill="#f5f3ff" stroke="#ddd6fe" stroke-width="1" />
+    <text x="852" y="157" font-family="ui-monospace, monospace" font-size="9" font-weight="600" fill="#7c3aed" text-anchor="middle">Enriched Source AST</text>
+  </g>
+
+  <!-- ========================================== -->
+  <!-- MIDDLE: TWO-TIER LOWERING BRIDGE           -->
+  <!-- ========================================== -->
+  <!-- Connecting Path from SEMA (bottom center) around to Transformer (top center) -->
+  <path d="M 852 184 L 852 230 Q 852 245 832 245 L 149 245 Q 129 245 129 260 L 129 316" fill="none" stroke="url(#bridge-grad)" stroke-width="2.5" stroke-dasharray="6 3" marker-end="url(#arrow-bridge)" />
+
+  <!-- Central Bridge Badge -->
+  <g filter="url(#bridge-shadow)">
+    <rect x="415" y="231" width="150" height="28" rx="14" fill="#4f46e5" stroke="#818cf8" stroke-width="1.5" />
+    <circle cx="433" cy="245" r="3.5" fill="#a5b4fc" />
+    <text x="495" y="249" font-family="ui-monospace, monospace" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle" letter-spacing="0.5">AST Lowering</text>
+  </g>
+
+  <!-- ========================================== -->
+  <!-- BOTTOM ROW: TARGET AST DOMAIN (JAVA 21)    -->
+  <!-- ========================================== -->
+  <rect x="15" y="278" width="950" height="185" rx="16" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5" />
+
+  <!-- Domain Header Bottom -->
+  <rect x="32" y="290" width="220" height="24" rx="6" fill="#ecfdf5" stroke="#a7f3d0" stroke-width="1" />
+  <circle cx="44" cy="302" r="3.5" fill="#059669" />
+  <text x="54" y="306" font-family="ui-monospace, monospace" font-size="10.5" font-weight="700" fill="#065f46" letter-spacing="0.5">TARGET AST DOMAIN (JAVA 21)</text>
+  <text x="945" y="306" font-family="ui-monospace, monospace" font-size="10" font-weight="600" fill="#64748b" text-anchor="end">Back-End Pipeline</text>
+
+  <!-- Stage 05: Transformer -->
+  <g filter="url(#card-shadow)">
+    <rect x="32" y="323" width="195" height="124" rx="12" fill="#ffffff" stroke="#fcd34d" stroke-width="1.5" />
+    <rect x="42" y="333" width="28" height="22" rx="6" fill="#d97706" />
+    <text x="56" y="348" font-family="ui-monospace, monospace" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">05</text>
+    <text x="78" y="349" font-family="system-ui, sans-serif" font-size="13" font-weight="700" fill="#b45309">Transformer</text>
+    <text x="42" y="371" font-family="system-ui, sans-serif" font-size="10" fill="#64748b">Lowers Source AST nodes into</text>
+    <text x="42" y="384" font-family="system-ui, sans-serif" font-size="10" fill="#64748b">Java semantic hierarchy</text>
+    <rect x="42" y="405" width="175" height="24" rx="6" fill="#fffbeb" stroke="#fde68a" stroke-width="1" />
+    <text x="129" y="420" font-family="ui-monospace, monospace" font-size="9" font-weight="600" fill="#d97706" text-anchor="middle">Java Target AST</text>
+  </g>
+
+  <!-- Arrow 5 -> 6 -->
+  <line x1="227" y1="385" x2="265" y2="385" stroke="#d97706" stroke-width="2" marker-end="url(#arrow-amber)" />
+
+  <!-- Stage 06: Fact Promoter -->
+  <g filter="url(#card-shadow)">
+    <rect x="273" y="323" width="195" height="124" rx="12" fill="#ffffff" stroke="#6ee7b7" stroke-width="1.5" />
+    <rect x="283" y="333" width="28" height="22" rx="6" fill="#059669" />
+    <text x="297" y="348" font-family="ui-monospace, monospace" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">06</text>
+    <text x="319" y="349" font-family="system-ui, sans-serif" font-size="13" font-weight="700" fill="#047857">Fact Promoter</text>
+    <text x="283" y="371" font-family="system-ui, sans-serif" font-size="10" fill="#64748b">Reconstructs local scopes &amp;</text>
+    <text x="283" y="384" font-family="system-ui, sans-serif" font-size="10" fill="#64748b">promotes variables to fields</text>
+    <rect x="283" y="405" width="175" height="24" rx="6" fill="#ecfdf5" stroke="#a7f3d0" stroke-width="1" />
+    <text x="370" y="420" font-family="ui-monospace, monospace" font-size="9" font-weight="600" fill="#059669" text-anchor="middle">Scoped Target AST</text>
+  </g>
+
+  <!-- Arrow 6 -> 7 -->
+  <line x1="468" y1="385" x2="506" y2="385" stroke="#059669" stroke-width="2" marker-end="url(#arrow-emerald)" />
+
+  <!-- Stage 07: Emitter -->
+  <g filter="url(#card-shadow)">
+    <rect x="514" y="323" width="195" height="124" rx="12" fill="#ffffff" stroke="#86efac" stroke-width="1.5" />
+    <rect x="524" y="333" width="28" height="22" rx="6" fill="#16a34a" />
+    <text x="538" y="348" font-family="ui-monospace, monospace" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">07</text>
+    <text x="560" y="349" font-family="system-ui, sans-serif" font-size="13" font-weight="700" fill="#15803d">Emitter</text>
+    <text x="524" y="371" font-family="system-ui, sans-serif" font-size="10" fill="#64748b">Dumb string visitor that</text>
+    <text x="524" y="384" font-family="system-ui, sans-serif" font-size="10" fill="#64748b">prints formatted Java code</text>
+    <rect x="524" y="405" width="175" height="24" rx="6" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1" />
+    <text x="611" y="420" font-family="ui-monospace, monospace" font-size="9" font-weight="600" fill="#16a34a" text-anchor="middle">Pure String Generator</text>
+  </g>
+
+  <!-- Arrow 7 -> Output -->
+  <line x1="709" y1="385" x2="747" y2="385" stroke="#16a34a" stroke-width="2" marker-end="url(#arrow-green)" />
+
+  <!-- Output Box: Compilable Java 21 Files -->
+  <g filter="url(#card-shadow)">
+    <rect x="755" y="323" width="195" height="124" rx="12" fill="url(#java-box-grad)" stroke="#6366f1" stroke-width="2" />
+    <rect x="765" y="333" width="56" height="22" rx="6" fill="#4f46e5" />
+    <text x="793" y="348" font-family="ui-monospace, monospace" font-size="10" font-weight="700" fill="#ffffff" text-anchor="middle">JAVA 21</text>
+    <text x="829" y="349" font-family="system-ui, sans-serif" font-size="13" font-weight="700" fill="#1e1b4b">Target Files</text>
+    <text x="765" y="371" font-family="system-ui, sans-serif" font-size="10" fill="#4338ca">Type-safe, compilable code</text>
+    <text x="765" y="384" font-family="system-ui, sans-serif" font-size="10" fill="#4338ca">ready for production build</text>
+    <rect x="765" y="405" width="175" height="24" rx="6" fill="#ffffff" stroke="#c7d2fe" stroke-width="1" />
+    <text x="852" y="420" font-family="ui-monospace, monospace" font-size="9" font-weight="700" fill="#4338ca" text-anchor="middle">.java Source Files</text>
+  </g>
+</svg>

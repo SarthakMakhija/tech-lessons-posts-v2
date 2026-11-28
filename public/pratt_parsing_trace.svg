@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 990 535" width="100%" height="100%" style="background: #fafafa; font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <defs>
+    <filter id="shadow" x="-4%" y="-4%" width="108%" height="108%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.06" />
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#6366f1" />
+    </marker>
+    <marker id="return-arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#10b981" />
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="30" y="36" font-size="18" font-weight="700" fill="#18181b">Recursive Pratt Parsing Trace: 1 + 2 * 3</text>
+  <text x="30" y="56" font-size="13" fill="#71717a">How operator precedence drives nested execution and builds the syntax tree</text>
+
+  <!-- Left Column: Recursive Call Stack -->
+
+  <!-- Frame 1 -->
+  <g filter="url(#shadow)">
+    <rect x="30" y="80" width="575" height="122" rx="8" fill="#ffffff" stroke="#e4e4e7" stroke-width="1.5" />
+    <rect x="30" y="80" width="575" height="30" rx="8" fill="#f4f4f5" />
+    <path d="M 30 100 L 30 110 L 605 110 L 605 100 Z" fill="#f4f4f5" />
+    <text x="45" y="100" font-size="12" font-weight="700" fill="#27272a">Call 1: parse(minimumPrecedence = None [0])</text>
+    
+    <text x="45" y="132" font-size="12" fill="#3f3f46">• Consumes prefix <tspan font-family="monospace" font-weight="600" fill="#09090b">1</tspan> → <tspan fill="#6366f1">left = Literal(1)</tspan></text>
+    <text x="45" y="152" font-size="12" fill="#3f3f46">• Peeks <tspan font-family="monospace" font-weight="600" fill="#09090b">+</tspan> (Precedence 5). Since <tspan font-weight="600" fill="#059669">5 &gt; 0</tspan>, consumes <tspan font-family="monospace" fill="#09090b">+</tspan></text>
+    <text x="45" y="172" font-size="12" fill="#4f46e5" font-weight="600">• Invokes BinaryOperatorParselet(+) → calls parse(minimumPrecedence = 5)</text>
+    <text x="45" y="190" font-size="11" fill="#059669" font-weight="600">✔ Returns Binary(Literal(1), +, Binary(2, *, 3))</text>
+  </g>
+
+  <!-- Arrow Frame 1 -> Frame 2 -->
+  <path d="M 190 202 L 190 223" fill="none" stroke="#6366f1" stroke-width="2" marker-end="url(#arrow)" />
+  <text x="200" y="217" font-size="10" font-weight="600" fill="#6366f1">recurse (precedence = 5)</text>
+
+  <!-- Return Arrow Frame 2 -> Frame 1 -->
+  <path d="M 490 223 L 490 202" fill="none" stroke="#10b981" stroke-width="2" stroke-dasharray="3,3" marker-end="url(#return-arrow)" />
+  <text x="498" y="217" font-size="10" font-weight="600" fill="#10b981">returns Binary(2 * 3)</text>
+
+  <!-- Frame 2 -->
+  <g filter="url(#shadow)">
+    <rect x="60" y="228" width="545" height="125" rx="8" fill="#ffffff" stroke="#c7d2fe" stroke-width="1.5" />
+    <rect x="60" y="228" width="545" height="30" rx="8" fill="#eef2ff" />
+    <path d="M 60 248 L 60 258 L 605 258 L 605 248 Z" fill="#eef2ff" />
+    <text x="75" y="248" font-size="12" font-weight="700" fill="#3730a3">Call 2: parse(minimumPrecedence = Additive [5])</text>
+    
+    <text x="75" y="280" font-size="12" fill="#3f3f46">• Consumes prefix <tspan font-family="monospace" font-weight="600" fill="#09090b">2</tspan> → <tspan fill="#6366f1">left = Literal(2)</tspan></text>
+    <text x="75" y="300" font-size="12" fill="#3f3f46">• Peeks <tspan font-family="monospace" font-weight="600" fill="#09090b">*</tspan> (Precedence 6). Since <tspan font-weight="600" fill="#059669">6 &gt; 5</tspan> (* binds tighter!), consumes <tspan font-family="monospace" fill="#09090b">*</tspan></text>
+    <text x="75" y="320" font-size="12" fill="#4f46e5" font-weight="600">• Invokes BinaryOperatorParselet(*) → calls parse(minimumPrecedence = 6)</text>
+    <text x="75" y="339" font-size="11" fill="#059669" font-weight="600">✔ Returns Binary(Literal(2), *, Literal(3))</text>
+  </g>
+
+  <!-- Arrow Frame 2 -> Frame 3 -->
+  <path d="M 220 353 L 220 374" fill="none" stroke="#6366f1" stroke-width="2" marker-end="url(#arrow)" />
+  <text x="230" y="368" font-size="10" font-weight="600" fill="#6366f1">recurse (precedence = 6)</text>
+
+  <!-- Return Arrow Frame 3 -> Frame 2 -->
+  <path d="M 460 374 L 460 353" fill="none" stroke="#10b981" stroke-width="2" stroke-dasharray="3,3" marker-end="url(#return-arrow)" />
+  <text x="468" y="368" font-size="10" font-weight="600" fill="#10b981">returns Literal(3)</text>
+
+  <!-- Frame 3 -->
+  <g filter="url(#shadow)">
+    <rect x="90" y="379" width="515" height="120" rx="8" fill="#ffffff" stroke="#e0e7ff" stroke-width="1.5" />
+    <rect x="90" y="379" width="515" height="30" rx="8" fill="#f5f3ff" />
+    <path d="M 90 399 L 90 409 L 605 409 L 605 399 Z" fill="#f5f3ff" />
+    <text x="105" y="399" font-size="12" font-weight="700" fill="#5b21b6">Call 3: parse(minimumPrecedence = Multiplicative [6])</text>
+    
+    <text x="105" y="431" font-size="12" fill="#3f3f46">• Consumes prefix <tspan font-family="monospace" font-weight="600" fill="#09090b">3</tspan> → <tspan fill="#6366f1">left = Literal(3)</tspan></text>
+    <text x="105" y="451" font-size="12" fill="#3f3f46">• Peeks <tspan font-family="monospace" fill="#71717a">EndOfSource</tspan> (Precedence 0). Check <tspan font-weight="600" fill="#dc2626">0 &gt; 6 is FALSE</tspan></text>
+    <text x="105" y="471" font-size="12" fill="#059669" font-weight="600">• Loop terminates immediately → returns Literal(3)</text>
+  </g>
+
+  <!-- Right Column: Resulting AST -->
+  <g filter="url(#shadow)">
+    <rect x="635" y="80" width="325" height="420" rx="8" fill="#ffffff" stroke="#e4e4e7" stroke-width="1.5" />
+    <rect x="635" y="80" width="325" height="40" rx="8" fill="#fafafa" />
+    <path d="M 635 108 L 635 120 L 960 120 L 960 108 Z" fill="#fafafa" />
+    
+    <!-- Header: Title and Badge distinctly separated -->
+    <text x="652" y="105" font-size="13" font-weight="700" fill="#18181b">Constructed AST</text>
+    
+    <rect x="825" y="88" width="120" height="24" rx="12" fill="#eef2ff" stroke="#c7d2fe" stroke-width="1" />
+    <text x="885" y="104" font-size="11" font-family="ui-monospace, monospace" font-weight="600" fill="#4338ca" text-anchor="middle">1 + (2 * 3)</text>
+
+    <!-- Tree Nodes (Centered at X = 797.5, symmetrical spacing) -->
+    <!-- Root: Binary (+) -->
+    <rect x="744" y="145" width="108" height="42" rx="6" fill="#eef2ff" stroke="#6366f1" stroke-width="1.5" />
+    <text x="798" y="164" font-size="12" font-weight="700" fill="#3730a3" text-anchor="middle">Binary (+)</text>
+    <text x="798" y="177" font-size="9" fill="#6366f1" text-anchor="middle">precedence = 5</text>
+
+    <!-- Left Child: Literal(1) at X = 718 (80px left of root) -->
+    <rect x="678" y="235" width="80" height="38" rx="6" fill="#f4f4f5" stroke="#a1a1aa" stroke-width="1.5" />
+    <text x="718" y="259" font-size="12" font-weight="600" fill="#18181b" text-anchor="middle">Literal(1)</text>
+
+    <!-- Right Child: Binary (*) at X = 878 (80px right of root) -->
+    <rect x="824" y="235" width="108" height="42" rx="6" fill="#f5f3ff" stroke="#8b5cf6" stroke-width="1.5" />
+    <text x="878" y="254" font-size="12" font-weight="700" fill="#5b21b6" text-anchor="middle">Binary (*)</text>
+    <text x="878" y="267" font-size="9" fill="#8b5cf6" text-anchor="middle">precedence = 6</text>
+
+    <!-- Children of Binary (*) -->
+    <!-- Literal(2) at X = 838 (40px left of *) -->
+    <rect x="802" y="325" width="72" height="36" rx="6" fill="#f4f4f5" stroke="#a1a1aa" stroke-width="1.5" />
+    <text x="838" y="348" font-size="12" font-weight="600" fill="#18181b" text-anchor="middle">Literal(2)</text>
+
+    <!-- Literal(3) at X = 918 (40px right of *) -->
+    <rect x="882" y="325" width="72" height="36" rx="6" fill="#f4f4f5" stroke="#a1a1aa" stroke-width="1.5" />
+    <text x="918" y="348" font-size="12" font-weight="600" fill="#18181b" text-anchor="middle">Literal(3)</text>
+
+    <!-- Connecting Lines originating symmetrically from bottom-center of parents -->
+    <!-- Root (798, 185) to Literal(1) (718, 235) -->
+    <path d="M 798 185 L 718 235" stroke="#71717a" stroke-width="1.5" />
+    <!-- Root (798, 185) to Binary(*) (878, 235) -->
+    <path d="M 798 185 L 878 235" stroke="#71717a" stroke-width="1.5" />
+    <!-- Binary(*) (878, 275) to Literal(2) (838, 325) -->
+    <path d="M 878 275 L 838 325" stroke="#71717a" stroke-width="1.5" />
+    <!-- Binary(*) (878, 275) to Literal(3) (918, 325) -->
+    <path d="M 878 275 L 918 325" stroke="#71717a" stroke-width="1.5" />
+
+    <!-- Explanatory pill below tree -->
+    <rect x="652" y="395" width="291" height="88" rx="8" fill="#ecfdf5" stroke="#a7f3d0" stroke-width="1" />
+    <text x="668" y="419" font-size="11" font-weight="700" fill="#065f46">Precedence Resolution</text>
+    <text x="668" y="438" font-size="11" fill="#047857">Because * (precedence 6) binds tighter</text>
+    <text x="668" y="454" font-size="11" fill="#047857">than + (precedence 5), (2 * 3) forms first</text>
+    <text x="668" y="470" font-size="11" fill="#047857">and becomes the right child of +.</text>
+  </g>
+</svg>

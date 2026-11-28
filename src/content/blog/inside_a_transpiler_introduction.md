@@ -2,8 +2,8 @@
 author: "Sarthak Makhija"
 title: "Inside a Transpiler: Introduction"
 description: "Modernizing 14,000+ files of legacy UniBasic to Java, and the roadmap for this series."
-pubDate: "2026-11-20"
-weight: 2
+pubDate: "2026-11-22"
+weight: 0
 tags: ["Compilers", "Transpiler", "Java", "UniBasic"]
 draft: false
 caption: "Inside a Transpiler: Introduction"
@@ -155,7 +155,7 @@ This series pulls back the curtain on how we designed and built this transpiler.
 
 Here is what is planned for this series:
 
-1. **Transpiler Architecture:** A high-level tour of the 7-stage compilation pipeline: from discovery and Pratt parsing to cross-program semantic analysis, AST lowering, and pure emission.
+1. **[Transpiler Architecture](/en/blog/transpiler_architecture/):** A high-level tour of the 7-stage compilation pipeline: from discovery and Pratt parsing to cross-program semantic analysis, AST lowering, and pure emission.
 2. **[Foundations of an Industrial Transpiler](/en/blog/foundations_of_an_industrial_transpiler/):** The core architectural pillars and engineering discipline that prevent a large-scale compiler from collapsing under real-world complexity.
 3. **[The Target Runtime for Transpiled Code](/en/blog/building_the_target_runtime/):** Why generated code requires a dedicated target runtime to emulate legacy dynamic semantics, and how candidate abstractions enable contract-first stub generation.
 4. **Semantic Analysis (SEMA):** Traversing and rewriting ASTs across whole-program compilation units using recursive rewriters and symbol registries.
@@ -164,4 +164,4 @@ Here is what is planned for this series:
 7. **[Observability in Transpilers: Parser Tracing](/en/blog/observability_in_transpilers_parser_tracing/):** Demystifying parser failures in complex grammars by treating syntax trees like distributed tracing spans.
 8. **Transpiling at Enterprise Scale:** Validating 14,000+ programs against strict compilation gates, categorizing gaps, and practical takeaways from real-world migration.
 
-Let's start with Transpiler Architecture.
+Let's start with Part 1: [Transpiler Architecture](/en/blog/transpiler_architecture/).
