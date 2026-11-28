@@ -2,7 +2,7 @@
 author: "Sarthak Makhija"
 title: "Inside a Transpiler (Part 2): Foundations of an Industrial Transpiler"
 description: "What separates a fragile script from production compiler engineering: two-tier ASTs, dumb emitters, decoupled runtimes, multi-pass micro-rewriters, and strict engineering discipline."
-pubDate: 2026-11-22
+pubDate: 2026-11-24
 weight: 2
 tags: ["Compilers", "Transpiler", "Architecture", "Java", "Clean Code"]
 draft: false

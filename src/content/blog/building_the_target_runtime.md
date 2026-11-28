@@ -2,7 +2,7 @@
 author: "Sarthak Makhija"
 title: "Inside a Transpiler (Part 3): The Target Runtime for Transpiled Code"
 description: "Why transpiled code needs a dedicated target runtime: dynamic types, reference cells, and contract-first stub generation."
-pubDate: 2026-11-22
+pubDate: 2026-11-25
 weight: 3
 tags: ["Compilers", "Transpiler", "Architecture", "Java", "Runtime"]
 draft: false

@@ -2,7 +2,7 @@
 author: "Sarthak Makhija"
 title: "Inside a Transpiler (Part 1): Transpiler Architecture"
 description: "A tour of the 7-stage compilation pipeline that converts 14,000+ files of legacy UniBasic into structured, compilable Java 21."
-pubDate: 2026-11-22
+pubDate: 2026-11-23
 weight: 1
 tags: ["Compilers", "Transpiler", "Architecture", "Java", "Clean Code"]
 draft: false

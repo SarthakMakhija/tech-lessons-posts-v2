@@ -2,7 +2,7 @@
 author: "Sarthak Makhija"
 title: "Inside a Transpiler (Part 7): Observability in Transpilers: Parser Tracing"
 description: "Why compiler stack traces fail you; introducing span-based tracing, sealOnFailure, and diagnostic reporting for deep syntax trees."
-pubDate: 2026-11-22
+pubDate: 2026-11-26
 weight: 7
 tags: ["Compilers", "Transpiler", "Architecture", "Java", "Clean Code"]
 draft: false
